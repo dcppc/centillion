@@ -12,19 +12,31 @@ the centillion is 3.03 log-times better than the googol.
 
 Current status:
 
-* Successfully using whoosh to index a directory of Markdown files
-    * Problem: .git directory cannot be present (or contaminates list of
-      indexed directories)
-    * Problem: search index stored on disk, not clear how to use on Heroku
-    * may need to check in binary search index, or dive headfirst into
-          sqlalchemy
-    * not using pandoc to extract header/emphasis information
+* **Stage 1: index folder of markdown files**
+    * See [markdown-search](https://git.charlesreid1.com/charlesreid1/markdown-search.git)
+    * Successfully using whoosh to index a directory of Markdown files
+        * Problem: .git directory cannot be present (or contaminates list of
+          indexed directories)
+        * Problem: search index stored on disk, not clear how to use on Heroku
+        * may need to check in binary search index, or dive headfirst into
+              sqlalchemy
+        * not using pandoc to extract header/emphasis information
 
 Needs work:
 
 * More appropriate schema
 * Using more features (weights) plus pandoc filters for schema
 * sqlalchemy (and hey waddya know safari books has it covered)
+
+
+* **Stage 2: index a repo's github issues**
+    * See [issues-search](https://git.charlesreid1.com/charlesreid1/issues-search.git)
+    * use PyGithub
+
+
+* **Stage 3: index documents in a google drive folder**
+    * See [cheeseburger-search](https://git.charlesreid1.com/charlesreid1/cheeseburger-search.git) 
+    * use google drive api (see simple-simon)
 
 
 ## how it will work
