@@ -18,15 +18,16 @@ Current status:
         * Problem: .git directory cannot be present (or contaminates list of
           indexed directories)
         * Problem: search index stored on disk, not clear how to use on Heroku
-        * may need to check in binary search index, or dive headfirst into
-              sqlalchemy
-        * not using pandoc to extract header/emphasis information
+        * May need to check in binary search index, or dive headfirst into
+          sqlalchemy
+        * Not using [pypandoc](https://github.com/bebraw/pypandoc) yet to extract 
+          header/emphasis information
 
 Needs work:
 
 * More appropriate schema
 * Using more features (weights) plus pandoc filters for schema
-* sqlalchemy (and hey waddya know safari books has it covered)
+* Sqlalchemy (and hey waddya know safari books has it covered)
 
 
 * **Stage 2: index a repo's github issues**
@@ -36,19 +37,19 @@ Needs work:
 
 * **Stage 3: index documents in a google drive folder**
     * See [cheeseburger-search](https://git.charlesreid1.com/charlesreid1/cheeseburger-search.git) 
-    * use google drive api (see simple-simon)
+    * Use google drive api (see simple-simon)
 
 
 ## how it will work
 
-the centillion uses whoosh, a python library for building
+The centillion uses whoosh, a python library for building
 search engines. 
 
-the centillion creates a schema to index our different items,
+The centillion creates a schema to index our different items,
 and then we add documents to it. whoosh requires lots of
 configurations of how we want to index each of our items.
 
-the centillion keeps it simple.
+The centillion keeps it simple.
 
 
 ### folder of markdown files
@@ -56,11 +57,11 @@ the centillion keeps it simple.
 The first type of document collection that the centillion
 can handle is a folder with markdown files in it.
 
-the centillion will walk the directory and sniff out
+The centillion will walk the directory and sniff out
 markdown files. it will then use pandoc to extract information
 from the markdown documents. 
 
-all markdown documents in the folders will be added to
+All markdown documents in the folders will be added to
 the index.
 
 
@@ -70,23 +71,21 @@ The next type of document collection that the centillion
 can handle is a collection of github issues from a 
 repository.
 
-the centillion will extract information from the 
+The centillion will extract information from the 
 issues and comments using PyGithub and use pandoc
 to extract information from the markdown in the
 issues/comments.
 
-all issues and comments in the repo will be added to
+All issues and comments in the repo will be added to
 the index.
 
 
 ### google drive
 
-the last type of document collection that the centillion
+The last type of document collection that the centillion
 can handle is a google drive folder. the google drive
 API allows the centillion to download documents in multiple
 formats (primarily the .docx format), convert to markdown,
 and extract information as was done with github
 markdown files.
-
-
 
