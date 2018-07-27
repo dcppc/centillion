@@ -7,7 +7,27 @@
 the centillion is 3.03 log-times better than the googol.
 
 
-## how it works
+
+## where we are at
+
+Current status:
+
+* Successfully using whoosh to index a directory of Markdown files
+    * Problem: .git directory cannot be present (or contaminates list of
+      indexed directories)
+    * Problem: search index stored on disk, not clear how to use on Heroku
+    * may need to check in binary search index, or dive headfirst into
+          sqlalchemy
+    * not using pandoc to extract header/emphasis information
+
+Needs work:
+
+* More appropriate schema
+* Using more features (weights) plus pandoc filters for schema
+* sqlalchemy (and hey waddya know safari books has it covered)
+
+
+## how it will work
 
 the centillion uses whoosh, a python library for building
 search engines. 
