@@ -8,6 +8,7 @@ the centillion is 3.03 log-times better than the googol.
 
 
 
+
 ## where we are at
 
 Current status:
@@ -32,12 +33,51 @@ Needs work:
 
 * **Stage 2: index a repo's github issues**
     * See [issues-search](https://git.charlesreid1.com/charlesreid1/issues-search.git)
-    * use PyGithub
+    * Successfully using whoosh to index a repository's issues and comments
+    * Use PyGithub
+    * Main win here is uncovering metadata/linking/presentation issues
 
 
 * **Stage 3: index documents in a google drive folder**
     * See [cheeseburger-search](https://git.charlesreid1.com/charlesreid1/cheeseburger-search.git) 
-    * Use google drive api (see simple-simon)
+    * Successfully using whoosh to index a Google Drive
+        * File names/owners
+        * For documents, pandoc to extract content
+        * Searchable by document content
+    * Use the google drive api (see simple-simon)
+    * Main win is more uncovering of metadata issues, identifying
+      big-picture issues for centillion
+
+
+* **Stage 4: markdown documents in a github repo**
+    * Combines stage 1 and 2
+
+## to work on
+
+Whoosh:
+- need to figure out integrated schema
+    - can we use None for irrelevant field values?
+    - jinja template updates?
+
+Licensing:
+- need to start from scratch
+- unpack markdown functionality
+- replace it
+
+Flask routes:
+- 
+
+Code organization:
+- Changing the schema/options feels a bit all over the place
+- How can we better integrate everything?
+- How can we better split out functionality?
+
+
+
+# -----------
+
+
+
 
 
 ## how it will work
