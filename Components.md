@@ -68,20 +68,27 @@ centillion Search:
 - add_issue, add_md, add_document have three diff method sigs and add diff types
   of documents to the search index
 
-- add_all_issues or add_all_md or add_all_documents iterates over items and adds
-  them to search index
-
 - update_all_issues or update_all_md or update_all_documents iterates over items
   and determines whether each item needs to be updated in the search index
 
 - update_main_index - update the entire search index
-
-- update_diff_index - update the diff search index (what's been added since last
-  time)
+    - calls all three update_all methods
 
 - create_search_results - package things up for jinja
 
 - search - run the query, pass results to the jinja-packager
+
+
+Nice to have but focus on it later:
+
+- update_diff_issues or update_diff_md or update_diff_documents iterates over items
+  and indexes recently-added items
+
+- update_diff_index - update the diff search index (what's been added since last
+  time)
+    - calls all three update_diff methods
+
+
 
 
 
