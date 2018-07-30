@@ -6,9 +6,7 @@
 
 the centillion is 3.03 log-times better than the googol.
 
-## where we are at (done)
-
-Current status:
+## work that is done
 
 * **Stage 1: index folder of markdown files** (done)
     * See [markdown-search](https://git.charlesreid1.com/charlesreid1/markdown-search.git)
@@ -60,10 +58,17 @@ Needs work:
 
 ## immediate next steps: fixes
 
+[Components.md](Components.md) - code organization:
+- Changing the schema/options feels a bit all over the place
+- How can we better integrate everything?
+- How can we better split out functionality?
+
 Whoosh:
-- indexed folders thing
+- fix templates
+    - indexed folders thing
     - cut it out!
-- need to figure out integrated schema
+    - clean up template styles some
+- test/figure out integrated schema
     - can we use None for irrelevant field values?
     - jinja template updates?
     - can use boolean values, change display based on that
@@ -77,10 +82,6 @@ Flask routes:
 - organizing delta/main index updates
 -protecting with github-flask-dance
 
-Code organization:
-- Changing the schema/options feels a bit all over the place
-- How can we better integrate everything?
-- How can we better split out functionality?
 
 Stateless
 - Use SqlAlchemy to make stateless
