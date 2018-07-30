@@ -1,0 +1,51 @@
+from apiclient.discovery import build
+from httplib2 import Http
+from oauth2client import file, client, tools
+
+
+"""
+Convenience class wrapper for Google Drive OAuth.
+
+This requires that the user download credentials.json
+from Google Cloud Console (API section).
+
+The user should set client_secret_file to that JSON file,
+probably named client_secret.json, that contains the 
+application's public and private authentication token. 
+These tokens are APPLICATION specific.
+
+The authentication process uses these credentials to ask for
+an OAuth token on behalf of the user. This step requires the
+user to log in, and when they do it creates credentials.json.
+These contain the credentials to perform actions as the user
+that just logged in/granted permission to your app.
+"""
+
+
+class GDrive(object):
+    def __init__(self,
+                 credentials_file = 'credentials.json',
+                 client_secret_file = 'client_secret.json'
+    ):
+        """
+        Set up the Google Drive API instance.
+        Factory method: create it and hand it over.
+        Then we're finished.
+        """
+        self.credentials_file = credentials_file
+        self.client_secret_file = client_secret_file
+
+        # Setup the Drive v3 API
+        self.SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly'
+        self.store = file.Storage(credentials_file)
+
+    def get_service(self):
+
+        creds = self.store.get()
+        if not creds or creds.invalid:
+            flow = client.flow_from_clientsecrets(self.client_secret_file, self.SCOPES)
+            creds = tools.run_flow(flow, self.store)
+
+        service = build('drive', 'v3', http=creds.authorize(Http()))
+        return service
+

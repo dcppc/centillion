@@ -4,6 +4,8 @@ The components of centillion are as follows:
 - Flask application, which creates a Search object and uses it to search index
 - Search object, which allows you to create/update/search an index
 
+## Routes layout
+
 Current application routes are as follows:
 
 - home -> search
@@ -20,8 +22,6 @@ Ideal application routes (using github flask dance oauth):
     - update main index, all docs period
 - delta_index_update
     - updates delta index, docs that have changed since last main index
-
-## Routes layout
 
 There should be one route to update the main index
 
