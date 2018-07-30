@@ -6,14 +6,11 @@
 
 the centillion is 3.03 log-times better than the googol.
 
-
-
-
 ## where we are at
 
 Current status:
 
-* **Stage 1: index folder of markdown files**
+* **Stage 1: index folder of markdown files** (done)
     * See [markdown-search](https://git.charlesreid1.com/charlesreid1/markdown-search.git)
     * Successfully using whoosh to index a directory of Markdown files
         * Problem: .git directory cannot be present (or contaminates list of
@@ -31,11 +28,23 @@ Needs work:
 * Sqlalchemy (and hey waddya know safari books has it covered)
 
 
-* **Stage 2: index a repo's github issues**
+* **Stage 2: index a repo's github issues** (done)
     * See [issues-search](https://git.charlesreid1.com/charlesreid1/issues-search.git)
     * Successfully using whoosh to index a repository's issues and comments
     * Use PyGithub
     * Main win here is uncovering metadata/linking/presentation issues
+
+Needs work:
+- treat comments and issues as separate objects, fill out separate schema fields
+- map out and organize how the schema is updated to make it more flexible
+- configuration needs to enable user to specify organization+repos
+
+```
+"to_index" : {
+    "google" : "google-api-python-client",
+    "microsoft" : ["TypeCode","api-guidelines"]
+}
+```
 
 
 * **Stage 3: index documents in a google drive folder**
@@ -52,6 +61,7 @@ Needs work:
 * **Stage 4: markdown documents in a github repo**
     * Combines stage 1 and 2
 
+
 ## to work on
 
 Whoosh:
@@ -65,12 +75,17 @@ Licensing:
 - replace it
 
 Flask routes:
-- 
+- organizing delta/main index updates
+-protecting with github-flask-dance
 
 Code organization:
 - Changing the schema/options feels a bit all over the place
 - How can we better integrate everything?
 - How can we better split out functionality?
+
+Stateless
+- Use SqlAlchemy to make stateless
+- Convert to Heroku-enabled script
 
 
 
