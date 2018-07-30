@@ -6,7 +6,7 @@
 
 the centillion is 3.03 log-times better than the googol.
 
-## where we are at
+## where we are at (done)
 
 Current status:
 
@@ -47,7 +47,7 @@ Needs work:
 ```
 
 
-* **Stage 3: index documents in a google drive folder**
+* **Stage 3: index documents in a google drive folder** (done)
     * See [cheeseburger-search](https://git.charlesreid1.com/charlesreid1/cheeseburger-search.git) 
     * Successfully using whoosh to index a Google Drive
         * File names/owners
@@ -58,16 +58,15 @@ Needs work:
       big-picture issues for centillion
 
 
-* **Stage 4: markdown documents in a github repo**
-    * Combines stage 1 and 2
-
-
-## to work on
+## immediate next steps: fixes
 
 Whoosh:
+- indexed folders thing
+    - cut it out!
 - need to figure out integrated schema
     - can we use None for irrelevant field values?
     - jinja template updates?
+    - can use boolean values, change display based on that
 
 Licensing:
 - need to start from scratch
@@ -90,8 +89,6 @@ Stateless
 
 
 # -----------
-
-
 
 
 
