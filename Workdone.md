@@ -13,7 +13,7 @@
 
 Needs work:
 
-* More appropriate schema
+* <s>More appropriate schema</s>
 * Using more features (weights) plus pandoc filters for schema
 * Sqlalchemy (and hey waddya know safari books has it covered)
 
@@ -25,15 +25,16 @@ Needs work:
 * Main win here is uncovering metadata/linking/presentation issues
 
 Needs work:
-- treat comments and issues as separate objects, fill out separate schema fields
+- <s>treat comments and issues as separate objects, fill out separate schema fields
 - map out and organize how the schema is updated to make it more flexible
-- configuration needs to enable user to specify organization+repos
+- configuration needs to enable user to specify organization+repos</s>
 
 ```plain
 {
-    "to_index" : {
-        "google" : "google-api-python-client",
-        "microsoft" : ["TypeCode","api-guidelines"]
+    "to_index" : [
+        "google/google-api-python-client",
+        "microsoft/TypeCode",
+        "microsoft/api-guielines"
     }
 }
 ```
