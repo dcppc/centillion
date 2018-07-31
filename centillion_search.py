@@ -59,6 +59,10 @@ Schema:
 """
 
 
+def clean_timestamp(dt):
+    return dt.replace(microsecond=0).isoformat()
+
+
 class SearchResult:
     score = 1.0
     path = None
@@ -174,10 +178,11 @@ class Search:
                 'document' : 'docx',
         }
 
+        content = ""
         if(mimetype not in mimemap.keys()):
             # Not a document - 
             # Just a file
-            print("Indexing document %s of type %s"%(item['name'], mimetype))
+            print("Indexing document \"%s\" of type %s"%(item['name'], mimetype))
         else:
             # Document with text
             # Perform content extraction
@@ -189,7 +194,7 @@ class Search:
             # This is a file type we know how to convert
             # Construct the URL and download it
 
-            print("Extracting content from %s of type %s"%(item['name'], mimetype))
+            print("Extracting content from \"%s\" of type %s"%(item['name'], mimetype))
 
 
             # Create a URL and a destination filename
@@ -261,7 +266,7 @@ class Search:
                 kind = 'gdoc',
                 created_time = item['createdTime'],
                 modified_time = item['modifiedTime'],
-                indexed_time = datetime.now(),
+                indexed_time = datetime.now().replace(microsecond=0).isoformat(),
                 title = item['name'],
                 url = item['webViewLink'],
                 mimetype = mimetype,
@@ -288,12 +293,17 @@ class Search:
 
         # Handle the issue content
         print("Indexing issue %s"%(issue.html_url))
+
+        created_time = clean_timestamp(issue.created_at)
+        modified_time = clean_timestamp(issue.updated_at)
+        indexed_time = clean_timestamp(datetime.now())
+
         writer.add_document(
                 id = issue.html_url,
                 kind = 'issue',
-                created_time = issue.created_at,
-                modified_time = issue.updated_at,
-                indexed_time = datetime.now().replace(microsecond=0).isoformat(),
+                created_time = created_time,
+                modified_time = modified_time,
+                indexed_time = indexed_time,
                 title = issue.title,
                 url = issue.html_url,
                 mimetype=None,
@@ -312,15 +322,22 @@ class Search:
 
         # Handle the comments content
         if(issue.comments>0):
+
             comments = issue.get_comments()
             for comment in comments:
+
                 print(" > Indexing comment %s"%(comment.html_url))
+
+                created_time = clean_timestamp(comment.created_at)
+                modified_time = clean_timestamp(comment.updated_at)
+                indexed_time = clean_timestamp(datetime.now())
+
                 writer.add_document(
                         id = comment.html_url,
                         kind = 'comment',
-                        created_time = comment.created_at,
-                        modified_time = comment.updated_at,
-                        indexed_time = datetime.now().replace(microsecond=0).isoformat(),
+                        created_time = created_time,
+                        modified_time = modified_time,
+                        indexed_time = indexed_time,
                         title = "Comment on "+issue.title,
                         url = comment.html_url,
                         mimetype=None,
@@ -377,7 +394,7 @@ class Search:
             results = drive.list(
                     pageSize=100,
                     pageToken=nextPageToken,
-                    fields="files(id, kind, createdTime, modifiedTime, mimeType, name, owners, webViewLink)",
+                    fields="nextPageToken, files(id, kind, createdTime, modifiedTime, mimeType, name, owners, webViewLink)",
                     spaces="drive"
             ).execute()
 
@@ -400,7 +417,7 @@ class Search:
 
         count = 0
         for item in items:
-            self.add_item(writer, item, indexed_ids, temp_dir, config)
+            self.add_drive_file(writer, item, indexed_ids, temp_dir, config)
             count += 1
 
         writer.commit()
