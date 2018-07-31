@@ -1,4 +1,4 @@
-## work that is done
+## work that is done: standalone
 
 **Stage 1: index folder of markdown files** (done)
 * See [markdown-search](https://git.charlesreid1.com/charlesreid1/markdown-search.git)
@@ -49,3 +49,4 @@ Needs work:
 * Use the google drive api (see simple-simon)
 * Main win is more uncovering of metadata issues, identifying
   big-picture issues for centillion
+

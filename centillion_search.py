@@ -121,10 +121,10 @@ class Search:
 
         schema = Schema(
                 id = ID(stored=True, unique=True),
-                kind = ID(),
+                kind = ID(stored=True),
 
-                created_time = ID(),
-                modified_time = ID(),
+                created_time = ID(stored=True),
+                modified_time = ID(stored=True),
                 indexed_time = ID(stored=True),
                 
                 title = TEXT(stored=True, field_boost=100.0),
@@ -526,24 +526,18 @@ class Search:
 
             sr.id = r['id']
             sr.kind = r['kind']
-            sr.url = r['url']
+
+            sr.created_time = r['created_time']
+            sr.modified_time = r['modified_time']
+            sr.indexed_time = r['indexed_time']
+
             sr.title = r['title']
+            sr.url = r['url']
+
             sr.mimetype = r['mimetype']
 
             sr.owner_email = r['owner_email']
             sr.owner_name = r['owner_name']
-
-            sr.content = r['content']
-
-            
-            # -----------------
-            # github isuses
-            # create search results
-
-            sr = SearchResult()
-            sr.score = r.score
-            sr.url = r['url']
-            sr.title = r['issue_title']
 
             sr.repo_name = r['repo_name']
             sr.repo_url = r['repo_url']
@@ -551,7 +545,7 @@ class Search:
             sr.issue_title = r['issue_title']
             sr.issue_url = r['issue_url']
 
-            sr.is_comment = r['is_comment']
+            sr.github_user = r['github_user']
 
             sr.content = r['content']
 
@@ -609,7 +603,7 @@ class Search:
                 query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string)
             parsed_query = "%s" % query
             print("query: %s" % parsed_query)
-            results = searcher.search(query, terms=False, scored=True, groupedby="url")
+            results = searcher.search(query, terms=False, scored=True, groupedby="kind")
             search_result = self.create_search_result(results)
 
         return parsed_query, search_result

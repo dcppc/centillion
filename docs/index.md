@@ -34,10 +34,21 @@ GITHUB_TOKEN="XXXXXXXX" python centillion.py
 This will start a Flask server, and you can view the minimal search engine
 interface in your browser at <http://localhost:5000>.
 
-## more info
 
-For more info see the documentation: <https://charlesreid1.github.io/centillion>
+## work that is done
 
+See [standalone.md](standalone.md) for the summary of
+the three standalone whoosh servers that were built:
+one for a folder of markdown files, one for github issues
+and comments, and one for google drive documents.
 
+## work that is being done
+
+See [workinprogress.md](workinprogress.md) for details about
+work in progress.
+
+## work that is planned
+
+See [plans.md](plans.md)
 
 
