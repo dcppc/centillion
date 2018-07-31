@@ -1,0 +1,3 @@
+[submodule "mkdocs-material"]
+	path = mkdocs-material
+	url = https://git.charlesreid1.com/charlesreid1/mkdocs-material.git
