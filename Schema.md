@@ -7,18 +7,18 @@ Define a single mixed schema.
 The Centillion Schema:
 
 ```
-id = ID(stored=True, unique=True)
+id = ID(stored=True, unique=True),
 
 created_time = ID(stored=True),
 modified_time = ID(stored=True),
 indexed_time = ID(stored=True),
 
 title = TEXT(stored=True),
-url = ID(stored=True, unique=True)
+url = ID(stored=True, unique=True),
 
-drive_mimetype=ID(stored=True),
-drive_owner_email=ID(stored=True),
-drive_owner_name=TEXT(stored=True),
+mimetype=ID(stored=True),
+owner_email=ID(stored=True),
+owner_name=TEXT(stored=True),
 
 repo_name=TEXT(stored=True),
 repo_url=ID(stored=True),
@@ -26,7 +26,7 @@ repo_url=ID(stored=True),
 issue_title=TEXT(stored=True, field_boost=100.0),
 issue_url=ID(stored=True),
 
-gh_user=TEXT(stored=True),
+github_user=TEXT(stored=True),
 
 content=TEXT(stored=True, analyzer=stemming_analyzer)
 ```
