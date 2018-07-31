@@ -23,63 +23,17 @@ The centillion keeps it simple.
 
 ## work that is done
 
-**Stage 1: index folder of markdown files** (done)
-* See [markdown-search](https://git.charlesreid1.com/charlesreid1/markdown-search.git)
-* Successfully using whoosh to index a directory of Markdown files
-    * Problem: .git directory cannot be present (or contaminates list of
-      indexed directories)
-    * Problem: search index stored on disk, not clear how to use on Heroku
-    * May need to check in binary search index, or dive headfirst into
-      sqlalchemy
-    * Not using [pypandoc](https://github.com/bebraw/pypandoc) yet to extract 
-      header/emphasis information
-
-Needs work:
-
-* More appropriate schema
-* Using more features (weights) plus pandoc filters for schema
-* Sqlalchemy (and hey waddya know safari books has it covered)
+See [Workdone.md](Workdone.md)
 
 
-**Stage 2: index a repo's github issues** (done)
-* See [issues-search](https://git.charlesreid1.com/charlesreid1/issues-search.git)
-* Successfully using whoosh to index a repository's issues and comments
-* Use PyGithub
-* Main win here is uncovering metadata/linking/presentation issues
+## work that is being done
 
-Needs work:
-- treat comments and issues as separate objects, fill out separate schema fields
-- map out and organize how the schema is updated to make it more flexible
-- configuration needs to enable user to specify organization+repos
-
-```plain
-{
-    "to_index" : {
-        "google" : "google-api-python-client",
-        "microsoft" : ["TypeCode","api-guidelines"]
-    }
-}
-```
-
-
-**Stage 3: index documents in a google drive folder** (done)
-* See [cheeseburger-search](https://git.charlesreid1.com/charlesreid1/cheeseburger-search.git) 
-* Successfully using whoosh to index a Google Drive
-    * File names/owners
-    * For documents, pandoc to extract content
-    * Searchable by document content
-* Use the google drive api (see simple-simon)
-* Main win is more uncovering of metadata issues, identifying
-  big-picture issues for centillion
-
-
-## immediate next steps
+See [Workinprogress.md](Workinprogress.md) for details about
+route and function layout. Summary below.
 
 ### code organization
 
-See [Components.md](Components.md) for the battle plan.
-
-centillion app:
+centillion app routes:
 
 - home
     - if not logged in, landing page
@@ -89,7 +43,7 @@ centillion app:
     - update main index, all docs period
 
 
-centillion Search:
+centillion Search functions:
 
 - open_index creates the schema
 
@@ -107,36 +61,7 @@ centillion Search:
 - search - run the query, pass results to the jinja-packager
 
 
-## future work
+## work that is planned
 
-### whoosh
-
-Whoosh:
-- fix templates
-    - indexed folders thing
-    - cut it out!
-    - clean up template styles some
-- test/figure out integrated schema
-    - can we use None for irrelevant field values?
-    - jinja template updates?
-    - can use boolean values, change display based on that
-
-### rewriting
-
-Licensing:
-- need to start from scratch
-- unpack markdown functionality
-- replace it
-
-Flask routes:
--protecting with github-flask-dance
-- <s>organizing delta/main index updates</s>
-
-### heroku
-
-Stateless
-- Use SqlAlchemy to make stateless
-- Convert to Heroku-enabled script
-
-
+See [Workplanned.md](Workplanned.md)
 
