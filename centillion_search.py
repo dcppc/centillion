@@ -1,6 +1,8 @@
 import shutil
 import html.parser
 
+from github import Github
+
 from gdrive_util import GDrive
 from apiclient.http import MediaIoBaseDownload
 
@@ -37,6 +39,7 @@ Search object functions:
 
 Schema:
     - id
+    - kind
     - created_time
     - modified_time
     - indexed_time
@@ -112,6 +115,7 @@ class Search:
 
         schema = Schema(
                 id = ID(stored=True, unique=True),
+                kind = ID(),
 
                 created_time = ID(stored=True),
                 modified_time = ID(stored=True),
@@ -252,6 +256,7 @@ class Search:
         mimetype = re.split('[/\.]', item['mimeType'])[-1]
         writer.add_document(
                 id = item['id'],
+                kind = 'gdoc',
                 created_time = item['createdTime'],
                 modified_time = item['modifiedTime'],
                 title = item['name'],
@@ -281,6 +286,8 @@ class Search:
         # Handle the issue content
         print("Indexing issue %s"%(issue.html_url))
         writer.add_document(
+                id = issue.html_url,
+                kind = 'issue',
                 url = issue.html_url,
                 is_comment = False,
                 timestamp = issue.created_at,
@@ -300,6 +307,8 @@ class Search:
             for comment in comments:
                 print(" > Indexing comment %s"%(comment.html_url))
                 writer.add_document(
+                        id = comment.html_url,
+                        kind = 'comment',
                         url = comment.html_url,
                         is_comment = True,
                         timestamp = comment.created_at,
@@ -321,7 +330,6 @@ class Search:
     # using different kinds of collections
 
     def update_index_gdocs(self, 
-                           credentials_file, 
                            config):
         """
         Update the search index using a collection of 
@@ -387,10 +395,9 @@ class Search:
 
 
 
-    def update_index_gh(self, 
-                        gh_access_token,
-                        list_of_repos,
-                        config):
+    def update_index_issues(self, 
+                            gh_access_token,
+                            config):
         """
         Update the search index using a collection of 
         Github repo issues and comments.
@@ -407,6 +414,7 @@ class Search:
         writer = self.ix.writer()
 
         # Iterate over each repo
+        list_of_repos = config['repos']
         for r in list_of_repos:
 
             if '/' not in r:
@@ -470,7 +478,6 @@ class Search:
             # and then an {{e.score}}
 
 
-
             # ------------------
             # cheseburger
             # create search results
@@ -487,6 +494,7 @@ class Search:
             # r variables are from documents (follow schema)
 
             sr.id = r['id']
+            sr.kind = r['kind']
             sr.url = r['url']
             sr.title = r['title']
             sr.mimetype = r['mimetype']
@@ -550,7 +558,22 @@ class Search:
             elif len(fields) == 2:
                 pass
             else:
-                fields = ['id','url','timestamp','owner_email','owner_name','title','content'] 
+                fields = ['id',
+                          'kind',
+                          'created_time',
+                          'modified_time',
+                          'indexed_time',
+                          'title',
+                          'url',
+                          'mimetype',
+                          'owner_email',
+                          'owner_name',
+                          'repo_name',
+                          'repo_url',
+                          'issue_title',
+                          'issue_url',
+                          'github_user',
+                          'content'] 
             if not query:
                 query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string)
             parsed_query = "%s" % query
@@ -562,8 +585,6 @@ class Search:
 
 
 
-
-
     def cap(self, s, l):
         return s if len(s) <= l else s[0:l - 3] + '...'
 
@@ -572,5 +593,12 @@ class Search:
 
 if __name__ == "__main__":
     search = Search("search_index")
-    search.add_all_documents("/Users/charles/codes/cheeseburger-search/config.py")
+
+    from get_centillion_config import get_centillion_config
+    config = get_centillion_config('config_centillion.json')
+
+    gh_token = os.environ['GITHUB_TOKEN']
+
+    search.update_index_issues(gh_token,config)
+    search.update_index_gdocs(config)
 

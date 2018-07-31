@@ -35,15 +35,19 @@ class UpdateIndexTask(object):
         if(self.diff_index):
             raise Exception("diff index not implemented")
 
-        credentials_file = 'credentials.json'
-        collection = 'charlesreid1dib test collection'
-        search.update_index_incremental(credentials_file,
-                                        app.config)
+        from get_centillion_config import get_centillion_config
+        config = get_centillion_config('config_centillion.json')
+
+        gh_token = os.environ['GITHUB_ACESS_TOKEN']
+        search.update_index_issues(gh_token, config)
+        search.update_index_gdocs(config)
+
+
 
 app = Flask(__name__)
 
 # Load default config and override config from an environment variable
-app.config.from_pyfile("config.py")
+app.config.from_pyfile("config_flask.py")
 
 last_searches_file = app.config["INDEX_DIR"] + "/last_searches.txt"
 
