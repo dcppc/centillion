@@ -391,8 +391,9 @@ class Search:
         # Use the pager to return all the things
         items = []
         while True:
+            ps = 10
             results = drive.list(
-                    pageSize=100,
+                    pageSize=ps,
                     pageToken=nextPageToken,
                     fields="nextPageToken, files(id, kind, createdTime, modifiedTime, mimeType, name, owners, webViewLink)",
                     spaces="drive"
@@ -401,8 +402,11 @@ class Search:
             nextPageToken = results.get("nextPageToken")
             items += results.get("files", [])
             
-            if nextPageToken is None:
-                break
+            # Keep it short
+            break
+
+            #if nextPageToken is None:
+            #    break
 
         indexed_ids = set()
         for item in items:
