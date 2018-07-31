@@ -234,7 +234,7 @@ class Search:
                 )
                 assert output == ""
             except RuntimeError:
-                print("XXXXXX Failed to index document %s"%(item['name']))
+                print("XXXXXX Failed to index document \"%s\""%(item['name']))
 
 
             # If export was successful, read contents of markdown
@@ -247,7 +247,7 @@ class Search:
 
 
             # No matter what happens, clean up.
-            print("Cleaning up %s"%item['name'])
+            print("Cleaning up \"%s\""%item['name'])
 
             subprocess.call(['rm','-fr',fullpath_output])
             #print(" ".join(['rm','-fr',fullpath_output]))
@@ -272,11 +272,11 @@ class Search:
                 mimetype = mimetype,
                 owner_email = item['owners'][0]['emailAddress'],
                 owner_name = item['owners'][0]['displayName'],
-                repo_name=None,
-                repo_url=None,
-                github_user=None,
-                issue_title=None,
-                issue_url=None,
+                repo_name='',
+                repo_url='',
+                github_user='',
+                issue_title='',
+                issue_url='',
                 content = content
         )
 
@@ -306,9 +306,9 @@ class Search:
                 indexed_time = indexed_time,
                 title = issue.title,
                 url = issue.html_url,
-                mimetype=None,
-                owner_email=None,
-                owner_name=None,
+                mimetype='',
+                owner_email='',
+                owner_name='',
                 repo_name = repo_name,
                 repo_url = repo_url,
                 github_user = issue.user.login,
@@ -340,9 +340,9 @@ class Search:
                         indexed_time = indexed_time,
                         title = "Comment on "+issue.title,
                         url = comment.html_url,
-                        mimetype=None,
-                        owner_email=None,
-                        owner_name=None,
+                        mimetype='',
+                        owner_email='',
+                        owner_name='',
                         repo_name = repo_name,
                         repo_url = repo_url,
                         github_user = comment.user.login,
@@ -508,11 +508,6 @@ class Search:
             # contains a {% for e in entries %}
             # and then an {{e.score}}
 
-
-            # ------------------
-            # cheseburger
-            # create search results
-
             sr = SearchResult()
             sr.score = r.score
 
@@ -549,8 +544,6 @@ class Search:
 
             sr.content = r['content']
 
-            # ------------------
-
             highlights = r.highlights('content')
             if not highlights:
                 # just use the first 1,000 words of the document
@@ -583,22 +576,10 @@ class Search:
             elif len(fields) == 2:
                 pass
             else:
-                fields = ['id',
-                          'kind',
-                          'created_time',
-                          'modified_time',
-                          'indexed_time',
-                          'title',
-                          'url',
-                          'mimetype',
-                          'owner_email',
-                          'owner_name',
-                          'repo_name',
-                          'repo_url',
-                          'issue_title',
-                          'issue_url',
-                          'github_user',
-                          'content'] 
+                # If the user does not specify a field,
+                # these are the fields that are actually searched
+                fields = ['title',
+                          'content']
             if not query:
                 query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string)
             parsed_query = "%s" % query
