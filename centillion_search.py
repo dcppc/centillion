@@ -316,217 +316,6 @@ class Search:
 
 
 
-
-
-    #def add_item(self, writer, item, indexed_ids, temp_dir, config):
-    #    """
-    #    Add an item to the index.
-    #    item is a google drive api document item.
-    #    works like a dictionary.
-    #    """
-    #    # If we have already indexed this document, 
-    #    # drop the old record first
-    #    if item['id'] in indexed_ids:
-    #        writer.delete_by_term('id',item['id'])
-
-    #    gd = GDrive()
-    #    service = gd.get_service()
-
-    #    # IMPORTANT:
-    #    # This is where the search documents are actually created.
-
-    #    ##########################################
-    #    # Two kinds of documents:
-    #    # - documents with text that can be extracted and indexed
-    #    # - every other kind
-    #    #
-    #    # In Google Drive land, that's (docx) and (everybody else).
-    #    #
-    #    # For each document living in the Google Drive folder,
-    #    # - If mimeType is document:
-    #    #   - Download it
-    #    #   - Convert it to markdown
-    #    #   - Extract and index the content
-    #    #   - Index everything else
-    #    # - Else:
-    #    #   - Just index everything else
-
-
-    #    mimetype = re.split('[/\.]',item['mimeType'])[-1]
-    #    mimemap = {
-    #            'document' : 'docx',
-    #    }
-
-
-    #    content = ""
-
-    #    if(mimetype not in mimemap.keys()):
-
-    #        # ----------
-    #        # Not a document
-    #        # 
-    #        # No text to extract
-    #        # 
-    #        # Technically, there probably is,
-    #        # but I'm not about to parse powerpoint
-    #        # or mystery PDF files in python.
-
-    #        print("Indexing document %s of type %s"%(item['name'], mimetype))
-
-    #    else:
-
-    #        # ----------
-    #        # docx Content Extraction:
-    #        # 
-    #        # We can only do this with .docx files
-    #        # This is a file type we know how to convert
-    #        # Construct the URL and download it
-
-    #        print("Extracting content from %s of type %s"%(item['name'], mimetype))
-
-
-    #        # Create a URL and a destination filename
-    #        file_ext = mimemap[mimetype]
-    #        file_url = "https://docs.google.com/document/d/%s/export?format=%s"%(item['id'], file_ext)
-
-    #        # This re could probablybe improved
-    #        name = re.sub('/','_',item['name'])
-
-    #        # Now make the pandoc input/output filenames
-    #        out_ext = 'txt'
-    #        pandoc_fmt = 'plain'
-    #        if name.endswith(file_ext):
-    #            infile_name = name
-    #            outfile_name = re.sub(file_ext,out_ext,infile_name)
-    #        else:
-    #            infile_name  = name+'.'+file_ext
-    #            outfile_name = name+'.'+out_ext
-
-
-    #        # assemble input/output file paths
-    #        fullpath_input = os.path.join(temp_dir,infile_name)
-    #        fullpath_output = os.path.join(temp_dir,outfile_name)
-
-    #        # Use requests.get to download url to file
-    #        r = requests.get(file_url, allow_redirects=True)
-    #        with open(fullpath_input, 'wb') as f:
-    #            f.write(r.content)
-
-
-    #        # Try to convert docx file to plain text
-    #        try:
-    #            output = pypandoc.convert_file(fullpath_input,
-    #                                           pandoc_fmt,
-    #                                           format='docx',
-    #                                           outputfile=fullpath_output
-    #            )
-    #            assert output == ""
-    #        except RuntimeError:
-    #            print("XXXXXX Failed to index document %s"%(item['name']))
-
-
-    #        # If export was successful, read contents of markdown
-    #        # into the content variable.
-    #        # into the content variable.
-    #        if os.path.isfile(fullpath_output):
-    #            # Export was successful
-    #            with codecs.open(fullpath_output, encoding='utf-8') as f:
-    #                content = f.read()
-
-
-    #        # No matter what happens, clean up.
-    #        print("Cleaning up %s"%item['name'])
-
-    #        subprocess.call(['rm','-fr',fullpath_output])
-    #        #print(" ".join(['rm','-fr',fullpath_output]))
-
-    #        subprocess.call(['rm','-fr',fullpath_input])
-    #        #print(" ".join(['rm','-fr',fullpath_input]))
-
-
-    #    mimetype = re.split('[/\.]', item['mimeType'])[-1]
-    #    writer.add_document(
-    #            id = item['id'],
-    #            url = item['webViewLink'],
-    #            mimetype = mimetype,
-    #            timestamp = item['createdTime'],
-    #            owner_email = item['owners'][0]['emailAddress'],
-    #            owner_name = item['owners'][0]['displayName'],
-    #            title = item['name'],
-    #            content = content
-    #    )
-
-
-    #def add_issue(self, writer, issue, repo, config):
-    #    """
-    #    Add Github issue to search index.
-
-    #    Replaces add_document
-
-    #    This must:
-    #    - deal with original issue content
-    #    - iterate over each comment
-    #    - deal with comment content
-
-    #    Schema:
-    #    - url
-    #    - is_comment
-    #    - timestamp
-    #    - repo_name
-    #    - repo_url
-    #    - issue_title
-    #    - issue_url
-    #    - user
-    #    - content
-    #    """
-
-    #    # should store urls of all issues and comments
-
-    #    repo_name = repo.name
-    #    repo_url = repo.html_url
-
-    #    count = 0
-
-
-    #    # Handle the issue content
-    #    print("Indexing issue %s"%(issue.html_url))
-    #    writer.add_document(
-    #            url = issue.html_url,
-    #            is_comment = False,
-    #            timestamp = issue.created_at,
-    #            repo_name = repo_name,
-    #            repo_url = repo_url,
-    #            issue_title = issue.title,
-    #            issue_url = issue.html_url,
-    #            user = issue.user.login,
-    #            content = issue.body.rstrip()
-    #    )
-    #    count += 1
-
-
-    #    # Handle the comments content
-    #    if(issue.comments>0):
-    #        comments = issue.get_comments()
-    #        for comment in comments:
-    #            print(" > Indexing comment %s"%(comment.html_url))
-    #            writer.add_document(
-    #                    url = comment.html_url,
-    #                    is_comment = True,
-    #                    timestamp = comment.created_at,
-    #                    repo_name = repo_name,
-    #                    repo_url = repo_url,
-    #                    issue_title = issue.title,
-    #                    issue_url = issue.html_url,
-    #                    user = comment.user.login,
-    #                    content = comment.body.strip()
-    #            )
-
-    #    count += 1
-    #    return count
-
-
-
-
     # ------------------------------
     # Define how to update search index
     # using different kinds of collections
@@ -611,7 +400,6 @@ class Search:
         # we are just deleting and re-indexing every issue/comment.
 
         g = Github(gh_access_token)
-        org = g.get_organization(which_org)
 
         # Set of all URLs as existing on github
         to_index = set()
@@ -619,154 +407,16 @@ class Search:
         writer = self.ix.writer()
 
         # Iterate over each repo
-        for this_repo in list_of_repos:
+        for r in list_of_repos:
 
+            if '/' not in r:
+                err = "Error: specify org/reponame or user/reponame in list of repos"
+                raise Exception(err)
+
+            this_repo, this_org = re.split('/',r)
+
+            org = g.get_organization(this_org)
             repo = org.get_repo(this_repo)
-            reponame = repo.name
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # Strategy:
-        # Use the issue/comment URL as the unique identifier
-        # Start by getting a list of URLs that are indexed
-        # Then walk all URLs
-
-        g = Github(gh_access_token)
-        org = g.get_organization(which_org)
-
-        # Set of all URLs as existing on github
-        to_index = set()
-
-
-
-
-        # PoC||GTFO
-
-        # -------------------------
-        # cheeseburger imlpementation:
-
-        # Steps to rebuild all documents in index:
-        # 
-        # Step 1: walk each doc in google drive. 
-        # Step 2: index it.
-        # Step 2.5: deal with documents removed from google drive.
-        # Step 3: grab a beer.
-
-        # TODO:
-        # Can make Step 2/2.5 shorter by storing hash of contents.
-        # for now, just... uh... i dunno. 
-        # figure it out later. don't remove.
-        # update works exactly like add:
-        # if a document already exists in the index,
-        # it gets removed and re-added.
-
-        ### if create_new_index:
-        ###     self.open_index(self.index_folder, create_new=True)
-
-        gd = GDrive()
-        service = gd.get_service()
-
-        # -----
-        # Set of all documents on Google Drive:
-
-        # Call the Drive v3 API
-
-        # ------------------------------
-        # IMPORTANT:
-        # This determines what information about the Google Drive files
-        # you'll get back, and that's all you're going to have to work with.
-        # If you need more information, modify the statement below.
-        # Also see:
-        # https://developers.google.com/drive/api/v3/reference/files
-
-        drive = service.files()
-
-        # The trick is to set next page token to None 1st time thru (fencepost)
-        nextPageToken = None
-
-        # Use the pager to return all the things
-        items = []
-        while True:
-            results = drive.list(
-                    pageSize=100,
-                    pageToken=nextPageToken,
-                    fields="files(id, kind, createdTime, modifiedTime, mimeType, name, owners, webViewLink)",
-                    spaces="drive"
-            ).execute()
-
-            nextPageToken = results.get("nextPageToken")
-            items += results.get("files", [])
-            
-            if nextPageToken is None:
-                break
-
-        indexed_ids = set()
-        for item in items:
-            indexed_ids.add(item['id'])
-
-        # TODO:
-        # Tapping out at 100, use nextPageToken to get all later
-
-        writer = self.ix.writer()
-
-        temp_dir = tempfile.mkdtemp(dir=os.getcwd())
-        print("Temporary directory: %s"%(temp_dir))
-        if not os.path.exists(temp_dir):
-            os.mkdir(temp_dir)
-
-        count = 0
-        for item in items:
-
-            self.add_item(writer, item, indexed_ids, temp_dir, config)
-            count += 1
-
-        writer.commit()
-        print("Done, updated %d documents in the index" % count)
-
-
-
-        # -------------------------
-        # github issues imlpementation:
-
-        if create_new_index:
-            self.open_index(self.index_folder, create_new=True)
-
-        # Using URL as the unique identifier
-        # Start by getting a list of URLs that are indexed
-        # Then walk all URLs
-
-
-        g = Github(gh_access_token)
-        org = g.get_organization(which_org)
-
-        # Set of all URLs as existing on github
-        to_index = set()
-
-
-        writer = self.ix.writer()
-
-
-
-
-        # fix this. the delete all in index
-        # is not occurring in right place.
-
-
-        # Iterate over each repo
-        for this_repo in list_of_repos:
-
-            repo = org.get_repo(this_repo)
-            reponame = repo.name
 
             count = 0
 
@@ -790,15 +440,12 @@ class Search:
                     writer.delete_by_term('url', comment.html_url)
 
                 # Now re-add this issue to the index
+                # (this will also add the comments)
                 count += self.add_issue(writer, issue, repo, config)
 
 
         writer.commit()
         print("Done, updated %d documents in the index" % count)
-
-
-
-
 
 
     # ---------------------------------
