@@ -52,10 +52,12 @@ Needs work:
 - map out and organize how the schema is updated to make it more flexible
 - configuration needs to enable user to specify organization+repos
 
-```
-"to_index" : {
-    "google" : "google-api-python-client",
-    "microsoft" : ["TypeCode","api-guidelines"]
+```plain
+{
+    "to_index" : {
+        "google" : "google-api-python-client",
+        "microsoft" : ["TypeCode","api-guidelines"]
+    }
 }
 ```
 
