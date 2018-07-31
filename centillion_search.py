@@ -260,6 +260,7 @@ class Search:
         # IMPORTANT:
         # This is where the search documents are actually created.
 
+        print("ok we are in add_document territory")
         mimetype = re.split('[/\.]', item['mimeType'])[-1]
         writer.add_document(
                 id = item['id'],

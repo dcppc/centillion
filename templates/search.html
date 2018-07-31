@@ -34,14 +34,18 @@
                 <div class="path"><a href='{{ url_for("open_file")}}?path={{e.path|urlencode}}&query={{query}}&fields={{fields}}'>{{e.path}}</a>score: {{'%d'  % e.score}}</div>
             -->
             <div class="url">
-                {% if e.is_comment %}
+                {% if e.kind=="comment" %}
                     <b>Comment</b> <a href='{{e.url}}'>(comment link)</a>
                     on issue <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
                     in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
                     <br />
-                {% else %}
-                    <b>Issue</b> <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
+                {% elif e.kind=="issue" %}
+                    <b>Issue</b>
+                    <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
                     in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
+                    <br />
+                {% else %}
+                    <b>Thing</b> (<a href='{{e.url}}'>link</a>)
                     <br />
                 {% endif %}
                 score: {{'%d'  % e.score}}
