@@ -14,6 +14,8 @@ import tempfile, subprocess
 import pypandoc
 import os.path
 import codecs
+from datetime import datetime
+
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh.analysis import StemmingAnalyzer
 
@@ -117,8 +119,8 @@ class Search:
                 id = ID(stored=True, unique=True),
                 kind = ID(),
 
-                created_time = ID(stored=True),
-                modified_time = ID(stored=True),
+                created_time = ID(),
+                modified_time = ID(),
                 indexed_time = ID(stored=True),
                 
                 title = TEXT(stored=True, field_boost=100.0),
@@ -259,6 +261,7 @@ class Search:
                 kind = 'gdoc',
                 created_time = item['createdTime'],
                 modified_time = item['modifiedTime'],
+                indexed_time = datetime.now(),
                 title = item['name'],
                 url = item['webViewLink'],
                 mimetype = mimetype,
@@ -277,7 +280,7 @@ class Search:
         """
         Add a Github issue/comment to a search index.
         """
-        repo_name = repo.name
+        repo_name = repo.owner.name+"/"+repo.name
         repo_url = repo.html_url
 
         count = 0
@@ -288,17 +291,23 @@ class Search:
         writer.add_document(
                 id = issue.html_url,
                 kind = 'issue',
+                created_time = issue.created_at,
+                modified_time = issue.updated_at,
+                indexed_time = datetime.now().replace(microsecond=0).isoformat(),
+                title = issue.title,
                 url = issue.html_url,
-                is_comment = False,
-                timestamp = issue.created_at,
+                mimetype=None,
+                owner_email=None,
+                owner_name=None,
                 repo_name = repo_name,
                 repo_url = repo_url,
+                github_user = issue.user.login,
                 issue_title = issue.title,
                 issue_url = issue.html_url,
-                user = issue.user.login,
                 content = issue.body.rstrip()
         )
         count += 1
+
 
 
         # Handle the comments content
@@ -309,15 +318,20 @@ class Search:
                 writer.add_document(
                         id = comment.html_url,
                         kind = 'comment',
+                        created_time = comment.created_at,
+                        modified_time = comment.updated_at,
+                        indexed_time = datetime.now().replace(microsecond=0).isoformat(),
+                        title = "Comment on "+issue.title,
                         url = comment.html_url,
-                        is_comment = True,
-                        timestamp = comment.created_at,
+                        mimetype=None,
+                        owner_email=None,
+                        owner_name=None,
                         repo_name = repo_name,
                         repo_url = repo_url,
+                        github_user = comment.user.login,
                         issue_title = issue.title,
                         issue_url = issue.html_url,
-                        user = comment.user.login,
-                        content = comment.body.strip()
+                        content = comment.body.rstrip()
                 )
 
         count += 1
@@ -414,14 +428,14 @@ class Search:
         writer = self.ix.writer()
 
         # Iterate over each repo
-        list_of_repos = config['repos']
+        list_of_repos = config['repositories']
         for r in list_of_repos:
 
             if '/' not in r:
                 err = "Error: specify org/reponame or user/reponame in list of repos"
                 raise Exception(err)
 
-            this_repo, this_org = re.split('/',r)
+            this_org, this_repo = re.split('/',r)
 
             org = g.get_organization(this_org)
             repo = org.get_repo(this_repo)
