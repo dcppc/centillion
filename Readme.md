@@ -13,10 +13,11 @@ a Python library for building search engines.
 
 We define the types of documents the centillion should index,
 and how, using what fields. The centillion then builds and
-updates a search index.
+updates a search index. That's all done in `centillion_search.py`.
 
 The centillion also provides a simple web frontend for running
-queries against the search index.
+queries against the search index. That's done using a Flask server
+defined in `centillion.py`.
 
 The centillion keeps it simple.
 
