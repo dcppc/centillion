@@ -124,5 +124,5 @@ def store_search(query, fields):
         f.writelines(contents[:30])
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0",port=5000)
 
