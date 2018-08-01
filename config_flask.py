@@ -1,11 +1,5 @@
-# Path to markdown files
-MARKDOWN_FILES_DIR = "/Users/charles/codes/whoosh/markdown-search/fake-docs/"
-
 # Location of index file
 INDEX_DIR = "search_index"
-
-# Command to use when clicking on filepath in search results
-EDIT_COMMAND = "view"
 
 # Toggle to show Whoosh parsed query
 SHOW_PARSED_QUERY=True
