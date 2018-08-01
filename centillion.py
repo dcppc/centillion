@@ -76,9 +76,15 @@ def search():
         parsed_query, result = search.search(query.split(), fields=[fields])
         store_search(query, fields)
 
-    total = search.get_document_total_count()
+    totals = search.get_document_total_count()
 
-    return render_template('search.html', entries=result, query=query, parsed_query=parsed_query, fields=fields, last_searches=get_last_searches(), total=total)
+    return render_template('search.html', 
+                           entries=result, 
+                           query=query, 
+                           parsed_query=parsed_query, 
+                           fields=fields, 
+                           last_searches=get_last_searches(), 
+                           totals=totals)
 
 @app.route('/open')
 def open_file():
