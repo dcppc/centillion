@@ -58,25 +58,27 @@
 
         <ul class="list-group">
 
-            <li  class="list-group-item">
-                {% if config['SHOW_PARSED_QUERY']%}
-                <div class="col-12 info">
-                    <b>Parsed query:</b> {{ parsed_query }}
-                </div>
-                {% endif %}
-            </li>
+            {% if config['SHOW_PARSED_QUERY'] and parsed_query %}
+                <li  class="list-group-item">
+                    <div class="col-12 info">
+                        <b>Parsed query:</b> {{ parsed_query }}
+                    </div>
+                </li>
+            {% endif %}
+
+            {% if parsed_query %}
+                <li  class="list-group-item">
+                    <div class="col-12 info">
+                        <b>Found:</b> {{entries|length}} documents with results, out of {{totals["total"]}} total documents
+                    </div>
+                </li>
+            {% endif %}
 
             <li  class="list-group-item">
                 <div class="col-12 info">
-                    <b>Found:</b> {{entries|length}} documents with results in {{totals["total"]}} total documents
-                </div>
-            </li>
-
-            <li  class="list-group-item">
-                <div class="col-12 info">
-                    <b>Indexing:</b> {{totals["Documents"]}} Google Documents,
-                    {{totals["Issues"]}} Github issues, and 
-                    {{totals["Comments"]}} Github comments
+                    <b>Indexing:</b> {{totals["documents"]}} Google Documents,
+                    {{totals["issues"]}} Github issues, and 
+                    {{totals["comments"]}} Github comments
                 </div>
             </li>
 

@@ -424,6 +424,9 @@ class Search:
             self.add_drive_file(writer, item, indexed_ids, temp_dir, config)
             count += 1
 
+        print("Cleaning temporary directory: %s"%(temp_dir))
+        subprocess.call(['rm','-fr',temp_dir])
+
         writer.commit()
         print("Done, updated %d documents in the index" % count)
 
@@ -603,15 +606,15 @@ class Search:
         p = QueryParser("kind", schema=self.ix.schema)
 
         kind_labels = {
-                "Documents" : "gdoc",
-                "Issues" :    "issue",
-                "Comments" :  "comment"
+                "documents" : "gdoc",
+                "issues" :    "issue",
+                "comments" :  "comment"
         }
         counts = {
-                "Documents" : None,
-                "Issues" : None,
-                "Comments" : None,
-                "Total" : None
+                "documents" : None,
+                "issues" : None,
+                "comments" : None,
+                "total" : None
         }
         for key in kind_labels:
             kind = kind_labels[key]
@@ -620,7 +623,7 @@ class Search:
                 results = s.search(q,limit=None)
                 counts[key] = len(results)
 
-        counts['Total'] = self.ix.searcher().doc_count_all()
+        counts['total'] = self.ix.searcher().doc_count_all()
 
         return counts
 
