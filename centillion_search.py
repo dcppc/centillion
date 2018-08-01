@@ -285,7 +285,7 @@ class Search:
         """
         Add a Github issue/comment to a search index.
         """
-        repo_name = repo.owner.name+"/"+repo.name
+        repo_name = repo.owner.login+"/"+repo.name
         repo_url = repo.html_url
 
         count = 0
@@ -385,6 +385,19 @@ class Search:
         drive = service.files()
 
 
+        # We should do more here
+        # to check if we should update
+        # or not...
+        # 
+        # loop over existing documents in index:
+        #
+        #    p = QueryParser("kind", schema=self.ix.schema)
+        #    q = p.parse("gdoc")
+        #    with self.ix.searcher() as s:
+        #        results = s.search(q,limit=None)
+        #        counts[key] = len(results)
+
+
         # The trick is to set next page token to None 1st time thru (fencepost)
         nextPageToken = None
 
@@ -407,6 +420,14 @@ class Search:
 
             #if nextPageToken is None:
             #    break
+
+        # Here is where we update.
+        # Grab indexed ids
+        # Grab remote ids
+        # Drop indexed ids not in remote ids
+        # Index all remote ids
+        # Change add_ to update_
+        # Add a hash check in update_
 
         indexed_ids = set()
         for item in items:
