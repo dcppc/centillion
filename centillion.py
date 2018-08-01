@@ -39,7 +39,7 @@ class UpdateIndexTask(object):
         config = get_centillion_config('config_centillion.json')
 
         gh_token = os.environ['GITHUB_TOKEN']
-        #search.update_index_issues(gh_token, config)
+        search.update_index_issues(gh_token, config)
         search.update_index_gdocs(config)
 
 
@@ -86,21 +86,16 @@ def search():
                            last_searches=get_last_searches(), 
                            totals=totals)
 
-@app.route('/open')
-def open_file():
-    path = request.args['path']
-    fields = request.args.get('fields')
-    query = request.args['query']
-    call([app.config["EDIT_COMMAND"], path])
-
-    return redirect(url_for("search", query=query, fields=fields))
-
 @app.route('/update_index')
 def update_index():
     rebuild = request.args.get('rebuild')
     UpdateIndexTask(diff_index=False)
     flash("Rebuilding index, check console output")
-    return render_template("search.html", query="", fields="", last_searches=get_last_searches())
+    return render_template("search.html", 
+                           query="", 
+                           fields="", 
+                           last_searches=get_last_searches(),
+                           totals={})
 
 
 ##############
