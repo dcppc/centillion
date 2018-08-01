@@ -171,7 +171,7 @@ class Search:
         # There are two kinds of documents:
         # - documents with text that can be extracted (docx)
         # - everything else
-
+        
         mimetype = re.split('[/\.]',item['mimeType'])[-1]
         mimemap = {
                 'document' : 'docx',
@@ -407,18 +407,26 @@ class Search:
         nextPageToken = None
 
         # Use the pager to return all the things
-        short_items = []
+        remote_ids = set()
+        full_items = {}
         while True:
             ps = 12
             results = drive.list(
                     pageSize=ps,
                     pageToken=nextPageToken,
-                    fields="nextPageToken, files(id)",
+                    fields = "nextPageToken, files(id, kind, createdTime, modifiedTime, mimeType, name, owners, webViewLink)",
                     spaces="drive"
             ).execute()
 
             nextPageToken = results.get("nextPageToken")
-            short_items += results.get("files", [])
+            files = results.get("files",[])
+            for f in files:
+                
+                # Add all remote docs to a set
+                remote_ids.add(f['id'])
+
+                # Also store the doc
+                full_items[f['id']] = f
             
             # Shorter:
             break
@@ -426,17 +434,12 @@ class Search:
             #if nextPageToken is None:
             #    break
 
-        # Now we have a long list of remote doc ids,
-        # add them to a set:
-        remote_ids = set()
-        for item in short_items:
-            remote_ids.add(item['id'])
-
 
         writer = self.ix.writer()
         count = 0
         temp_dir = tempfile.mkdtemp(dir=os.getcwd())
         print("Temporary directory: %s"%(temp_dir))
+
 
 
         # Drop any id in indexed_ids
@@ -450,26 +453,20 @@ class Search:
         # and in remote_ids
         update_ids = indexed_ids & remote_ids
         for update_id in update_ids:
-            results = drive.get(
-                    fileId = update_id
-            ).execute()
-            if len(results)>0:
-                item = results[0]
-                self.add_drive_file(writer, item, temp_dir, config)
-                count += 1
+            # cop out
+            writer.delete_by_term('id',update_id)
+            item = full_items[update_id]
+            self.add_drive_file(writer, item, temp_dir, config)
+            count += 1
 
 
         # Add any id not in indexed_ids
         # and in remote_ids
         add_ids = remote_ids - indexed_ids
         for add_id in add_ids:
-            results = drive.get(
-                    fileId = update_id
-            ).execute()
-            if len(results)>0:
-                item = results[0]
-                self.add_drive_file(writer, item, temp_dir, config)
-                count += 1
+            item = full_items[update_id]
+            self.add_drive_file(writer, item, temp_dir, config)
+            count += 1
 
 
         print("Cleaning temporary directory: %s"%(temp_dir))
