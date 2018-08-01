@@ -1,77 +1,147 @@
 {% extends "layout.html" %}
 {% block body %}
-<img src="{{ url_for('static', filename='centillion_white.png') }}">
-<h1><a href="{{ url_for('search')}}?query=&fields=">Search directory: {{ config.MARKDOWN_FILES_DIR }}</a></h1>
-<a class="index" href="{{ url_for('update_index')}}">[update index]</a>
-<a class="index" href="{{ url_for('update_index')}}?rebuild=True">[rebuild index]</a>
-<form action="{{ url_for('search') }}" name="search">
-    <input type="text" name="query" value="{{ query }}">
-    <input type="submit" value="search">
-    <a href="{{ url_for('search')}}?query=&fields=">[clear]</a>
-</form>
-<table cellspacing="3">
-    {% if directories %}
-    <tr>
-        <td class="directories-cloud">File directories:&nbsp
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col12sm">
+            <center>
+                <a href="{{ url_for('search')}}?query=&fields=">
+                <img src="{{ url_for('static', filename='centillion_white.png') }}">
+                </a>
+            </center>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col12sm">
+            <center>
+                <h2>
+                    <a href="{{ url_for('search')}}?query=&fields=">
+                    Search the DCPPC
+                    </a>
+                </h2>
+            </center>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-12">
+            <center>
+                <a class="index" href="{{ url_for('update_index')}}">[update index]</a>
+                <a class="index" href="{{ url_for('update_index')}}?rebuild=True">[rebuild index]</a>
+                <form action="{{ url_for('search') }}" name="search">
+                    <input type="text" name="query" value="{{ query }}"> <br />
+                    <button type="submit" style="font-size: 20px; padding: 10px; padding-left: 50px; padding-right: 50px;" 
+                        value="search" class="btn btn-primary">Search</button>
+                    <br />
+                    <a href="{{ url_for('search')}}?query=&fields=">[clear all results]</a>
+                </form>
+            </center>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+
+        {% if directories %}
+        <div class="col-12 info directories-cloud">
+            File directories:&nbsp
             {% for d in directories %}
                 <a href="{{url_for('search')}}?query={{d|trim}}&fields=filename">{{d|trim}}</a>
             {% endfor %}
-        </td>
-    </tr>
-    {% endif %}
-    {% if config['SHOW_PARSED_QUERY']%}
-    <tr>
-        <td class="info">Parsed query: {{ parsed_query }}</td>
-    </tr>
-    {% endif %}
-    <tr>
-        <td class="info">FOUND {{ entries | length }} results of {{total}} documents</td>
-    </tr>
+        </div>
+        {% endif %}
 
-    {% for e in entries %}
-    <tr>
-        <td class="search-result">
-            <!--
-                <div class="path"><a href='{{ url_for("open_file")}}?path={{e.path|urlencode}}&query={{query}}&fields={{fields}}'>{{e.path}}</a>score: {{'%d'  % e.score}}</div>
-            -->
-            <div class="url">
-                {% if e.kind=="gdoc" %}
-                    <b>Google Drive File</b> <a href='{{e.url}}'>{{e.title}}</a>
-                    ({{e.owner_name}}, {{e.owner_email}})
-                    <br />
-                {% elif e.kind=="comment" %}
-                    <b>Comment</b> <a href='{{e.url}}'>(comment link)</a>
-                    on issue <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
-                    in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
-                    {% if e.github_user %}
-                    by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
-                    {% endif %}
-                    <br />
-                {% elif e.kind=="issue" %}
-                    <b>Issue</b>
-                    <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
-                    in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
-                    {% if e.github_user %}
-                    by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
-                    {% endif %}
-                    <br />
-                {% else %}
-                    <b>Thing</b> (<a href='{{e.url}}'>link</a>)
-                    <br />
+        <ul class="list-group">
+
+            <li  class="list-group-item">
+                {% if config['SHOW_PARSED_QUERY']%}
+                <div class="col-12 info">
+                    <b>Parsed query:</b> {{ parsed_query }}
+                </div>
                 {% endif %}
-                score: {{'%d'  % e.score}}
-            </div>
-            <div class="markdown-body">{{ e.content_highlight|safe}}</div>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-<div class="last-searches">Last searches: <br/>
-    {% for s in last_searches %}
-        <span><a href="{{url_for('search')}}?{{s}}">{{s}}</a></span>
-    {% endfor %}
+            </li>
+
+            <li  class="list-group-item">
+                <div class="col-12 info">
+                    <b>Found:</b> {{entries|length}} documents with results in {{totals["total"]}} total documents
+                </div>
+            </li>
+
+            <li  class="list-group-item">
+                <div class="col-12 info">
+                    <b>Indexing:</b> {{totals["Documents"]}} Google Documents,
+                    {{totals["Issues"]}} Github issues, and 
+                    {{totals["Comments"]}} Github comments
+                </div>
+            </li>
+
+        </ul>
+    </div>
 </div>
-<p>
-    More info can be found in the <a href="https://github.com/BernhardWenzel/markdown-search">README.md file</a>
-</p>
+
+<div class="container">
+    <div class="row">
+        <ul class="list-group">
+
+            {% for e in entries %}
+                <li  class="search-group-item">
+
+                        <div class="url">
+                            {% if e.kind=="gdoc" %}
+                                <b>Google Drive File</b> <a href='{{e.url}}'>{{e.title}}</a>
+                                ({{e.owner_name}}, {{e.owner_email}})
+                            {% elif e.kind=="comment" %}
+                                <b>Comment</b> <a href='{{e.url}}'>(comment link)</a>
+                                on issue <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
+                                in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
+                                {% if e.github_user %}
+                                by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
+                                {% endif %}
+                            {% elif e.kind=="issue" %}
+                                <b>Issue</b>
+                                <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
+                                in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
+                                {% if e.github_user %}
+                                by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
+                                {% endif %}
+                            {% else %}
+                                <b>Thing</b> (<a href='{{e.url}}'>link</a>)
+                            {% endif %}
+                            <br />
+                            score: {{'%d'  % e.score}}
+                        </div>
+                        <div class="markdown-body">{{ e.content_highlight|safe}}</div>
+                        <!--
+                    <div class="col-12 search-result">
+                    </div>
+                        -->
+
+                </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="last-searches">Last searches: <br/>
+                {% for s in last_searches %}
+                    <span><a href="{{url_for('search')}}?{{s}}">{{s}}</a></span>
+                {% endfor %}
+            </div>
+            <p>
+                More info can be found in the <a href="https://github.com/BernhardWenzel/markdown-search">README.md file</a>
+            </p>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
+
