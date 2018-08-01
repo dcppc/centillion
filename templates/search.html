@@ -18,9 +18,11 @@
         <div class="col12sm">
             <center>
                 <h2>
+                    {% if config['TAGLINE'] %}
                     <a href="{{ url_for('search')}}?query=&fields=">
-                    Search the DCPPC
+                        {{config['TAGLINE']}}
                     </a>
+                    {% endif %}
                 </h2>
             </center>
         </div>
