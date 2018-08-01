@@ -150,13 +150,19 @@
                 </div>
             </li>
 
-            <li  class="list-group-item">
-                <div class="col-12 info">
-                    More inormation about centillion can be found
-                    in the <a href="https://github.com/dcppc/centillion">dcppc/centillion</a>
-                    Github repository.
-                </div>
-            </li>
+            {% if config['FOOTER_REPO_NAME'] %}
+                {% if config['FOOTER_REPO_ORG'] %}
+
+                    <li  class="list-group-item">
+                        <div class="col-12 info">
+                            More information about {{config['FOOTER_REPO_NAME']}} can be found
+                            in the <a href="https://github.com/{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}">{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}</a>
+                            repository on Github.
+                        </div>
+                    </li>
+
+                {% endif %}
+            {% endif %}
 
         </ul>
 
