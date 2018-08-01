@@ -42,6 +42,7 @@ Search object functions:
 Schema:
     - id
     - kind
+    - fingerprint
     - created_time
     - modified_time
     - indexed_time
@@ -122,6 +123,7 @@ class Search:
         schema = Schema(
                 id = ID(stored=True, unique=True),
                 kind = ID(stored=True),
+                #fingerprint = ID(stored=True),
 
                 created_time = ID(stored=True),
                 modified_time = ID(stored=True),
@@ -160,16 +162,13 @@ class Search:
     # Define how to add documents
 
 
-    def add_drive_file(self, writer, item, indexed_ids, temp_dir, config):
+    def add_drive_file(self, writer, item, temp_dir, config):
         """
         Add a Google Drive document/file to a search index.
         If it is a document, extract the contents.
         """
-        gd = GDrive()
-        service = gd.get_service()
 
-        # ------------------------
-        # Two kinds of documents:
+        # There are two kinds of documents:
         # - documents with text that can be extracted (docx)
         # - everything else
 
@@ -259,6 +258,10 @@ class Search:
         # ------------------------------
         # IMPORTANT:
         # This is where the search documents are actually created.
+
+        # if type document, get current hash and compare to
+        # hash of content variable. if they are same, 
+        # skip add_document (pass)
 
         mimetype = re.split('[/\.]', item['mimeType'])[-1]
         writer.add_document(
@@ -365,11 +368,13 @@ class Search:
         """
         Update the search index using a collection of 
         Google Drive documents and files.
+        
+        Uses the 'id' field to uniquely identify documents.
 
         Also see:
         https://developers.google.com/drive/api/v3/reference/files
         """
-        
+
         # Update algorithm:
         # - get set of indexed ids
         # - get set of remote ids
@@ -379,6 +384,7 @@ class Search:
 
 
         # Get the set of indexed ids:
+        # ------
         indexed_ids = set()
         p = QueryParser("kind", schema=self.ix.schema)
         q = p.parse("gdoc")
@@ -389,95 +395,88 @@ class Search:
 
 
         # Get the set of remote ids:
+        # ------
         # Start with google drive api object
         gd = GDrive()
         service = gd.get_service()
         drive = service.files()
 
-
-
-
-
-        # Get the set of all documents on Google Drive:
-
-        # ------------------------------
-        # IMPORTANT:
-        # This determines what information about the Google Drive files
-        # you'll get back, and that's all you're going to have to work with.
-        # If you need more information, modify the statement below.
-        # Also see:
-        # https://developers.google.com/drive/api/v3/reference/files
-
-
-
-
-
-
-
+        # Now index all the docs in the google drive folder
 
         # The trick is to set next page token to None 1st time thru (fencepost)
         nextPageToken = None
 
         # Use the pager to return all the things
-        items = []
+        short_items = []
         while True:
             ps = 12
             results = drive.list(
                     pageSize=ps,
                     pageToken=nextPageToken,
-                    fields="nextPageToken, files(id, kind, createdTime, modifiedTime, mimeType, name, owners, webViewLink)",
+                    fields="nextPageToken, files(id)",
                     spaces="drive"
             ).execute()
 
             nextPageToken = results.get("nextPageToken")
-            items += results.get("files", [])
+            short_items += results.get("files", [])
             
-            # Keep it short
+            # Shorter:
             break
-
+            ## Longer:
             #if nextPageToken is None:
             #    break
 
-        # Here is where we update.
-        # Grab indexed ids
-        # Grab remote ids
-        # Drop indexed ids not in remote ids
-        # Index all remote ids
-        # Change add_ to update_
-        # Add a hash check in update_
+        # Now we have a long list of remote doc ids,
+        # add them to a set:
+        remote_ids = set()
+        for item in short_items:
+            remote_ids.add(item['id'])
 
-        # loop over existing documents in index:
-        #
-        #    p = QueryParser("kind", schema=self.ix.schema)
-        #    q = p.parse("gdoc")
-        #    with self.ix.searcher() as s:
-        #        results = s.search(q,limit=None)
-        #        counts[key] = len(results)
-
-
-
-        indexed_ids = set()
-        for item in items:
-            indexed_ids.add(item['id'])
 
         writer = self.ix.writer()
-
+        count = 0
         temp_dir = tempfile.mkdtemp(dir=os.getcwd())
         print("Temporary directory: %s"%(temp_dir))
-        if not os.path.exists(temp_dir):
-            os.mkdir(temp_dir)
 
-        count = 0
-        for item in items:
-            self.add_drive_file(writer, item, indexed_ids, temp_dir, config)
-            count += 1
+
+        # Drop any id in indexed_ids
+        # not in remote_ids
+        drop_ids = indexed_ids - remote_ids
+        for drop_id in drop_ids:
+            writer.delete_by_term('id',drop_id)
+
+
+        # Update any id in indexed_ids
+        # and in remote_ids
+        update_ids = indexed_ids & remote_ids
+        for update_id in update_ids:
+            results = drive.get(
+                    fileId = update_id
+            ).execute()
+            if len(results)>0:
+                item = results[0]
+                self.add_drive_file(writer, item, temp_dir, config)
+                count += 1
+
+
+        # Add any id not in indexed_ids
+        # and in remote_ids
+        add_ids = remote_ids - indexed_ids
+        for add_id in add_ids:
+            results = drive.get(
+                    fileId = update_id
+            ).execute()
+            if len(results)>0:
+                item = results[0]
+                self.add_drive_file(writer, item, temp_dir, config)
+                count += 1
+
 
         print("Cleaning temporary directory: %s"%(temp_dir))
         subprocess.call(['rm','-fr',temp_dir])
 
         writer.commit()
         print("Done, updated %d documents in the index" % count)
-
 
 
 
