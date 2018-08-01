@@ -6,6 +6,8 @@
 
 the centillion is 3.03 log-times better than the googol.
 
+![Screen shot of centillion](img/ss.png)
+
 ## what is it
 
 The centillion is a search engine built using [whoosh](https://whoosh.readthedocs.io/en/latest/intro.html),
