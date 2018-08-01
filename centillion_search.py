@@ -365,11 +365,39 @@ class Search:
         """
         Update the search index using a collection of 
         Google Drive documents and files.
+
+        Also see:
+        https://developers.google.com/drive/api/v3/reference/files
         """
+        
+        # Update algorithm:
+        # - get set of indexed ids
+        # - get set of remote ids
+        # - drop indexed ids not in remote ids
+        # - index all remote ids
+        # - add hash check in add_
+
+
+        # Get the set of indexed ids:
+        indexed_ids = set()
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("gdoc")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_ids.add(result['id'])
+
+
+        # Get the set of remote ids:
+        # Start with google drive api object
         gd = GDrive()
         service = gd.get_service()
+        drive = service.files()
 
-        # -----
+
+
+
+
         # Get the set of all documents on Google Drive:
 
         # ------------------------------
@@ -380,22 +408,11 @@ class Search:
         # Also see:
         # https://developers.google.com/drive/api/v3/reference/files
 
-        gd = GDrive()
-        service = gd.get_service()
-        drive = service.files()
 
 
-        # We should do more here
-        # to check if we should update
-        # or not...
-        # 
-        # loop over existing documents in index:
-        #
-        #    p = QueryParser("kind", schema=self.ix.schema)
-        #    q = p.parse("gdoc")
-        #    with self.ix.searcher() as s:
-        #        results = s.search(q,limit=None)
-        #        counts[key] = len(results)
+
+
+
 
 
         # The trick is to set next page token to None 1st time thru (fencepost)
@@ -428,6 +445,16 @@ class Search:
         # Index all remote ids
         # Change add_ to update_
         # Add a hash check in update_
+
+        # loop over existing documents in index:
+        #
+        #    p = QueryParser("kind", schema=self.ix.schema)
+        #    q = p.parse("gdoc")
+        #    with self.ix.searcher() as s:
+        #        results = s.search(q,limit=None)
+        #        counts[key] = len(results)
+
+
 
         indexed_ids = set()
         for item in items:
