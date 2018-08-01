@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+<img src="{{ url_for('static', filename='centillion_white.png') }}">
 <h1><a href="{{ url_for('search')}}?query=&fields=">Search directory: {{ config.MARKDOWN_FILES_DIR }}</a></h1>
 <a class="index" href="{{ url_for('update_index')}}">[update index]</a>
 <a class="index" href="{{ url_for('update_index')}}?rebuild=True">[rebuild index]</a>
@@ -34,15 +35,25 @@
                 <div class="path"><a href='{{ url_for("open_file")}}?path={{e.path|urlencode}}&query={{query}}&fields={{fields}}'>{{e.path}}</a>score: {{'%d'  % e.score}}</div>
             -->
             <div class="url">
-                {% if e.kind=="comment" %}
+                {% if e.kind=="gdoc" %}
+                    <b>Google Drive File</b> <a href='{{e.url}}'>{{e.title}}</a>
+                    ({{e.owner_name}}, {{e.owner_email}})
+                    <br />
+                {% elif e.kind=="comment" %}
                     <b>Comment</b> <a href='{{e.url}}'>(comment link)</a>
                     on issue <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
                     in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
+                    {% if e.github_user %}
+                    by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
+                    {% endif %}
                     <br />
                 {% elif e.kind=="issue" %}
                     <b>Issue</b>
                     <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
                     in repo <a href='{{e.repo_url}}'>dcppc/{{e.repo_name}}</a>
+                    {% if e.github_user %}
+                    by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
+                    {% endif %}
                     <br />
                 {% else %}
                     <b>Thing</b> (<a href='{{e.url}}'>link</a>)
