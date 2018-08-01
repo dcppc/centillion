@@ -392,7 +392,7 @@ class Search:
         # Use the pager to return all the things
         items = []
         while True:
-            ps = 10
+            ps = 12
             results = drive.list(
                     pageSize=ps,
                     pageToken=nextPageToken,
@@ -477,6 +477,7 @@ class Search:
 
                 to_index.add(issue.html_url)
                 writer.delete_by_term('url', issue.html_url)
+                count -= 1
                 comments = issue.get_comments()
 
                 for comment in comments:
@@ -600,7 +601,29 @@ class Search:
         return s if len(s) <= l else s[0:l - 3] + '...'
 
     def get_document_total_count(self):
-        return self.ix.searcher().doc_count_all()
+        p = QueryParser("kind", schema=self.ix.schema)
+
+        kind_labels = {
+                "Documents" : "gdoc",
+                "Issues" :    "issue",
+                "Comments" :  "comment"
+        }
+        counts = {
+                "Documents" : None,
+                "Issues" : None,
+                "Comments" : None,
+                "Total" : None
+        }
+        for key in kind_labels:
+            kind = kind_labels[key]
+            q = p.parse(kind)
+            with self.ix.searcher() as s:
+                results = s.search(q,limit=None)
+                counts[key] = len(results)
+
+        counts['Total'] = self.ix.searcher().doc_count_all()
+
+        return counts
 
 if __name__ == "__main__":
     search = Search("search_index")
