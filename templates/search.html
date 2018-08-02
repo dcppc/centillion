@@ -135,18 +135,6 @@
     <div class="row">
         <ul class="list-group">
 
-            <li  class="list-group-item">
-                <div class="col-xs-12 info">
-                    <div class="last-searches">
-                        <b>Last searches: 
-                        {% for s in last_searches %}
-                            <span class="badge badge-secondary">
-                                <a class="badgelinks" href="{{url_for('search')}}?{{s}}">{{s}}</a></span>
-                        {% endfor %}
-                    </div>
-                </div>
-            </li>
-
             {% if config['FOOTER_REPO_NAME'] %}
                 {% if config['FOOTER_REPO_ORG'] %}
 
