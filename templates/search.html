@@ -4,36 +4,33 @@
 
 <div class="container">
 
+    {#
+    banner image
+    #}
     <div class="row">
         <div class="col12sm">
             <center>
                 <a href="{{ url_for('search')}}?query=&fields=">
                 <img src="{{ url_for('static', filename='centillion_white.png') }}">
                 </a>
-            </center>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col12sm">
-            <center>
-                <h2>
-                    {% if config['TAGLINE'] %}
-                    <a href="{{ url_for('search')}}?query=&fields=">
+                {#
+                need a tag line
+                #}
+                {% if config['TAGLINE'] %}
+                    <h2><a href="{{ url_for('search')}}?query=&fields=">
                         {{config['TAGLINE']}}
-                    </a>
-                    {% endif %}
-                </h2>
+                    </a></h2>
+                {% endif %}
             </center>
         </div>
     </div>
 
-
+</div>
+<div class="container">
     <div class="row">
-        <div class="col-12">
+
+        <div class="col-xs-12">
             <center>
-                <a class="index" href="{{ url_for('update_index')}}">[update index]</a>
-                <a class="index" href="{{ url_for('update_index')}}?rebuild=True">[rebuild index]</a>
                 <form action="{{ url_for('search') }}" name="search">
                     <input type="text" name="query" value="{{ query }}"> <br />
                     <button type="submit" style="font-size: 20px; padding: 10px; padding-left: 50px; padding-right: 50px;" 
@@ -50,7 +47,7 @@
     <div class="row">
 
         {% if directories %}
-        <div class="col-12 info directories-cloud">
+        <div class="col-xs-12 info directories-cloud">
             <b>File directories:</b> 
             {% for d in directories %}
                 <a href="{{url_for('search')}}?query={{d|trim}}&fields=filename">{{d|trim}}</a>
@@ -62,7 +59,7 @@
 
             {% if config['SHOW_PARSED_QUERY'] and parsed_query %}
                 <li  class="list-group-item">
-                    <div class="col-12 info">
+                    <div class="col-xs-12 info">
                         <b>Parsed query:</b> {{ parsed_query }}
                     </div>
                 </li>
@@ -70,17 +67,17 @@
 
             {% if parsed_query %}
                 <li  class="list-group-item">
-                    <div class="col-12 info">
-                        <b>Found:</b> {{entries|length}} documents with results, out of {{totals["total"]}} total documents
+                    <div class="col-xs-12 info">
+                        <b>Found:</b> <span class="badge">{{entries|length}}</span> results 
+                        out of <span class="badge">{{totals["total"]}}</span> total items indexed
                     </div>
                 </li>
             {% endif %}
 
             <li  class="list-group-item">
-                <div class="col-12 info">
-                    <b>Indexing:</b> {{totals["documents"]}} Google Documents,
-                    {{totals["issues"]}} Github issues, and 
-                    {{totals["comments"]}} Github comments
+                <div class="col-xs-12 info">
+                    <b>Indexing:</b> <span class="badge">{{totals["documents"]}}</span> Google Documents
+                    and <span class="badge">{{totals["issues"]}}</span> Github issues
                 </div>
             </li>
 
@@ -104,7 +101,7 @@
                             <b>Comment:</b>
                             <a href='{{e.url}}'>Comment (link)</a>
                             {% if e.github_user %}
-                            by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
+                            made by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
                             {% endif %}
                             on issue <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
                             <br/>
@@ -115,7 +112,7 @@
                             <b>Issue:</b>
                             <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
                             {% if e.github_user %}
-                            by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
+                            opened by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
                             {% endif %}
                             <br/>
                             <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
@@ -139,7 +136,7 @@
         <ul class="list-group">
 
             <li  class="list-group-item">
-                <div class="col-12 info">
+                <div class="col-xs-12 info">
                     <div class="last-searches">
                         <b>Last searches: 
                         {% for s in last_searches %}
@@ -154,7 +151,7 @@
                 {% if config['FOOTER_REPO_ORG'] %}
 
                     <li  class="list-group-item">
-                        <div class="col-12 info">
+                        <div class="col-xs-12 info">
                             More information about {{config['FOOTER_REPO_NAME']}} can be found
                             in the <a href="https://github.com/{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}">{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}</a>
                             repository on Github.
