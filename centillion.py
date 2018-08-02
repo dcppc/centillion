@@ -89,9 +89,7 @@ def update_index():
     rebuild = request.args.get('rebuild')
     UpdateIndexTask(diff_index=False)
     flash("Rebuilding index, check console output")
-    return render_template("search.html", 
-                           query="", 
-                           fields="", 
+    return render_template("controlpanel.html", 
                            totals={})
 
 

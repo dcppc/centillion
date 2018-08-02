@@ -59,25 +59,37 @@
 
             {% if config['SHOW_PARSED_QUERY'] and parsed_query %}
                 <li  class="list-group-item">
-                    <div class="col-xs-12 info">
-                        <b>Parsed query:</b> {{ parsed_query }}
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12 info">
+                                <b>Parsed query:</b> {{ parsed_query }}
+                            </div>
+                        </div>
                     </div>
                 </li>
             {% endif %}
 
             {% if parsed_query %}
                 <li  class="list-group-item">
-                    <div class="col-xs-12 info">
-                        <b>Found:</b> <span class="badge">{{entries|length}}</span> results 
-                        out of <span class="badge">{{totals["total"]}}</span> total items indexed
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12 info">
+                                <b>Found:</b> <span class="badge">{{entries|length}}</span> results 
+                                out of <span class="badge">{{totals["total"]}}</span> total items indexed
+                            </div>
+                        </div>
                     </div>
                 </li>
             {% endif %}
 
             <li  class="list-group-item">
-                <div class="col-xs-12 info">
-                    <b>Indexing:</b> <span class="badge">{{totals["documents"]}}</span> Google Documents
-                    and <span class="badge">{{totals["issues"]}}</span> Github issues
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12 info">
+                                <b>Indexing:</b> <span class="badge">{{totals["documents"]}}</span> Google Documents
+                                and <span class="badge">{{totals["issues"]}}</span> Github issues
+                            </div>
+                        </div>
                 </div>
             </li>
 
@@ -139,10 +151,14 @@
                 {% if config['FOOTER_REPO_ORG'] %}
 
                     <li  class="list-group-item">
-                        <div class="col-xs-12 info">
-                            More information about {{config['FOOTER_REPO_NAME']}} can be found
-                            in the <a href="https://github.com/{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}">{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}</a>
-                            repository on Github.
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-xs-12 info">
+                                    More information about {{config['FOOTER_REPO_NAME']}} can be found
+                                    in the <a href="https://github.com/{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}">{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}</a>
+                                    repository on Github.
+                                </div>
+                            </div>
                         </div>
                     </li>
 
