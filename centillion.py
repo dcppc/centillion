@@ -74,7 +74,6 @@ def search():
 
     else:
         parsed_query, result = search.search(query.split(), fields=[fields])
-        store_search(query, fields)
 
     totals = search.get_document_total_count()
 
@@ -83,7 +82,6 @@ def search():
                            query=query, 
                            parsed_query=parsed_query, 
                            fields=fields, 
-                           last_searches=get_last_searches(), 
                            totals=totals)
 
 @app.route('/update_index')
@@ -91,38 +89,16 @@ def update_index():
     rebuild = request.args.get('rebuild')
     UpdateIndexTask(diff_index=False)
     flash("Rebuilding index, check console output")
-    return render_template("search.html", 
-                           query="", 
-                           fields="", 
-                           last_searches=get_last_searches(),
+    return render_template("controlpanel.html", 
                            totals={})
 
 
-##############
-# Utility methods
+@app.route('/control_panel')
+def control_panel():
+    return render_template("controlpanel.html", 
+                           totals={})
 
-def get_last_searches():
-    if os.path.exists(last_searches_file):
-        with codecs.open(last_searches_file, 'r', encoding='utf-8') as f:
-            contents = f.readlines()
-    else:
-        contents = []
-    return contents
-
-def store_search(query, fields):
-    if os.path.exists(last_searches_file):
-        with codecs.open(last_searches_file, 'r', encoding='utf-8') as f:
-            contents = f.readlines()
-    else:
-        contents = []
-
-    search = "query=%s&fields=%s\n" % (query, fields)
-    if not search in contents:
-        contents.insert(0, search)
-
-    with codecs.open(last_searches_file, 'w', encoding='utf-8') as f:
-        f.writelines(contents[:30])
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0",port=5000)
 

@@ -1,15 +1,36 @@
+span.badge {
+    vertical-align: super;
+}
 
-li.search-group-item {
-    position: relative;
-    display: block;
-    padding: 0px;
-    margin-bottom: -1px;
-    background-color: #fff;
-    border: 1px solid #ddd;
+a.badgelinks, a.badgelinks:hover {
+    color: #fff;
+    text-decoration: none;
 }
 
 div.list-group {
     border: 1px solid rgba(86,61,124,.2);
+}
+
+li.list-group-item {
+    position: relative;
+    display: block;
+
+    /*padding: 20px 10px;*/
+    margin-bottom: -1px;
+
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+}
+
+li.search-group-item {
+    position: relative;
+    display: block;
+
+    padding: 0px;
+    margin-bottom: -1px;
+
+    background-color: #fff;
+    border: 1px solid #ddd;
 }
 
 div.url {
