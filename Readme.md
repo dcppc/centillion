@@ -24,17 +24,37 @@ defined in `centillion.py`.
 The centillion keeps it simple.
 
 
-## quickstart
+## quickstart (with Github auth)
 
-Run the centillion app with a github access token API key set via
-environment variable:
+Start by creating a Github OAuth application.
+Get the public and private application key from the Github
+settings page.
+
+Set the callback URL to `/login/github/authorized`, as in:
 
 ```
-GITHUB_TOKEN="XXXXXXXX" python centillion.py
+https://<url>:5000/login/github/authorized
+```
+
+(You can also use http if you must.)
+
+Edit the Flask configuration `config_flask.py`
+and set the public and private application keys.
+
+Now run centillion:
+
+```
+python centillion.py
+```
+
+or if you used http instead of https:
+
+```
+OAUTHLIB_INSECURE_TRANSPORT="true" python centillion.py
 ```
 
 This will start a Flask server, and you can view the minimal search engine
-interface in your browser at <http://localhost:5000>.
+interface in your browser at `http://<ip>:5000`.
 
 ## more info
 
