@@ -96,6 +96,11 @@ class Search:
     def __init__(self, index_folder):
         self.open_index(index_folder)
 
+
+    # ------------------------------
+    # Create a schema and open a search index
+    # on disk.
+
     def open_index(self, index_folder, create_new=False):
         """
         Create a schema,
@@ -116,7 +121,6 @@ class Search:
 
         
         # ------------------------------
-        # IMPORTANT:
         # This is where the search index's document schema
         # is defined.
 
@@ -162,7 +166,7 @@ class Search:
     # Define how to add documents
 
 
-    def add_drive_file(self, writer, item, temp_dir, config):
+    def add_drive_file(self, writer, item, temp_dir, config, update=False):
         """
         Add a Google Drive document/file to a search index.
         If it is a document, extract the contents.
@@ -178,10 +182,33 @@ class Search:
         }
 
         content = ""
-        if(mimetype not in mimemap.keys()):
-            # Not a document - 
-            # Just a file
-            print("Indexing document \"%s\" of type %s"%(item['name'], mimetype))
+        if mimetype not in mimemap.keys():
+
+            # Not a document - just a file
+            print("Indexing Google Drive file \"%s\" of type %s"%(item['name'], mimetype))
+            writer.delete_by_term('id',item['id'])
+
+            # Index a plain google drive file
+            writer.add_document(
+                    id = item['id'],
+                    kind = 'gdoc',
+                    created_time = item['createdTime'],
+                    modified_time = item['modifiedTime'],
+                    indexed_time = datetime.now().replace(microsecond=0).isoformat(),
+                    title = item['name'],
+                    url = item['webViewLink'],
+                    mimetype = mimetype,
+                    owner_email = item['owners'][0]['emailAddress'],
+                    owner_name = item['owners'][0]['displayName'],
+                    repo_name='',
+                    repo_url='',
+                    github_user='',
+                    issue_title='',
+                    issue_url='',
+                    content = content
+            )
+
+
         else:
             # Document with text
             # Perform content extraction
@@ -193,7 +220,8 @@ class Search:
             # This is a file type we know how to convert
             # Construct the URL and download it
 
-            print("Extracting content from \"%s\" of type %s"%(item['name'], mimetype))
+            print("Indexing Google Drive document \"%s\" of type %s"%(item['name'], mimetype))
+            print(" > Extracting content")
 
 
             # Create a URL and a destination filename
@@ -214,7 +242,7 @@ class Search:
                 outfile_name = name+'.'+out_ext
 
 
-            # assemble input/output file paths
+            # Assemble input/output file paths
             fullpath_input = os.path.join(temp_dir,infile_name)
             fullpath_output = os.path.join(temp_dir,outfile_name)
 
@@ -233,7 +261,7 @@ class Search:
                 )
                 assert output == ""
             except RuntimeError:
-                print("XXXXXX Failed to index document \"%s\""%(item['name']))
+                print(" > XXXXXX Failed to index document \"%s\""%(item['name']))
 
 
             # If export was successful, read contents of markdown
@@ -246,7 +274,7 @@ class Search:
 
 
             # No matter what happens, clean up.
-            print("Cleaning up \"%s\""%item['name'])
+            print(" > Cleaning up \"%s\""%item['name'])
 
             subprocess.call(['rm','-fr',fullpath_output])
             #print(" ".join(['rm','-fr',fullpath_output]))
@@ -254,53 +282,70 @@ class Search:
             subprocess.call(['rm','-fr',fullpath_input])
             #print(" ".join(['rm','-fr',fullpath_input]))
 
+            if update:
+                print(" > Removing old record")
+                writer.delete_by_term('id',item['id'])
+            else:
+                print(" > Creating a new record")
 
-        # ------------------------------
-        # IMPORTANT:
-        # This is where the search documents are actually created.
-
-        # if type document, get current hash and compare to
-        # hash of content variable. if they are same, 
-        # skip add_document (pass)
-
-        mimetype = re.split('[/\.]', item['mimeType'])[-1]
-        writer.add_document(
-                id = item['id'],
-                kind = 'gdoc',
-                created_time = item['createdTime'],
-                modified_time = item['modifiedTime'],
-                indexed_time = datetime.now().replace(microsecond=0).isoformat(),
-                title = item['name'],
-                url = item['webViewLink'],
-                mimetype = mimetype,
-                owner_email = item['owners'][0]['emailAddress'],
-                owner_name = item['owners'][0]['displayName'],
-                repo_name='',
-                repo_url='',
-                github_user='',
-                issue_title='',
-                issue_url='',
-                content = content
-        )
+            writer.add_document(
+                    id = item['id'],
+                    kind = 'gdoc',
+                    created_time = item['createdTime'],
+                    modified_time = item['modifiedTime'],
+                    indexed_time = datetime.now().replace(microsecond=0).isoformat(),
+                    title = item['name'],
+                    url = item['webViewLink'],
+                    mimetype = mimetype,
+                    owner_email = item['owners'][0]['emailAddress'],
+                    owner_name = item['owners'][0]['displayName'],
+                    repo_name='',
+                    repo_url='',
+                    github_user='',
+                    issue_title='',
+                    issue_url='',
+                    content = content
+            )
 
 
-    def add_issue(self, writer, issue, repo, config):
+
+
+    # ------------------------------
+    # Add a single github issue and its comments
+    # to a search index.
+
+
+    def add_issue(self, writer, issue, config, update=True):
         """
         Add a Github issue/comment to a search index.
         """
+        repo = issue.repository
         repo_name = repo.owner.login+"/"+repo.name
         repo_url = repo.html_url
 
-        count = 0
-
-
-        # Handle the issue content
         print("Indexing issue %s"%(issue.html_url))
 
+        # Combine comments with their respective issues.
+        # Otherwise just too noisy.
+        issue_comment_content = issue.body.rstrip()
+        issue_comment_content += "\n"
+
+        # Handle the comments content
+        if(issue.comments>0):
+
+            comments = issue.get_comments()
+            for comment in comments:
+
+                issue_comment_content += comment.body.rstrip()
+                issue_comment_content += "\n"
+
+        # Now create the actual search index record
         created_time = clean_timestamp(issue.created_at)
         modified_time = clean_timestamp(issue.updated_at)
         indexed_time = clean_timestamp(datetime.now())
 
+        # Add one document per issue thread,
+        # containing entire text of thread.
         writer.add_document(
                 id = issue.html_url,
                 kind = 'issue',
@@ -317,45 +362,9 @@ class Search:
                 github_user = issue.user.login,
                 issue_title = issue.title,
                 issue_url = issue.html_url,
-                content = issue.body.rstrip()
+                content = issue_comment_content
         )
-        count += 1
 
-
-
-        # Handle the comments content
-        if(issue.comments>0):
-
-            comments = issue.get_comments()
-            for comment in comments:
-
-                print(" > Indexing comment %s"%(comment.html_url))
-
-                created_time = clean_timestamp(comment.created_at)
-                modified_time = clean_timestamp(comment.updated_at)
-                indexed_time = clean_timestamp(datetime.now())
-
-                writer.add_document(
-                        id = comment.html_url,
-                        kind = 'comment',
-                        created_time = created_time,
-                        modified_time = modified_time,
-                        indexed_time = indexed_time,
-                        title = "Comment on "+issue.title,
-                        url = comment.html_url,
-                        mimetype='',
-                        owner_email='',
-                        owner_name='',
-                        repo_name = repo_name,
-                        repo_url = repo_url,
-                        github_user = comment.user.login,
-                        issue_title = issue.title,
-                        issue_url = issue.html_url,
-                        content = comment.body.rstrip()
-                )
-
-        count += 1
-        return count
 
 
 
@@ -375,7 +384,7 @@ class Search:
         https://developers.google.com/drive/api/v3/reference/files
         """
 
-        # Update algorithm:
+        # Updated algorithm:
         # - get set of indexed ids
         # - get set of remote ids
         # - drop indexed ids not in remote ids
@@ -456,7 +465,7 @@ class Search:
             # cop out
             writer.delete_by_term('id',update_id)
             item = full_items[update_id]
-            self.add_drive_file(writer, item, temp_dir, config)
+            self.add_drive_file(writer, item, temp_dir, config, update=True)
             count += 1
 
 
@@ -464,8 +473,8 @@ class Search:
         # and in remote_ids
         add_ids = remote_ids - indexed_ids
         for add_id in add_ids:
-            item = full_items[update_id]
-            self.add_drive_file(writer, item, temp_dir, config)
+            item = full_items[add_id]
+            self.add_drive_file(writer, item, temp_dir, config, update=False)
             count += 1
 
 
@@ -484,55 +493,87 @@ class Search:
         Update the search index using a collection of 
         Github repo issues and comments.
         """
-        # Strategy:
-        # To get the proof of concept up and running,
-        # we are just deleting and re-indexing every issue/comment.
+        # Updated algorithm:
+        # - get set of indexed ids
+        # - get set of remote ids
+        # - drop indexed ids not in remote ids
+        # - index all remote ids
 
+        # Get the set of indexed ids:
+        # ------
+        indexed_issues = set()
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("gdoc")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_issues.add(result['id'])
+
+
+        # Get the set of remote ids:
+        # ------
+        # Start with api object
         g = Github(gh_access_token)
 
-        # Set of all URLs as existing on github
-        to_index = set()
+        # Now index all issue threads in the user-specified repos
 
-        writer = self.ix.writer()
-
-        # Iterate over each repo
+        # Iterate over each repo 
         list_of_repos = config['repositories']
         for r in list_of_repos:
+
+            # Start by collecting all the things
+            remote_issues = set()
+            full_items = {}
 
             if '/' not in r:
                 err = "Error: specify org/reponame or user/reponame in list of repos"
                 raise Exception(err)
 
             this_org, this_repo = re.split('/',r)
-
             org = g.get_organization(this_org)
             repo = org.get_repo(this_repo)
 
-            count = 0
-
-            # Iterate over each thread
+            # Iterate over each issue thread
             issues = repo.get_issues()
             for issue in issues:
 
-                # This approach is more work than is needed
-                # but PoC||GTFO
-
                 # For each issue/comment URL,
-                # remove the corresponding item
-                # and re-add it to the index
+                # grab the key and store the 
+                # corresponding issue object
+                key = issue.html_url
+                value = issue
 
-                to_index.add(issue.html_url)
-                writer.delete_by_term('url', issue.html_url)
-                count -= 1
-                comments = issue.get_comments()
+                remote_issues.add(key)
+                full_items[key] = value
 
-                for comment in comments:
-                    to_index.add(comment.html_url)
-                    writer.delete_by_term('url', comment.html_url)
+        writer = self.ix.writer()
+        count = 0
 
-                # Now re-add this issue to the index
-                # (this will also add the comments)
-                count += self.add_issue(writer, issue, repo, config)
+        # Drop any issues in indexed_issues
+        # not in remote_issues
+        drop_issues = indexed_issues - remote_issues
+        for drop_issue in drop_issues:
+            writer.delete_by_term('id',drop_issue)
+
+
+        # Update any issue in indexed_issues
+        # and in remote_issues
+        update_issues = indexed_issues & remote_issues
+        for update_issue in update_issues:
+            # cop out
+            writer.delete_by_term('id',update_issue)
+            item = full_items[update_issue]
+            self.add_issue(writer, item, config, update=True)
+            count += 1
+
+
+        # Add any issue not in indexed_issues
+        # and in remote_issues
+        add_issues = remote_issues - indexed_issues
+        for add_issue in add_issues:
+            item = full_items[add_issue]
+            self.add_issue(writer, item, config, update=False)
+            count += 1
 
 
         writer.commit()
@@ -618,6 +659,7 @@ class Search:
 
 
     def search(self, query_list, fields=None):
+
         with self.ix.searcher() as searcher:
             query_string = " ".join(query_list)
             query = None
@@ -652,12 +694,10 @@ class Search:
         kind_labels = {
                 "documents" : "gdoc",
                 "issues" :    "issue",
-                "comments" :  "comment"
         }
         counts = {
                 "documents" : None,
                 "issues" : None,
-                "comments" : None,
                 "total" : None
         }
         for key in kind_labels:
