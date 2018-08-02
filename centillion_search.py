@@ -644,6 +644,7 @@ class Search:
 
             highlights = self.html_parser.unescape(highlights)
             html = self.markdown(highlights)
+            html = re.sub(r'\n','<br />',html)
             sr.content_highlight = html
 
             search_results.append(sr)
