@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+{% block body %}
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <center>
+                <a href="{{ url_for('search')}}?query=&fields=">
+                <img src="{{ url_for('static', filename='centillion_white.png') }}">
+                </a>
+                {% if config['TAGLINE'] %}
+                    <h2><a href="{{ url_for('search')}}?query=&fields=">
+                        {{config['TAGLINE']}}
+                    </a></h2>
+                {% endif %}
+            </center>
+        </div>
+    </div>
+    
+    {% if config['zzzTAGLINE'] %}
+    <div class="row">
+        <div class="col12sm">
+            <center>
+                <h2><a href="{{ url_for('search')}}?query=&fields=">
+                    {{config['TAGLINE']}}
+                </a></h2>
+            </center>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<hr />
+
+<div class="container">
+
+    <div class="row">
+
+        {# update main search index #}
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Update Main Search Index
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="panel-text">Re-index <i>every</i> document in the
+                            remote collection in the search index. <b>Warning: this operation may take a while.</b>
+                            <p/> <p>
+                            <a href="#" class="btn btn-large btn-danger">Update Main Index</a>
+                            <p/> 
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {# update diff search index #}
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Update Diff Search Index
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="panel-text">Diff search index only re-indexes documents created after the last
+                            search index update. <b>Not currently implemented.</b>
+                            <p/> <p>
+                            <a href="#" class="btn btn-large disabled btn-danger">Update Diff Index</a>
+                            <p/> 
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}
+
