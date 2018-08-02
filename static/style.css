@@ -1,3 +1,7 @@
+span.badge {
+    vertical-align: super;
+}
+
 a.badgelinks, a.badgelinks:hover {
     color: #fff;
     text-decoration: none;
