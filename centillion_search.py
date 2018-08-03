@@ -1,7 +1,7 @@
 import shutil
 import html.parser
 
-from github import Github
+from github import Github, GithubException
 import base64
 
 from gdrive_util import GDrive
@@ -252,7 +252,6 @@ class Search:
             with open(fullpath_input, 'wb') as f:
                 f.write(r.content)
 
-
             # Try to convert docx file to plain text
             try:
                 output = pypandoc.convert_file(fullpath_input,
@@ -368,7 +367,7 @@ class Search:
 
 
 
-    def add_markdown(self, writer, d, config, update=True):
+    def add_markdown(self, writer, d, gh_oauth_token, config, update=True):
         """
         Use a Github markdown document API record
         to add a markdown document's contents to
@@ -385,18 +384,27 @@ class Search:
         _, fname = os.path.split(fpath)
         _, fext = os.path.splitext(fpath)
 
-        print("Indexing markdown doc %s"%(fname))
+        print("Indexing markdown doc %s from repo %s"%(fname,repo_name))
 
         # Unpack the requests response and decode the content
-        response = requests.get(furl)
-        jresponse = response.json()
-        content = ""
-        try:
-            binary_content = re.sub('\n','',jresponse['content'])
-            content = base64.b64decode(binary_content).decode('utf-8')
+        # 
+        # don't forget the headers for private repos!
+        # useful: https://bit.ly/2LSAflS
 
-        except KeyError:
-            print(" > XXXXXXXX Failed to extract 'content' field. You probably hit the rate limit.")
+        headers = {'Authorization' : 'token %s'%(gh_oauth_token)}
+
+        response = requests.get(furl, headers=headers)
+        if response.status_code==200:
+            jresponse = response.json()
+            content = ""
+            try:
+                binary_content = re.sub('\n','',jresponse['content'])
+                content = base64.b64decode(binary_content).decode('utf-8')
+            except KeyError:
+                print(" > XXXXXXXX Failed to extract 'content' field. You probably hit the rate limit.")
+
+        else:
+            print(" > XXXXXXXX Failed to reach file URL. There may be a problem with authentication/headers.")
             return 
 
         # Now create the actual search index record
@@ -641,7 +649,7 @@ class Search:
 
 
 
-    def update_index_markdown(self, gh_oauth_token, config): 
+    def update_index_markdown(self, gh_access_token, config): 
         """
         Update the search index using a collection of 
         Markdown files from a Github repo.
@@ -669,38 +677,48 @@ class Search:
         # Get the set of remote ids:
         # ------
         # Start with api object
-        g = Github(gh_oauth_token)
+        g = Github(gh_access_token)
 
         # Now index all markdown files
         # in the user-specified repos
 
+        # Start by collecting all the things
+        remote_ids = set()
+        full_items = {}
+
         # Iterate over each repo 
         list_of_repos = config['repositories']
         for r in list_of_repos:
-
-            # Start by collecting all the things
-            remote_ids = set()
-            full_items = {}
 
             if '/' not in r:
                 err = "Error: specify org/reponame or user/reponame in list of repos"
                 raise Exception(err)
 
             this_org, this_repo = re.split('/',r)
-            org = g.get_organization(this_org)
-            repo = org.get_repo(this_repo)
+            try:
+                org = g.get_organization(this_org)
+                repo = org.get_repo(this_repo)
+            except:
+                print("Error getting access to repository %s"%(r))
+                continue
+
 
             # ---------
             # begin markdown-specific code
 
             # Get head commit
             commits = repo.get_commits()
-            last = commits[0]
-            sha = last.sha
+            try:
+                last = commits[0]
+                sha = last.sha
+            except GithubException:
+                print("Error getting commits from repository %s"%(r))
+                continue
 
             # Get all the docs
             tree = repo.get_git_tree(sha=sha, recursive=True)
             docs = tree.raw_data['tree']
+            print("Parsing doc ids from repository %s"%(r))
 
             for d in docs:
 
@@ -736,10 +754,10 @@ class Search:
         # and in remote_ids
         update_ids = indexed_ids & remote_ids
         for update_id in update_ids:
-            # cop out
+            # cop out: just delete and re-add
             writer.delete_by_term('id',update_id)
             item = full_items[update_id]
-            self.add_markdown(writer, item, config, update=True)
+            self.add_markdown(writer, item, gh_access_token, config, update=True)
             count += 1
 
 
@@ -748,7 +766,7 @@ class Search:
         add_ids = remote_ids - indexed_ids
         for add_id in add_ids:
             item = full_items[add_id]
-            self.add_markdown(writer, item, config, update=False)
+            self.add_markdown(writer, item, gh_access_token, config, update=False)
             count += 1
 
 
