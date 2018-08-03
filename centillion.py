@@ -43,6 +43,7 @@ class UpdateIndexTask(object):
         from get_centillion_config import get_centillion_config
         config = get_centillion_config('config_centillion.json')
 
+        search.update_index_markdown(self.gh_oauth_token,config)
         search.update_index_issues(self.gh_oauth_token,config)
         search.update_index_gdocs(config)
 
