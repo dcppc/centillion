@@ -1,5 +1,5 @@
 span.badge {
-    vertical-align: super;
+    vertical-align: text-bottom;
 }
 
 a.badgelinks, a.badgelinks:hover {

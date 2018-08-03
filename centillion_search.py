@@ -2,6 +2,7 @@ import shutil
 import html.parser
 
 from github import Github
+import base64
 
 from gdrive_util import GDrive
 from apiclient.http import MediaIoBaseDownload
@@ -367,6 +368,64 @@ class Search:
 
 
 
+    def add_markdown(self, writer, d, config, update=True):
+        """
+        Use a Github markdown document API record
+        to add a markdown document's contents to
+        the search index.
+        """
+        repo = d['repo']
+        org = d['org']
+        repo_name = org + "/" + repo
+        repo_url = "https://github.com/" + repo_name
+
+        fpath = d['path']
+        furl = d['url']
+        fsha = d['sha']
+        _, fname = os.path.split(fpath)
+        _, fext = os.path.splitext(fpath)
+
+        print("Indexing markdown doc %s"%(fname))
+
+        # Unpack the requests response and decode the content
+        response = requests.get(furl)
+        jresponse = response.json()
+        content = ""
+        try:
+            binary_content = re.sub('\n','',jresponse['content'])
+            content = base64.b64decode(binary_content).decode('utf-8')
+
+        except KeyError:
+            print(" > XXXXXXXX Failed to extract 'content' field. You probably hit the rate limit.")
+            return 
+
+        # Now create the actual search index record
+        indexed_time = clean_timestamp(datetime.now())
+
+        usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
+
+        # Add one document per issue thread,
+        # containing entire text of thread.
+        writer.add_document(
+                id = fsha,
+                kind = 'markdown',
+                created_time = '',
+                modified_time = '',
+                indexed_time = indexed_time,
+                title = fname,
+                url = usable_url,
+                mimetype='',
+                owner_email='',
+                owner_name='',
+                repo_name = repo_name,
+                repo_url = repo_url,
+                github_user = '',
+                issue_title = '',
+                issue_url = '',
+                content = content
+        )
+
+
 
     # ------------------------------
     # Define how to update search index
@@ -580,6 +639,124 @@ class Search:
         print("Done, updated %d documents in the index" % count)
 
 
+
+
+    def update_index_markdown(self, gh_oauth_token, config): 
+        """
+        Update the search index using a collection of 
+        Markdown files from a Github repo.
+
+        gh_oauth_token can also be an access token.
+        """
+        EXT = '.md'
+
+        # Updated algorithm:
+        # - get set of indexed ids
+        # - get set of remote ids
+        # - drop indexed ids not in remote ids
+        # - index all remote ids
+
+        # Get the set of indexed ids:
+        # ------
+        indexed_ids = set()
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("markdown")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_ids.add(result['id'])
+
+        # Get the set of remote ids:
+        # ------
+        # Start with api object
+        g = Github(gh_oauth_token)
+
+        # Now index all markdown files
+        # in the user-specified repos
+
+        # Iterate over each repo 
+        list_of_repos = config['repositories']
+        for r in list_of_repos:
+
+            # Start by collecting all the things
+            remote_ids = set()
+            full_items = {}
+
+            if '/' not in r:
+                err = "Error: specify org/reponame or user/reponame in list of repos"
+                raise Exception(err)
+
+            this_org, this_repo = re.split('/',r)
+            org = g.get_organization(this_org)
+            repo = org.get_repo(this_repo)
+
+            # ---------
+            # begin markdown-specific code
+
+            # Get head commit
+            commits = repo.get_commits()
+            last = commits[0]
+            sha = last.sha
+
+            # Get all the docs
+            tree = repo.get_git_tree(sha=sha, recursive=True)
+            docs = tree.raw_data['tree']
+
+            for d in docs:
+
+                # For each doc, get the file extension
+                # If it matches EXT, download the file
+                fpath = d['path']
+                _, fname = os.path.split(fpath)
+                _, fext = os.path.splitext(fpath)
+
+                if fext==EXT:
+
+                    key = d['sha']
+                    d['org'] = this_org
+                    d['repo'] = this_repo
+                    value = d
+
+                    # Stash the doc for later
+                    remote_ids.add(key)
+                    full_items[key] = value
+
+        writer = self.ix.writer()
+        count = 0
+
+
+        # Drop any id in indexed_ids
+        # not in remote_ids
+        drop_ids = indexed_ids - remote_ids
+        for drop_id in drop_ids:
+            writer.delete_by_term('id',drop_id)
+
+
+        # Update any id in indexed_ids
+        # and in remote_ids
+        update_ids = indexed_ids & remote_ids
+        for update_id in update_ids:
+            # cop out
+            writer.delete_by_term('id',update_id)
+            item = full_items[update_id]
+            self.add_markdown(writer, item, config, update=True)
+            count += 1
+
+
+        # Add any issue not in indexed_ids
+        # and in remote_ids
+        add_ids = remote_ids - indexed_ids
+        for add_id in add_ids:
+            item = full_items[add_id]
+            self.add_markdown(writer, item, config, update=False)
+            count += 1
+
+
+        writer.commit()
+        print("Done, updated %d markdown documents in the index" % count)
+
+
+
     # ---------------------------------
     # Search results bundler
 
@@ -651,11 +828,6 @@ class Search:
 
         return search_results
 
-        # ------------------
-        # github issues
-        # create search results
-
-
 
 
 
@@ -694,10 +866,12 @@ class Search:
 
         kind_labels = {
                 "documents" : "gdoc",
+                "markdown" :  "markdown",
                 "issues" :    "issue",
         }
         counts = {
                 "documents" : None,
+                "markdown" : None,
                 "issues" : None,
                 "total" : None
         }
@@ -708,7 +882,9 @@ class Search:
                 results = s.search(q,limit=None)
                 counts[key] = len(results)
 
-        counts['total'] = self.ix.searcher().doc_count_all()
+        ## These two should NOT be different, but they are...
+        #counts['total'] = self.ix.searcher().doc_count_all()
+        counts['total'] = counts['documents'] + counts['markdown'] + counts['issues']
 
         return counts
 
