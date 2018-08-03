@@ -7,7 +7,7 @@ GITHUB_OAUTH_CLIENT_SECRET = "YYY"
 GITHUB_TOKEN = "ZZZ"
 
 # More information footer: Repository label
-FOOTER_REPO_ORG = "charlesreid1"
+FOOTER_REPO_ORG = "dcppc"
 FOOTER_REPO_NAME = "centillion"
 
 # Toggle to show Whoosh parsed query
