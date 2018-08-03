@@ -1,8 +1,8 @@
+config_*
 vp
 credentials.json
 drive*.json
 *.pyc
-config.py
 out/
 search_index/
 venv/

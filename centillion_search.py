@@ -486,12 +486,12 @@ class Search:
 
 
 
-    def update_index_issues(self, 
-                            gh_access_token,
-                            config):
+    def update_index_issues(self, gh_oauth_token, config):
         """
         Update the search index using a collection of 
         Github repo issues and comments.
+
+        gh_oauth_token can also be an access token.
         """
         # Updated algorithm:
         # - get set of indexed ids
@@ -513,7 +513,7 @@ class Search:
         # Get the set of remote ids:
         # ------
         # Start with api object
-        g = Github(gh_access_token)
+        g = Github(gh_oauth_token)
 
         # Now index all issue threads in the user-specified repos
 
