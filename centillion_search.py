@@ -2,6 +2,7 @@ import shutil
 import html.parser
 
 from github import Github
+import base64
 
 from gdrive_util import GDrive
 from apiclient.http import MediaIoBaseDownload
@@ -367,7 +368,7 @@ class Search:
 
 
 
-    def add_markdown(self, writer, md, config, update=True):
+    def add_markdown(self, writer, d, config, update=True):
         """
         Use a Github markdown document API record
         to add a markdown document's contents to
@@ -645,6 +646,8 @@ class Search:
 
         gh_oauth_token can also be an access token.
         """
+        EXT = '.md'
+
         # Updated algorithm:
         # - get set of indexed ids
         # - get set of remote ids
@@ -701,6 +704,7 @@ class Search:
 
                 # For each doc, get the file extension
                 # If it matches EXT, download the file
+                fpath = d['path']
                 _, fname = os.path.split(fpath)
                 _, fext = os.path.splitext(fpath)
 
@@ -712,6 +716,7 @@ class Search:
                     value = d
 
                     # Stash the doc for later
+                    remote_ids.add(key)
                     full_items[key] = value
 
         writer = self.ix.writer()
@@ -732,7 +737,7 @@ class Search:
             # cop out
             writer.delete_by_term('id',update_id)
             item = full_items[update_id]
-            self.add_issue(writer, item, config, update=True)
+            self.add_markdown(writer, item, config, update=True)
             count += 1
 
 
