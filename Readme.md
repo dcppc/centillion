@@ -6,7 +6,7 @@
 
 one centillion is 3.03 log-times better than a googol.
 
-![Screen shot of centillion](img/ss.png)
+<img src="img/ss.png" alt="screen shot of centillion" width="400px"/>
 
 
 ## what is it
@@ -47,7 +47,7 @@ There's also a control panel at <https://search.nihdatacommons.us/control_panel>
 that allows you to rebuild the search index from scratch (the Google Drive indexing 
 takes a while).
 
-<img src="img/cp.png" width="400px" />
+<img src="img/cp.png" alt="screen shot of centillion control panel" width="400px"/>
 
 
 ## quickstart (with Github auth)
