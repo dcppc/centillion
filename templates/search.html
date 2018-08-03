@@ -86,8 +86,9 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-xs-12 info">
-                                <b>Indexing:</b> <span class="badge">{{totals["documents"]}}</span> Google Documents
-                                and <span class="badge">{{totals["issues"]}}</span> Github issues
+                                <b>Indexing:</b> <span class="badge">{{totals["documents"]}}</span> Google Documents,
+                                <span class="badge">{{totals["issues"]}}</span> Github issues,
+                                <span class="badge">{{totals["markdown"]}}</span> markdown files.
                             </div>
                         </div>
                 </div>
@@ -108,28 +109,26 @@
                         {% if e.kind=="gdoc" %}
                             <b>Google Drive File:</b>
                             <a href='{{e.url}}'>{{e.title}}</a>
-                            ({{e.owner_name}}, {{e.owner_email}})
-                        {% elif e.kind=="comment" %}
-                            <b>Comment:</b>
-                            <a href='{{e.url}}'>Comment (link)</a>
-                            {% if e.github_user %}
-                            made by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
-                            {% endif %}
-                            on issue <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
-                            <br/>
-                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
-                            {% if e.github_user %}
-                            {% endif %}
+                            (Owner: {{e.owner_name}}, {{e.owner_email}})
+
                         {% elif e.kind=="issue" %}
                             <b>Issue:</b>
-                            <a href='{{e.issue_url}}'>{{e.issue_title}}</a>
+                            <a href='{{e.url}}'>{{e.title}}</a>
                             {% if e.github_user %}
                             opened by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
                             {% endif %}
                             <br/>
                             <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
+
+                        {% elif e.kind=="markdown" %}
+                            <b>Markdown:</b>
+                            <a href='{{e.url}}'>{{e.title}}</a>
+                            <br/>
+                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
+
                         {% else %}
                             <b>Item:</b> (<a href='{{e.url}}'>link</a>)
+
                         {% endif %}
                         <br />
                         score: {{'%d'  % e.score}}
