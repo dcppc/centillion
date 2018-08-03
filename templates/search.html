@@ -107,12 +107,18 @@
 
                     <div class="url">
                         {% if e.kind=="gdoc" %}
-                            <b>Google Drive File:</b>
-                            <a href='{{e.url}}'>{{e.title}}</a>
-                            (Owner: {{e.owner_name}}, {{e.owner_email}})
+                            {% if e.mimetype=="document" %}
+                                <b>Google Document:</b>
+                                <a href='{{e.url}}'>{{e.title}}</a>
+                                (Type: {{e.mimetype}}, Owner: {{e.owner_name}}, {{e.owner_email}})
+                            {% else %}
+                                <b>Google Drive:</b>
+                                <a href='{{e.url}}'>{{e.title}}</a>
+                                (Type: {{e.mimetype}}, Owner: {{e.owner_name}}, {{e.owner_email}})
+                            {% endif %}
 
                         {% elif e.kind=="issue" %}
-                            <b>Issue:</b>
+                            <b>Github Issue:</b>
                             <a href='{{e.url}}'>{{e.title}}</a>
                             {% if e.github_user %}
                             opened by <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
@@ -121,7 +127,7 @@
                             <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
 
                         {% elif e.kind=="markdown" %}
-                            <b>Markdown:</b>
+                            <b>Github Markdown:</b>
                             <a href='{{e.url}}'>{{e.title}}</a>
                             <br/>
                             <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
@@ -131,9 +137,15 @@
 
                         {% endif %}
                         <br />
-                        score: {{'%d'  % e.score}}
+                        Score: {{'%d'  % e.score}}
                     </div>
-                    <div class="markdown-body">{{ e.content_highlight|safe}}</div>
+                    <div class="markdown-body">
+                        {% if e.content_highlight %}
+                            {{ e.content_highlight|safe}}
+                        {% else %}
+                        <p>(A preview of this document is not available.)</p>
+                        {% endif %}
+                    </div>
 
                 </li>
             {% endfor %}
