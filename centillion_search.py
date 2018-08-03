@@ -478,7 +478,7 @@ class Search:
         remote_ids = set()
         full_items = {}
         while True:
-            ps = 12
+            ps = 100
             results = drive.list(
                     pageSize=ps,
                     pageToken=nextPageToken,
@@ -496,11 +496,11 @@ class Search:
                 # Also store the doc
                 full_items[f['id']] = f
             
-            # Shorter:
-            break
-            ## Longer:
-            #if nextPageToken is None:
-            #    break
+            ## Shorter:
+            #break
+            # Longer:
+            if nextPageToken is None:
+                break
 
 
         writer = self.ix.writer()
