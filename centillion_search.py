@@ -402,6 +402,8 @@ class Search:
         # Now create the actual search index record
         indexed_time = clean_timestamp(datetime.now())
 
+        usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
+
         # Add one document per issue thread,
         # containing entire text of thread.
         writer.add_document(
@@ -411,7 +413,7 @@ class Search:
                 modified_time = '',
                 indexed_time = indexed_time,
                 title = fname,
-                url = furl,
+                url = usable_url,
                 mimetype='',
                 owner_email='',
                 owner_name='',
@@ -826,11 +828,6 @@ class Search:
 
         return search_results
 
-        # ------------------
-        # github issues
-        # create search results
-
-
 
 
 
@@ -869,10 +866,12 @@ class Search:
 
         kind_labels = {
                 "documents" : "gdoc",
+                "markdown" :  "markdown",
                 "issues" :    "issue",
         }
         counts = {
                 "documents" : None,
+                "markdown" : None,
                 "issues" : None,
                 "total" : None
         }
@@ -883,7 +882,9 @@ class Search:
                 results = s.search(q,limit=None)
                 counts[key] = len(results)
 
-        counts['total'] = self.ix.searcher().doc_count_all()
+        ## These two should NOT be different, but they are...
+        #counts['total'] = self.ix.searcher().doc_count_all()
+        counts['total'] = counts['documents'] + counts['markdown'] + counts['issues']
 
         return counts
 
