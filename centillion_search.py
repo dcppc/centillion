@@ -315,7 +315,7 @@ class Search:
     # to a search index.
 
 
-    def add_issue(self, writer, issue, config, update=True):
+    def add_issue(self, writer, issue, gh_access_token, config, update=True):
         """
         Add a Github issue/comment to a search index.
         """
@@ -367,7 +367,7 @@ class Search:
 
 
 
-    def add_markdown(self, writer, d, gh_oauth_token, config, update=True):
+    def add_markdown(self, writer, d, gh_access_token, config, update=True):
         """
         Use a Github markdown document API record
         to add a markdown document's contents to
@@ -391,7 +391,7 @@ class Search:
         # don't forget the headers for private repos!
         # useful: https://bit.ly/2LSAflS
 
-        headers = {'Authorization' : 'token %s'%(gh_oauth_token)}
+        headers = {'Authorization' : 'token %s'%(gh_access_token)}
 
         response = requests.get(furl, headers=headers)
         if response.status_code==200:
@@ -553,12 +553,10 @@ class Search:
 
 
 
-    def update_index_issues(self, gh_oauth_token, config):
+    def update_index_issues(self, gh_access_token, config):
         """
         Update the search index using a collection of 
         Github repo issues and comments.
-
-        gh_oauth_token can also be an access token.
         """
         # Updated algorithm:
         # - get set of indexed ids
@@ -580,25 +578,29 @@ class Search:
         # Get the set of remote ids:
         # ------
         # Start with api object
-        g = Github(gh_oauth_token)
+        g = Github(gh_access_token)
 
         # Now index all issue threads in the user-specified repos
+
+        # Start by collecting all the things
+        remote_issues = set()
+        full_items = {}
 
         # Iterate over each repo 
         list_of_repos = config['repositories']
         for r in list_of_repos:
-
-            # Start by collecting all the things
-            remote_issues = set()
-            full_items = {}
 
             if '/' not in r:
                 err = "Error: specify org/reponame or user/reponame in list of repos"
                 raise Exception(err)
 
             this_org, this_repo = re.split('/',r)
-            org = g.get_organization(this_org)
-            repo = org.get_repo(this_repo)
+            try:
+                org = g.get_organization(this_org)
+                repo = org.get_repo(this_repo)
+            except:
+                print("Error: could not gain access to repository %s"%(r))
+                continue
 
             # Iterate over each issue thread
             issues = repo.get_issues()
@@ -630,7 +632,7 @@ class Search:
             # cop out
             writer.delete_by_term('id',update_issue)
             item = full_items[update_issue]
-            self.add_issue(writer, item, config, update=True)
+            self.add_issue(writer, item, gh_access_token, config, update=True)
             count += 1
 
 
@@ -639,7 +641,7 @@ class Search:
         add_issues = remote_issues - indexed_issues
         for add_issue in add_issues:
             item = full_items[add_issue]
-            self.add_issue(writer, item, config, update=False)
+            self.add_issue(writer, item, gh_access_token, config, update=False)
             count += 1
 
 
@@ -653,8 +655,6 @@ class Search:
         """
         Update the search index using a collection of 
         Markdown files from a Github repo.
-
-        gh_oauth_token can also be an access token.
         """
         EXT = '.md'
 
@@ -699,7 +699,7 @@ class Search:
                 org = g.get_organization(this_org)
                 repo = org.get_repo(this_repo)
             except:
-                print("Error getting access to repository %s"%(r))
+                print("Error: could not gain access to repository %s"%(r))
                 continue
 
 
@@ -712,7 +712,7 @@ class Search:
                 last = commits[0]
                 sha = last.sha
             except GithubException:
-                print("Error getting commits from repository %s"%(r))
+                print("Error: could not get commits from repository %s"%(r))
                 continue
 
             # Get all the docs
