@@ -13,7 +13,7 @@ FOOTER_REPO_NAME = "centillion"
 # Toggle to show Whoosh parsed query
 SHOW_PARSED_QUERY=True
 
-TAGLINE = "Search across the DCPPC"
+TAGLINE = "Search across the Data Commons"
 
 # Flask settings
 DEBUG = True
