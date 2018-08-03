@@ -580,6 +580,48 @@ class Search:
         print("Done, updated %d documents in the index" % count)
 
 
+
+
+    def update_index_markdown(self, gh_oauth_token, config): 
+        """
+        Update the search index using a collection of 
+        Markdown files from a Github repo.
+
+        gh_oauth_token can also be an access token.
+        """
+        # Updated algorithm:
+        # - get set of indexed ids
+        # - get set of remote ids
+        # - drop indexed ids not in remote ids
+        # - index all remote ids
+
+        # Get the set of indexed ids:
+        # ------
+        indexed_issues = set()
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("markdown")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_issues.add(result['id'])
+
+        # Get the set of remote ids:
+        # ------
+        # Start with api object
+        g = Github(gh_oauth_token)
+
+        # Now index all markdown files
+        # in the user-specified repos
+
+        # Iterate over each repo 
+        list_of_repos = config['repositories']
+        for r in list_of_repos:
+
+
+
+
+
+
     # ---------------------------------
     # Search results bundler
 
