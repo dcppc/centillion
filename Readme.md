@@ -1,10 +1,10 @@
 # The Centillion
 
-**the centillion**: a pan-github-markdown-issues-google-docs search engine.
+**centillion**: a pan-github-markdown-issues-google-docs search engine for the Data Commons.
 
 **a centillion**: a very large number consisting of a 1 with 303 zeros after it.
 
-the centillion is 3.03 log-times better than the googol.
+one centillion is 3.03 log-times better than a googol.
 
 ![Screen shot of centillion](img/ss.png)
 
