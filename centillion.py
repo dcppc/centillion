@@ -3,6 +3,8 @@ from subprocess import call
 
 import codecs
 import os, json
+
+from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, request, redirect, url_for, render_template, flash
 from flask_dance.contrib.github import make_github_blueprint, github
 
@@ -25,9 +27,10 @@ You provide:
 
 
 class UpdateIndexTask(object):
-    def __init__(self, diff_index=False):
+    def __init__(self, gh_oauth_token, diff_index=False):
         self.diff_index = diff_index
         thread = threading.Thread(target=self.run, args=())
+        self.gh_oauth_token = gh_oauth_token
         thread.daemon = True
         thread.start()
 
@@ -40,21 +43,22 @@ class UpdateIndexTask(object):
         from get_centillion_config import get_centillion_config
         config = get_centillion_config('config_centillion.json')
 
-        gh_token = os.environ['GITHUB_TOKEN']
-        search.update_index_issues(gh_token, config)
+        search.update_index_issues(self.gh_oauth_token,config)
         search.update_index_gdocs(config)
 
 
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 # Load default config and override config from an environment variable
 app.config.from_pyfile("config_flask.py")
 
-github_bp = make_github_blueprint(
-                        client_id = os.environ.get('GITHUB_OAUTH_CLIENT_ID'),
-                        client_secret = os.environ.get('GITHUB_OAUTH_CLIENT_SECRET'),
-                        scope='read:org')
+github_bp = make_github_blueprint()
+#github_bp = make_github_blueprint(
+#                        client_id = os.environ.get('GITHUB_OAUTH_CLIENT_ID'),
+#                        client_secret = os.environ.get('GITHUB_OAUTH_CLIENT_SECRET'),
+#                        scope='read:org')
 
 app.register_blueprint(github_bp, url_prefix="/login")
 
@@ -72,21 +76,29 @@ def index():
     if not github.authorized:
         return redirect(url_for("github.login"))
 
-    username = github.get("/user").json()['login']
+    else:
 
-    rsp = app.config["RESULT_STATIC_PATH"]
-    resp = github.get("/user/orgs")
-    if resp.ok:
+        username = github.get("/user").json()['login']
 
-        all_orgs = resp.json()
-        for org in all_orgs:
-            if org['login']=='dcppc':
+        resp = github.get("/user/orgs")
+        if resp.ok:
 
-                copper_team_id = '2700235'
+            # If they are in team copper, redirect to search.
+            # Otherwise, hit em with a 403
+            all_orgs = resp.json()
+            for org in all_orgs:
+                if org['login']=='dcppc':
+                    copper_team_id = '2700235'
+                    mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
+                    if mresp.status_code==204:
 
-                mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
-                if mresp.status_code==204:
-                    return redirect(url_for("search", query="", fields=""))
+                        # --------------------
+                        # Business as usual
+                        return redirect(url_for("search", query="", fields=""))
+
+            return contents403
+
+        return contents404
 
 ### @app.route('/')
 ### def index():
@@ -100,7 +112,6 @@ def search():
 
     username = github.get("/user").json()['login']
 
-    rsp = app.config["RESULT_STATIC_PATH"]
     resp = github.get("/user/orgs")
     if resp.ok:
 
@@ -113,6 +124,8 @@ def search():
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
 
+                    # --------------------
+                    # Business as usual
                     query = request.args['query']
                     fields = request.args.get('fields')
                     if fields == 'None':
@@ -146,7 +159,6 @@ def update_index():
 
     username = github.get("/user").json()['login']
 
-    rsp = app.config["RESULT_STATIC_PATH"]
     resp = github.get("/user/orgs")
     if resp.ok:
 
@@ -159,8 +171,11 @@ def update_index():
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
 
-                    rebuild = request.args.get('rebuild')
-                    UpdateIndexTask(diff_index=False)
+                    gh_oauth_token = github.token['access_token']
+
+                    # --------------------
+                    # Business as usual
+                    UpdateIndexTask(gh_oauth_token, diff_index=False)
                     flash("Rebuilding index, check console output")
                     return render_template("controlpanel.html", 
                                            totals={})
@@ -177,7 +192,6 @@ def control_panel():
 
     username = github.get("/user").json()['login']
 
-    rsp = app.config["RESULT_STATIC_PATH"]
     resp = github.get("/user/orgs")
     if resp.ok:
 
