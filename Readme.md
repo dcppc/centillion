@@ -11,8 +11,9 @@ one centillion is 3.03 log-times better than a googol.
 
 ## what is it
 
-The centillion is a search engine built using [whoosh](https://whoosh.readthedocs.io/en/latest/intro.html),
-a Python library for building search engines.
+Centillion (https://github.com/dcppc/centillion) is a search engine that can index 
+three kinds of collections: Google Documents, Github issues, and Markdown files in 
+Github repos.
 
 We define the types of documents the centillion should index,
 what info and how. The centillion then builds and
@@ -24,6 +25,30 @@ defined in `centillion.py`.
 
 The centillion keeps it simple.
 
+## authentication layer
+
+Centillion lives behind a Github authentication layer, implemented with 
+[flask-dance](https://github.com/singingwolfboy/flask-dance). It is currently
+accessible to Team Copper only. When you first visit the site it will ask you
+to log in with your Github credentials to verify you have permission.
+
+## technologies
+
+Centillion is a Python program built using whoosh (search engine library). It
+indexes the full text of docx files in Google Documents, just the filenames for
+non-docx files. The full text of issues and their comments are indexed, and
+results are grouped by issue. Centillion requires Google Drive and Github OAuth
+apps. Once you provide credentials to Flask you're all set to go. 
+
+
+## control panel
+
+There's also a control panel at <https://search.nihdatacommons.us/control_panel> 
+that allows you to rebuild the search index from scratch (the Google Drive indexing 
+takes a while).
+
+<img src="img/cp.png" width="400px" />
+
 
 ## quickstart (with Github auth)
 
@@ -31,6 +56,8 @@ Start by creating a Github OAuth application.
 Get the public and private application key 
 (client token and client secret token)
 from the Github application's page.
+You will also need a Github access token
+(in addition to the app tokens).
 
 When you create the application, set the callback
 URL to `/login/github/authorized`, as in:
@@ -64,12 +91,4 @@ If you are having problems with your callback URL being treated
 as HTTP by Github, even though there is an HTTPS address, and
 everything else seems fine, try deleting the Github OAuth app
 and creating a new one.
-
-
-## more info
-
-For more info see the documentation: <https://charlesreid1.github.io/centillion>
-
-
-
 
