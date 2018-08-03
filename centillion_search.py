@@ -367,6 +367,62 @@ class Search:
 
 
 
+    def add_markdown(self, writer, md, config, update=True):
+        """
+        Use a Github markdown document API record
+        to add a markdown document's contents to
+        the search index.
+        """
+        repo = d['repo']
+        org = d['org']
+        repo_name = org + "/" + repo
+        repo_url = "https://github.com/" + repo_name
+
+        fpath = d['path']
+        furl = d['url']
+        fsha = d['sha']
+        _, fname = os.path.split(fpath)
+        _, fext = os.path.splitext(fpath)
+
+        print("Indexing markdown doc %s"%(fname))
+
+        # Unpack the requests response and decode the content
+        response = requests.get(furl)
+        jresponse = response.json()
+        content = ""
+        try:
+            binary_content = re.sub('\n','',jresponse['content'])
+            content = base64.b64decode(binary_content).decode('utf-8')
+
+        except KeyError:
+            print(" > XXXXXXXX Failed to extract 'content' field. You probably hit the rate limit.")
+            return 
+
+        # Now create the actual search index record
+        indexed_time = clean_timestamp(datetime.now())
+
+        # Add one document per issue thread,
+        # containing entire text of thread.
+        writer.add_document(
+                id = fsha,
+                kind = 'markdown',
+                created_time = '',
+                modified_time = '',
+                indexed_time = indexed_time,
+                title = fname,
+                url = furl,
+                mimetype='',
+                owner_email='',
+                owner_name='',
+                repo_name = repo_name,
+                repo_url = repo_url,
+                github_user = '',
+                issue_title = '',
+                issue_url = '',
+                content = content
+        )
+
+
 
     # ------------------------------
     # Define how to update search index
@@ -597,13 +653,13 @@ class Search:
 
         # Get the set of indexed ids:
         # ------
-        indexed_issues = set()
+        indexed_ids = set()
         p = QueryParser("kind", schema=self.ix.schema)
         q = p.parse("markdown")
         with self.ix.searcher() as s:
             results = s.search(q,limit=None)
             for result in results:
-                indexed_issues.add(result['id'])
+                indexed_ids.add(result['id'])
 
         # Get the set of remote ids:
         # ------
@@ -617,8 +673,80 @@ class Search:
         list_of_repos = config['repositories']
         for r in list_of_repos:
 
+            # Start by collecting all the things
+            remote_ids = set()
+            full_items = {}
+
+            if '/' not in r:
+                err = "Error: specify org/reponame or user/reponame in list of repos"
+                raise Exception(err)
+
+            this_org, this_repo = re.split('/',r)
+            org = g.get_organization(this_org)
+            repo = org.get_repo(this_repo)
+
+            # ---------
+            # begin markdown-specific code
+
+            # Get head commit
+            commits = repo.get_commits()
+            last = commits[0]
+            sha = last.sha
+
+            # Get all the docs
+            tree = repo.get_git_tree(sha=sha, recursive=True)
+            docs = tree.raw_data['tree']
+
+            for d in docs:
+
+                # For each doc, get the file extension
+                # If it matches EXT, download the file
+                _, fname = os.path.split(fpath)
+                _, fext = os.path.splitext(fpath)
+
+                if fext==EXT:
+
+                    key = d['sha']
+                    d['org'] = this_org
+                    d['repo'] = this_repo
+                    value = d
+
+                    # Stash the doc for later
+                    full_items[key] = value
+
+        writer = self.ix.writer()
+        count = 0
 
 
+        # Drop any id in indexed_ids
+        # not in remote_ids
+        drop_ids = indexed_ids - remote_ids
+        for drop_id in drop_ids:
+            writer.delete_by_term('id',drop_id)
+
+
+        # Update any id in indexed_ids
+        # and in remote_ids
+        update_ids = indexed_ids & remote_ids
+        for update_id in update_ids:
+            # cop out
+            writer.delete_by_term('id',update_id)
+            item = full_items[update_id]
+            self.add_issue(writer, item, config, update=True)
+            count += 1
+
+
+        # Add any issue not in indexed_ids
+        # and in remote_ids
+        add_ids = remote_ids - indexed_ids
+        for add_id in add_ids:
+            item = full_items[add_id]
+            self.add_markdown(writer, item, config, update=False)
+            count += 1
+
+
+        writer.commit()
+        print("Done, updated %d markdown documents in the index" % count)
 
 
 
