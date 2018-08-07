@@ -439,6 +439,10 @@ class Search:
     # Define how to update search index
     # using different kinds of collections
 
+
+    # ------------------------------
+    # Google Drive Files/Documents
+
     def update_index_gdocs(self, 
                            config):
         """
@@ -552,6 +556,8 @@ class Search:
         print("Done, updated %d documents in the index" % count)
 
 
+    # ------------------------------
+    # Github Issues/Comments
 
     def update_index_issues(self, gh_access_token, config):
         """
@@ -650,6 +656,8 @@ class Search:
 
 
 
+    # ------------------------------
+    # Github Markdown Files
 
     def update_index_markdown(self, gh_access_token, config): 
         """
@@ -772,6 +780,16 @@ class Search:
 
         writer.commit()
         print("Done, updated %d markdown documents in the index" % count)
+
+
+
+    # ------------------------------
+    # Groups.io Emails
+
+
+    #def update_index_markdown(self, gh_access_token, config): 
+
+
 
 
 

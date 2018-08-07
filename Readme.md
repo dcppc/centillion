@@ -1,6 +1,6 @@
 # The Centillion
 
-**centillion**: a pan-github-markdown-issues-google-docs search engine for the Data Commons.
+**centillion**: a pan-github-markdown-issues-google-docs search engine.
 
 **a centillion**: a very large number consisting of a 1 with 303 zeros after it.
 
@@ -28,9 +28,9 @@ The centillion keeps it simple.
 ## authentication layer
 
 Centillion lives behind a Github authentication layer, implemented with 
-[flask-dance](https://github.com/singingwolfboy/flask-dance). It is currently
-accessible to Team Copper only. When you first visit the site it will ask you
-to log in with your Github credentials to verify you have permission.
+[flask-dance](https://github.com/singingwolfboy/flask-dance). When you first
+visit the site it will ask you to authenticate with Github so that it can 
+verify you have permission to access the site.
 
 ## technologies
 
