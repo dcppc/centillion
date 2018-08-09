@@ -218,6 +218,7 @@ def oops(e):
     return contents404
 
 if __name__ == '__main__':
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
+    ## if running local instance, set to true
+    #os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
     app.run(host="0.0.0.0",port=5000)
 
