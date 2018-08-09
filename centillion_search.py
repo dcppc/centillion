@@ -568,7 +568,7 @@ class Search:
         # ------
         indexed_issues = set()
         p = QueryParser("kind", schema=self.ix.schema)
-        q = p.parse("gdoc")
+        q = p.parse("issue")
         with self.ix.searcher() as s:
             results = s.search(q,limit=None)
             for result in results:
