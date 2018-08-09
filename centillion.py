@@ -55,11 +55,11 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 # Load default config and override config from an environment variable
 app.config.from_pyfile("config_flask.py")
 
-github_bp = make_github_blueprint()
-#github_bp = make_github_blueprint(
-#                        client_id = os.environ.get('GITHUB_OAUTH_CLIENT_ID'),
-#                        client_secret = os.environ.get('GITHUB_OAUTH_CLIENT_SECRET'),
-#                        scope='read:org')
+#github_bp = make_github_blueprint()
+github_bp = make_github_blueprint(
+                        client_id = os.environ.get('GITHUB_OAUTH_CLIENT_ID'),
+                        client_secret = os.environ.get('GITHUB_OAUTH_CLIENT_SECRET'),
+                        scope='read:org')
 
 app.register_blueprint(github_bp, url_prefix="/login")
 
@@ -218,7 +218,7 @@ def oops(e):
     return contents404
 
 if __name__ == '__main__':
-    ## if running local instance, set to true
-    #os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
+    # if running local instance, set to true
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
     app.run(host="0.0.0.0",port=5000)
 
