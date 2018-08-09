@@ -29,8 +29,7 @@ class GDrive(object):
     ):
         """
         Set up the Google Drive API instance.
-        Factory method: create it and hand it over.
-        Then we're finished.
+        Factory method: create it here, hand it over in get_service().
         """
         self.credentials_file = credentials_file
         self.client_secret_file = client_secret_file
@@ -40,6 +39,9 @@ class GDrive(object):
         self.store = file.Storage(credentials_file)
 
     def get_service(self):
+        """
+        Return an instance of the Google Drive API service.
+        """
 
         creds = self.store.get()
         if not creds or creds.invalid:
