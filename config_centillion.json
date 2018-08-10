@@ -6,10 +6,9 @@
         "dcppc/organize",
         "dcppc/dcppc-bot",
         "dcppc/full-stacks",
-        "dcppc/markdown-issues",
         "dcppc/design-guidelines-discuss",
         "dcppc/dcppc-deliverables",
-        "dcppc/milestones",
+        "dcppc/dcppc-milestones",
         "dcppc/crosscut-metadata",
         "dcppc/lucky-penny",
         "dcppc/dcppc-workshops",
@@ -20,6 +19,9 @@
         "dcppc/2018-june-workshop",
         "dcppc/2018-july-workshop",
         "dcppc/2018-august-workshop",
-        "dcppc/2018-september-workshop"
+        "dcppc/2018-september-workshop",
+        "dcppc/design-guidelines",
+        "dcppc/2018-may-workshop",
+        "dcppc/centillion"
     ]
 }
