@@ -266,7 +266,6 @@ class Search:
 
             # If export was successful, read contents of markdown
             # into the content variable.
-            # into the content variable.
             if os.path.isfile(fullpath_output):
                 # Export was successful
                 with codecs.open(fullpath_output, encoding='utf-8') as f:
@@ -276,11 +275,13 @@ class Search:
             # No matter what happens, clean up.
             print(" > Cleaning up \"%s\""%item['name'])
 
-            subprocess.call(['rm','-fr',fullpath_output])
+            ## test
             #print(" ".join(['rm','-fr',fullpath_output]))
-
-            subprocess.call(['rm','-fr',fullpath_input])
             #print(" ".join(['rm','-fr',fullpath_input]))
+
+            # do it
+            subprocess.call(['rm','-fr',fullpath_output])
+            subprocess.call(['rm','-fr',fullpath_input])
 
             if update:
                 print(" > Removing old record")
@@ -367,12 +368,14 @@ class Search:
 
 
 
-    def add_markdown(self, writer, d, gh_access_token, config, update=True):
+
+    def add_ghfile(self, writer, d, gh_access_token, config, update=True):
         """
-        Use a Github markdown document API record
-        to add a markdown document's contents to
-        the search index.
+        Use a Github file API record to add a filename
+        to the search index.
         """
+        MARKDOWN_EXTS = ['.md','.markdown']
+
         repo = d['repo']
         org = d['org']
         repo_name = org + "/" + repo
@@ -384,54 +387,79 @@ class Search:
         _, fname = os.path.split(fpath)
         _, fext = os.path.splitext(fpath)
 
-        print("Indexing markdown doc %s from repo %s"%(fname,repo_name))
 
-        # Unpack the requests response and decode the content
-        # 
-        # don't forget the headers for private repos!
-        # useful: https://bit.ly/2LSAflS
-
-        headers = {'Authorization' : 'token %s'%(gh_access_token)}
-
-        response = requests.get(furl, headers=headers)
-        if response.status_code==200:
-            jresponse = response.json()
-            content = ""
-            try:
-                binary_content = re.sub('\n','',jresponse['content'])
-                content = base64.b64decode(binary_content).decode('utf-8')
-            except KeyError:
-                print(" > XXXXXXXX Failed to extract 'content' field. You probably hit the rate limit.")
-
-        else:
-            print(" > XXXXXXXX Failed to reach file URL. There may be a problem with authentication/headers.")
-            return 
-
-        # Now create the actual search index record
         indexed_time = clean_timestamp(datetime.now())
 
-        usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
+        if fext in MARKDOWN_EXTS:
+            print("Indexing markdown doc %s from repo %s"%(fname,repo_name))
 
-        # Add one document per issue thread,
-        # containing entire text of thread.
-        writer.add_document(
-                id = fsha,
-                kind = 'markdown',
-                created_time = '',
-                modified_time = '',
-                indexed_time = indexed_time,
-                title = fname,
-                url = usable_url,
-                mimetype='',
-                owner_email='',
-                owner_name='',
-                repo_name = repo_name,
-                repo_url = repo_url,
-                github_user = '',
-                issue_title = '',
-                issue_url = '',
-                content = content
-        )
+            # Unpack the requests response and decode the content
+            # 
+            # don't forget the headers for private repos!
+            # useful: https://bit.ly/2LSAflS
+
+            headers = {'Authorization' : 'token %s'%(gh_access_token)}
+
+            response = requests.get(furl, headers=headers)
+            if response.status_code==200:
+                jresponse = response.json()
+                content = ""
+                try:
+                    binary_content = re.sub('\n','',jresponse['content'])
+                    content = base64.b64decode(binary_content).decode('utf-8')
+                except KeyError:
+                    print(" > XXXXXXXX Failed to extract 'content' field. You probably hit the rate limit.")
+
+            else:
+                print(" > XXXXXXXX Failed to reach file URL. There may be a problem with authentication/headers.")
+                return 
+
+            usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
+
+            # Now create the actual search index record
+            writer.add_document(
+                    id = fsha,
+                    kind = 'markdown',
+                    created_time = '',
+                    modified_time = '',
+                    indexed_time = indexed_time,
+                    title = fname,
+                    url = usable_url,
+                    mimetype='',
+                    owner_email='',
+                    owner_name='',
+                    repo_name = repo_name,
+                    repo_url = repo_url,
+                    github_user = '',
+                    issue_title = '',
+                    issue_url = '',
+                    content = content
+            )
+
+        else:
+            print("Indexing github file %s from repo %s"%(fname,repo_name))
+
+            key = fname+"_"+fsha
+
+            # Now create the actual search index record
+            writer.add_document(
+                    id = key,
+                    kind = 'ghfile',
+                    created_time = '',
+                    modified_time = '',
+                    indexed_time = indexed_time,
+                    title = fname,
+                    url = repo_url,
+                    mimetype='',
+                    owner_email='',
+                    owner_name='',
+                    repo_name = repo_name,
+                    repo_url = repo_url,
+                    github_user = '',
+                    issue_title = '',
+                    issue_url = '',
+                    content = ''
+            )
 
 
 
@@ -659,13 +687,12 @@ class Search:
     # ------------------------------
     # Github Markdown Files
 
-    def update_index_markdown(self, gh_access_token, config): 
+    def update_index_ghfiles(self, gh_access_token, config): 
         """
         Update the search index using a collection of 
-        Markdown files from a Github repo.
+        files (and, separately, Markdown files) from 
+        a Github repo.
         """
-        EXT = '.md'
-
         # Updated algorithm:
         # - get set of indexed ids
         # - get set of remote ids
@@ -676,6 +703,12 @@ class Search:
         # ------
         indexed_ids = set()
         p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("ghfiles")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_ids.add(result['id'])
+
         q = p.parse("markdown")
         with self.ix.searcher() as s:
             results = s.search(q,limit=None)
@@ -687,8 +720,7 @@ class Search:
         # Start with api object
         g = Github(gh_access_token)
 
-        # Now index all markdown files
-        # in the user-specified repos
+        # Now index all the files.
 
         # Start by collecting all the things
         remote_ids = set()
@@ -711,9 +743,6 @@ class Search:
                 continue
 
 
-            # ---------
-            # begin markdown-specific code
-
             # Get head commit
             commits = repo.get_commits()
             try:
@@ -726,30 +755,28 @@ class Search:
             # Get all the docs
             tree = repo.get_git_tree(sha=sha, recursive=True)
             docs = tree.raw_data['tree']
-            print("Parsing doc ids from repository %s"%(r))
+            print("Parsing file ids from repository %s"%(r))
 
             for d in docs:
 
                 # For each doc, get the file extension
-                # If it matches EXT, download the file
+                # and decide what to do with it.
+
                 fpath = d['path']
                 _, fname = os.path.split(fpath)
                 _, fext = os.path.splitext(fpath)
 
-                if fext==EXT:
+                key = d['sha']
 
-                    key = d['sha']
-                    d['org'] = this_org
-                    d['repo'] = this_repo
-                    value = d
+                d['org'] = this_org
+                d['repo'] = this_repo
+                value = d
 
-                    # Stash the doc for later
-                    remote_ids.add(key)
-                    full_items[key] = value
+                remote_ids.add(key)
+                full_items[key] = value
 
         writer = self.ix.writer()
         count = 0
-
 
         # Drop any id in indexed_ids
         # not in remote_ids
@@ -765,7 +792,7 @@ class Search:
             # cop out: just delete and re-add
             writer.delete_by_term('id',update_id)
             item = full_items[update_id]
-            self.add_markdown(writer, item, gh_access_token, config, update=True)
+            self.add_ghfile(writer, item, gh_access_token, config, update=True)
             count += 1
 
 
@@ -774,12 +801,12 @@ class Search:
         add_ids = remote_ids - indexed_ids
         for add_id in add_ids:
             item = full_items[add_id]
-            self.add_markdown(writer, item, gh_access_token, config, update=False)
+            self.add_ghfile(writer, item, gh_access_token, config, update=False)
             count += 1
 
 
         writer.commit()
-        print("Done, updated %d markdown documents in the index" % count)
+        print("Done, updated %d Github files in the index" % count)
 
 
 
@@ -900,27 +927,20 @@ class Search:
     def get_document_total_count(self):
         p = QueryParser("kind", schema=self.ix.schema)
 
-        kind_labels = {
-                "documents" : "gdoc",
-                "markdown" :  "markdown",
-                "issues" :    "issue",
-        }
         counts = {
-                "documents" : None,
+                "gdoc" : None,
                 "markdown" : None,
+                "ghfile" : None,
                 "issues" : None,
                 "total" : None
         }
-        for key in kind_labels:
-            kind = kind_labels[key]
-            q = p.parse(kind)
+        for key in counts.keys():
+            q = p.parse(key)
             with self.ix.searcher() as s:
                 results = s.search(q,limit=None)
                 counts[key] = len(results)
 
-        ## These two should NOT be different, but they are...
-        #counts['total'] = self.ix.searcher().doc_count_all()
-        counts['total'] = counts['documents'] + counts['markdown'] + counts['issues']
+        counts['total'] = sum(counts[k] for k in counts.keys())
 
         return counts
 
