@@ -86,9 +86,11 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-xs-12 info">
-                                <b>Indexing:</b> <span class="badge">{{totals["documents"]}}</span> Google Documents,
+                                <b>Indexing:</b> <span
+                                    class="badge">{{totals["gdoc"]}}</span> Google Documents,
                                 <span class="badge">{{totals["issues"]}}</span> Github issues,
-                                <span class="badge">{{totals["markdown"]}}</span> markdown files.
+                                <span class="badge">{{totals["ghfiles"]}}</span> Github files,
+                                <span class="badge">{{totals["markdown"]}}</span> Github markdown files.
                             </div>
                         </div>
                 </div>
@@ -107,14 +109,15 @@
 
                     <div class="url">
                         {% if e.kind=="gdoc" %}
-                            {% if e.mimetype=="document" %}
+                            {% if e.mimetype=="" %}
                                 <b>Google Document:</b>
                                 <a href='{{e.url}}'>{{e.title}}</a>
-                                (Type: {{e.mimetype}}, Owner: {{e.owner_name}}, {{e.owner_email}})
+                                (Owner: {{e.owner_name}}, {{e.owner_email}})<br />
+                                <b>Document Type</b>: {{e.mimetype}}
                             {% else %}
                                 <b>Google Drive:</b>
                                 <a href='{{e.url}}'>{{e.title}}</a>
-                                (Type: {{e.mimetype}}, Owner: {{e.owner_name}}, {{e.owner_email}})
+                                (Owner: {{e.owner_name}}, {{e.owner_email}})
                             {% endif %}
 
                         {% elif e.kind=="issue" %}
