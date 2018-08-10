@@ -381,12 +381,15 @@ class Search:
         repo_name = org + "/" + repo
         repo_url = "https://github.com/" + repo_name
 
-        fpath = d['path']
-        furl = d['url']
-        fsha = d['sha']
-        _, fname = os.path.split(fpath)
-        _, fext = os.path.splitext(fpath)
-
+        try:
+            fpath = d['path']
+            furl = d['url']
+            fsha = d['sha']
+            _, fname = os.path.split(fpath)
+            _, fext = os.path.splitext(fpath)
+        except:
+            print(" > XXXXXXXX Failed to find file info.")
+            return
 
         indexed_time = clean_timestamp(datetime.now())
 
