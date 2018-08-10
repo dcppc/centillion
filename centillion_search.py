@@ -932,9 +932,9 @@ class Search:
 
         counts = {
                 "gdoc" : None,
-                "markdown" : None,
+                "issue" : None,
                 "ghfile" : None,
-                "issues" : None,
+                "markdown" : None,
                 "total" : None
         }
         for key in counts.keys():
