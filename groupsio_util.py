@@ -33,11 +33,7 @@ class GroupsIOArchivesCrawler(object):
 
         Call crawl_group_archives() first!
         """
-        if self.crawled_archives:
-            return self.archives
-        else:
-            self.crawl_group_archives()
-            return self.archives
+        return self.archives
 
 
     def get_subgroups_list(self):
@@ -144,6 +140,7 @@ class GroupsIOArchivesCrawler(object):
         """
         self.archives = []
 
+        prefix = "https://{group}.groups.io".format(group=self.group_name)
 
         url = self.url.format(group=self.group_name, 
                               subgroup=subgroup_name)
@@ -170,24 +167,22 @@ class GroupsIOArchivesCrawler(object):
 
         if next_url is None:
             return
+        else:
+            full_next_url = prefix + next_url
 
         # Now click the next button
-        #while requests.get(next button link) returns ok:
+        next_request = requests.get(full_next_url)
 
+        while next_request.status_code==200:
+            items = self.extract_archive_page_items_(next_request)
+            next_url = self.get_next_url_(next_request)
+            self.add_items_to_archives_(session,subgroup_name,items)
+            if next_url is None:
+                return
+            else:
+                full_next_url = prefix + next_url
+            next_request = requests.get(full_next_url)
         
-        # 
-        # remaining pages:
-        # while requests.get(next button link) returns ok:
-        #    Extract a list of (title, link) items
-        #    For each (title,link) item,
-        #       Do some processing:
-        #           Visit the link and assemble a dictionary
-        #           Content filtering
-        #           Title, id, permalink, author, content, date created, date indexed
-        #           Return ful email thread item
-        #    Add email thread item to archives 
-
-
 
 
     def add_items_to_archives_(self,session,subgroup_name,items):
@@ -323,6 +318,8 @@ class GroupsIOArchivesCrawler(object):
         """
         soup = BeautifulSoup(response.content,"html.parser")
         rows = soup.find_all('tr',{'class':'test'})
+        if 'rate limited' in soup.text:
+            raise Exception("Error: rate limit in place for Groups.io")
 
         results = []
         for row in rows:
@@ -330,6 +327,7 @@ class GroupsIOArchivesCrawler(object):
             subject = row.find('span',{'class':'subject'})
             title = subject.get_text()
             link = row.find('a')['href']
+            print(title)
             results.append((title,link))
 
         return results
@@ -351,8 +349,8 @@ class GroupsIOArchivesCrawler(object):
                 # empty link, abort
                 return None
         except AttributeError:
-            print(chevron)
-            return
+            # I don't even now
+            return None
 
         if chevron.parent.parent.has_attr('class') and 'disabled' in chevron.parent.parent['class']:
             # no next link, abort

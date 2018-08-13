@@ -837,6 +837,7 @@ class Search:
 
         # - email object is sent off to add email method
 
+        print("Finished indexing groups.io emails")
 
 
     # ---------------------------------
