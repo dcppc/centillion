@@ -1,3 +1,4 @@
+import requests, os
 from bs4 import BeautifulSoup
 
 class GroupsIOArchivesCrawler(object):
@@ -7,7 +8,7 @@ class GroupsIOArchivesCrawler(object):
     archives of a group.
 
     credentials (dictionary):
-        groupsio_access_token :     api access token
+        groupsio_token :     api access token
         groupsio_username     :     username
         groupsio_password     :     password
     """
@@ -45,12 +46,12 @@ class GroupsIOArchivesCrawler(object):
         """
         subgroups_url = 'https://api.groups.io/v1/getsubgroups'
 
-        key = self.credentials['groupsio_access_token']
+        key = self.credentials['groupsio_token']
 
         data = [('group_name', self.group_name),
                 ('limit',100)
         ]
-        response = requests.post(url,
+        response = requests.post(subgroups_url,
                                  data=data,
                                  auth=(key,''))
         response = response.json()
@@ -83,8 +84,8 @@ class GroupsIOArchivesCrawler(object):
                     password = self.credentials['groupsio_password'],
                     timezone = 'America/Los_Angeles')
 
-        r = s.post(self.login_url,
-                   data = data)
+        r = session.post(self.login_url,
+                         data = data)
 
         csrf = self.get_csrf(r)
 
@@ -255,5 +256,25 @@ class GroupsIOArchivesCrawler(object):
 
         return results
 
+
+
+    def get_csrf(self,resp):
+        """
+        Find the CSRF token embedded in the subgroup page
+        """
+        soup = BeautifulSoup(resp.text,'html.parser')
+        csrf = ''
+        for i in soup.find_all('input'):
+            # Note that i.name is different from i['name']
+            # the first is the actual tag,
+            # the second is the attribute name="xyz"
+            if i['name']=='csrf':
+                csrf = i['value']
+        
+        if csrf=='':
+            err = "ERROR: Could not find csrf token on page."
+            raise Exception(err)
+    
+        return csrf
 
 

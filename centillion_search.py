@@ -316,7 +316,7 @@ class Search:
     # to a search index.
 
 
-    def add_issue(self, writer, issue, gh_access_token, config, update=True):
+    def add_issue(self, writer, issue, gh_token, config, update=True):
         """
         Add a Github issue/comment to a search index.
         """
@@ -369,7 +369,7 @@ class Search:
 
 
 
-    def add_ghfile(self, writer, d, gh_access_token, config, update=True):
+    def add_ghfile(self, writer, d, gh_token, config, update=True):
         """
         Use a Github file API record to add a filename
         to the search index.
@@ -401,7 +401,7 @@ class Search:
             # don't forget the headers for private repos!
             # useful: https://bit.ly/2LSAflS
 
-            headers = {'Authorization' : 'token %s'%(gh_access_token)}
+            headers = {'Authorization' : 'token %s'%(gh_token)}
 
             response = requests.get(furl, headers=headers)
             if response.status_code==200:
@@ -590,7 +590,7 @@ class Search:
     # ------------------------------
     # Github Issues/Comments
 
-    def update_index_issues(self, gh_access_token, config):
+    def update_index_issues(self, gh_token, config):
         """
         Update the search index using a collection of 
         Github repo issues and comments.
@@ -615,7 +615,7 @@ class Search:
         # Get the set of remote ids:
         # ------
         # Start with api object
-        g = Github(gh_access_token)
+        g = Github(gh_token)
 
         # Now index all issue threads in the user-specified repos
 
@@ -669,7 +669,7 @@ class Search:
             # cop out
             writer.delete_by_term('id',update_issue)
             item = full_items[update_issue]
-            self.add_issue(writer, item, gh_access_token, config, update=True)
+            self.add_issue(writer, item, gh_token, config, update=True)
             count += 1
 
 
@@ -678,7 +678,7 @@ class Search:
         add_issues = remote_issues - indexed_issues
         for add_issue in add_issues:
             item = full_items[add_issue]
-            self.add_issue(writer, item, gh_access_token, config, update=False)
+            self.add_issue(writer, item, gh_token, config, update=False)
             count += 1
 
 
@@ -690,7 +690,7 @@ class Search:
     # ------------------------------
     # Github Files
 
-    def update_index_ghfiles(self, gh_access_token, config): 
+    def update_index_ghfiles(self, gh_token, config): 
         """
         Update the search index using a collection of 
         files (and, separately, Markdown files) from 
@@ -721,7 +721,7 @@ class Search:
         # Get the set of remote ids:
         # ------
         # Start with api object
-        g = Github(gh_access_token)
+        g = Github(gh_token)
 
         # Now index all the files.
 
@@ -795,7 +795,7 @@ class Search:
             # cop out: just delete and re-add
             writer.delete_by_term('id',update_id)
             item = full_items[update_id]
-            self.add_ghfile(writer, item, gh_access_token, config, update=True)
+            self.add_ghfile(writer, item, gh_token, config, update=True)
             count += 1
 
 
@@ -804,7 +804,7 @@ class Search:
         add_ids = remote_ids - indexed_ids
         for add_id in add_ids:
             item = full_items[add_id]
-            self.add_ghfile(writer, item, gh_access_token, config, update=False)
+            self.add_ghfile(writer, item, gh_token, config, update=False)
             count += 1
 
 
@@ -964,6 +964,9 @@ class Search:
         return counts
 
 if __name__ == "__main__":
+
+    raise Exception("Error: main method not implemented (fix groupsio credentials first)")
+
     search = Search("search_index")
 
     from get_centillion_config import get_centillion_config
