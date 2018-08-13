@@ -1,4 +1,4 @@
-import requests, os
+import requests, os, re
 from bs4 import BeautifulSoup
 
 class GroupsIOArchivesCrawler(object):
@@ -60,7 +60,7 @@ class GroupsIOArchivesCrawler(object):
         subgroups = {}
         for group in data:
             k = group['id']
-            v = group['name']
+            v = re.sub(r'dcppc\+','',group['name'])
             subgroups[k] = v
 
         return subgroups
@@ -138,16 +138,20 @@ class GroupsIOArchivesCrawler(object):
         - while next button is not greyed out,
         - click the next button
 
+        everything stored in self.archives:
+        list of dictionaries.
+
         """
+        self.archives = []
+
+
         url = self.url.format(group=self.group_name, 
                               subgroup=subgroup_name)
 
         # ------------------------------
 
-        s = session
-
         # Now get the first page
-        r = s.get(url)
+        r = session.get(url)
 
         # ------------------------------
         # Fencepost algorithm:
@@ -155,69 +159,23 @@ class GroupsIOArchivesCrawler(object):
         # First page:
 
         # Extract a list of (title, link) items
-        import pdb; pdb.set_trace()
-        # r is 404...
         items = self.extract_archive_page_items_(r)
 
-        for (title, link) in items:
-            # Get the thread page:
-            r = s.get(link)
+        # Get the next link
+        next_url = self.get_next_url_(r)
 
-            # Do processing:
+        # Now add each item to the archive of threads,
+        # then find the next button.
+        self.add_items_to_archives_(session,subgroup_name,items)
 
-            # what are we extracting:
-            # 1. thread number
-            # 2. permalink
-            # 3. content/text (filtered)
+        if next_url is None:
+            return
 
-            # 1. topic/thread number:
-            # <a rel="nofollow" href="">
-            # where link is:
-            # https://{group}.groups.io/g/{subgroup}/topic/{topic_id}
-            # example topic id: 24209140
-            #
-            # ugly links are in the form 
-            # https://dcppc.groups.io/g/{subgroup}/topic/some_text_here/{thread_id}?p=,,,,,1,2,3,,,4,,5
-            # split at ?, 0th portion
-            # then split at /, last (-1th) portion
-            topic_id = link.split('?')[0].split('/')[-1]
+        # Now click the next button
+        #while requests.get(next button link) returns ok:
 
-            # 2.permalink:
-            # - current link is ugly link
-            # - permalink is the nice one
-            # - topic id is available from the ugly link
-            # https://{group}.groups.io/g/{subgroup}/topic/{topic_id}
-
-            permalink_template = "https://{group}.groups.io/g/{subgroup}/topic/{topic_id}"
-            permalink = permalink_template.format(
-                    group = self.group_name,
-                    subgroup = subgroup, 
-                    topic_id = topic_id
-            )
-
-            # 3. content/text:
-            # - Use the nice link to get the content of the thread
-            # - Content filtering
-            # - Extracting relevant information
-            # - Bundling everything into email thread item
-            # - (schema?)
-
-
-
-
-        # This is the first in a paginated list of pages.
+        
         # 
-        # Fencepost algorithm:
-        # 
-        # first page:
-        # Extract a list of (title, link) items
-        # For each (title,link) item,
-        #    Do some processing:
-        #        Visit the link and assemble a dictionary
-        #        Content filtering
-        #        Title, id, permalink, author, content, date created, date indexed
-        #        Return ful email thread item
-        #
         # remaining pages:
         # while requests.get(next button link) returns ok:
         #    Extract a list of (title, link) items
@@ -231,8 +189,127 @@ class GroupsIOArchivesCrawler(object):
 
 
 
-        print(r)
 
+    def add_items_to_archives_(self,session,subgroup_name,items):
+        """
+        Given a set of items from a list of threads,
+        items being title and link,
+        get the page and store all info
+        in self.archives variable
+        (list of dictionaries)
+        """
+        for (title, link) in items:
+            # Get the thread page:
+            prefix = "https://{group}.groups.io".format(group=self.group_name)
+            full_link = prefix + link
+            r = session.get(full_link)
+            soup = BeautifulSoup(r.text,'html.parser')
+
+            # soup contains the entire thread
+
+            # What are we extracting:
+            # 1. thread number
+            # 2. permalink
+            # 3. content/text (filtered)
+
+            # - - - - - - - - - - - - - - 
+            # 1. topic/thread number:
+            # <a rel="nofollow" href="">
+            # where link is:
+            # https://{group}.groups.io/g/{subgroup}/topic/{topic_id}
+            # example topic id: 24209140
+            #
+            # ugly links are in the form 
+            # https://dcppc.groups.io/g/{subgroup}/topic/some_text_here/{thread_id}?p=,,,,,1,2,3,,,4,,5
+            # split at ?, 0th portion
+            # then split at /, last (-1th) portion
+            topic_id = link.split('?')[0].split('/')[-1]
+
+            # - - - - - - - - - - - - - - - 
+            # 2. permalink:
+            # - current link is ugly link
+            # - permalink is the nice one
+            # - topic id is available from the ugly link
+            # https://{group}.groups.io/g/{subgroup}/topic/{topic_id}
+
+            permalink_template = "https://{group}.groups.io/g/{subgroup}/topic/{topic_id}"
+            permalink = permalink_template.format(
+                    group = self.group_name,
+                    subgroup = subgroup_name, 
+                    topic_id = topic_id
+            )
+
+            # - - - - - - - - - - - - - - - 
+            # 3. content:
+
+            # Need to rearrange how we're assembling threads here.
+            # This is one thread, no?
+            content = []
+
+            subject = soup.find('title').text
+
+            # Extract information for the schema:
+            # - permalink for thread (done)
+            # - subject/title (done)
+            # - original sender email/name (done)
+            # - content (done)
+
+            # Groups.io pages have zero CSS classes, which makes everything
+            # a giant pain in the neck to interact with. Thanks Groups.io!
+            original_sender = ''
+            for i, tr in enumerate(soup.find_all('tr',{'class':'test'})):
+                # Every other tr row contains an email.
+                if (i+1)%2==0:
+                    # nope, no email here
+                    pass
+                else:
+                    # found an email!
+                    # this is a maze, thanks groups.io
+                    td = tr.find('td')
+                    divrow = td.find('div',{'class':'row'}).find('div',{'class':'pull-left'})
+                    if (i+1)==1:
+                        original_sender = divrow.text.strip()
+                    for div in td.find_all('div'):
+                        if div.has_attr('id'):
+
+                            # purge any signatures
+                            for x in div.find_all('div',{'id':'Signature'}):
+                                x.extract()
+
+                            # purge any headers
+                            for x in div.find_all('div'): 
+                                nonos = ['From:','Sent:','To:','Cc:','CC:','Subject:']
+                                for nono in nonos:
+                                    if nono in x.text:
+                                        x.extract()
+
+                            message_text = div.get_text()
+
+                            # More filtering:
+
+                            # phone numbers
+                            message_text = re.sub(r'[0-9]{3}-[0-9]{3}-[0-9]{4}','XXX-XXX-XXXX',message_text)
+                            message_text = re.sub(r'[0-9]\{10\}','XXXXXXXXXX',message_text)
+
+                            content.append(message_text)
+
+            full_content = "\n".join(content)
+
+            thread = {
+                    'permalink' : permalink,
+                    'subject' : subject,
+                    'original_sender' : original_sender,
+                    'content' : full_content
+            }
+            
+            print('*'*40)
+            for k in thread.keys():
+                if k=='content':
+                    pass
+                else:
+                    print("%s : %s"%(k,thread[k]))
+            print('*'*40)
+            self.archives.append(thread)
 
 
     def extract_archive_page_items_(self, response):
@@ -256,6 +333,32 @@ class GroupsIOArchivesCrawler(object):
             results.append((title,link))
 
         return results
+
+
+    def get_next_url_(self, response):
+        """
+        (Private method)
+
+        Given a response (which is a list of threads),
+        find the next button and return the URL.
+
+        If no next URL, if is disabled, then return None.
+        """
+        soup = BeautifulSoup(response.text,'html.parser')
+        chevron = soup.find('i',{'class':'fa-chevron-right'})
+        try:
+            if '#' in chevron.parent['href']:
+                # empty link, abort
+                return None
+        except AttributeError:
+            print(chevron)
+            return
+
+        if chevron.parent.parent.has_attr('class') and 'disabled' in chevron.parent.parent['class']:
+            # no next link, abort
+            return None
+
+        return chevron.parent['href']
 
 
 
