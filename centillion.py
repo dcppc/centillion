@@ -27,10 +27,13 @@ You provide:
 
 
 class UpdateIndexTask(object):
-    def __init__(self, gh_access_token, diff_index=False):
+    def __init__(self, groupsio_token, gh_access_token, diff_index=False):
         self.diff_index = diff_index
         thread = threading.Thread(target=self.run, args=())
+
         self.gh_access_token = gh_access_token
+        self.groupsio_token = groupsio_token
+
         thread.daemon = True
         thread.start()
 
@@ -43,6 +46,7 @@ class UpdateIndexTask(object):
         from get_centillion_config import get_centillion_config
         config = get_centillion_config('config_centillion.json')
 
+        search.update_index_groupsioemails(self.groupsio_token,config)
         search.update_index_ghfiles(self.gh_access_token,config)
         search.update_index_issues(self.gh_access_token,config)
         search.update_index_gdocs(config)
@@ -174,10 +178,12 @@ def update_index():
 
                     #gh_oauth_token = github.token['access_token']
                     gh_access_token = app.config['GITHUB_TOKEN']
+                    gh_access_token = app.config['GROUPSIO_TOKEN']
 
                     # --------------------
                     # Business as usual
-                    UpdateIndexTask(gh_access_token, 
+                    UpdateIndexTask(groupsio_token,
+                                    gh_access_token, 
                                     diff_index=False)
                     flash("Rebuilding index, check console output")
                     return render_template("controlpanel.html", 

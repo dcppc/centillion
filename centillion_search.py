@@ -5,6 +5,7 @@ from github import Github, GithubException
 import base64
 
 from gdrive_util import GDrive
+from groupsio_util import GroupsIOArchivesCrawler
 from apiclient.http import MediaIoBaseDownload
 
 import mistune
@@ -128,7 +129,6 @@ class Search:
         schema = Schema(
                 id = ID(stored=True, unique=True),
                 kind = ID(stored=True),
-                #fingerprint = ID(stored=True),
 
                 created_time = ID(stored=True),
                 modified_time = ID(stored=True),
@@ -688,7 +688,7 @@ class Search:
 
 
     # ------------------------------
-    # Github Markdown Files
+    # Github Files
 
     def update_index_ghfiles(self, gh_access_token, config): 
         """
@@ -817,9 +817,25 @@ class Search:
     # Groups.io Emails
 
 
-    #def update_index_markdown(self, gh_access_token, config): 
+    def update_index_groupsioemails(self, groupsio_token, config):
+        """
+        Update the search index using the email archives
+        of groups.io groups.
 
+        This requires the use of a spider.
+        RELEASE THE SPIDER!!!
+        """
+        spider = GroupsIOArchivesCrawler(groupsio_token,'dcppc')
 
+        # - ask spider to crawl the archives
+        spider.crawl_group_archives()
+
+        # - ask spider for list of all email records
+        #   - 1 email = 1 dictionary
+        #   - email records compiled by the spider
+        archives = spider.get_archives()
+
+        # - email object is sent off to add email method
 
 
 
