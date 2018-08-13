@@ -36,7 +36,7 @@ function load_gdoc_table(){
 
 function load_issue_table(){
     $.getJSON("/list/issue", function(result){
-        if(!isse_table) {
+        if(!issue_table) {
             var r = new Array(), j = -1, size=result.length;
             r[++j] = '<thead>'
             r[++j] = '<tr class="header-row">';
@@ -66,7 +66,7 @@ function load_issue_table(){
 
 function load_ghfile_table(){
     $.getJSON("/list/gghfile", function(result){
-        if(!gdoc_table) {
+        if(!ghfile_table) {
             var r = new Array(), j = -1, size=result.length;
             r[++j] = '<thead>'
             r[++j] = '<tr class="header-row">';
@@ -96,7 +96,7 @@ function load_ghfile_table(){
 
 function load_markdown_table(){
     $.getJSON("/list/markdown", function(result){
-        if(!gdoc_table) {
+        if(!markdown_table) {
             var r = new Array(), j = -1, size=result.length;
             r[++j] = '<thead>'
             r[++j] = '<tr class="header-row">';
