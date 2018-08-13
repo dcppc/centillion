@@ -240,10 +240,8 @@ def master_list():
 
 @app.route('/list/gdoc')
 def list_gdoc():
-    d = {'hello':'world','this':'that','foo':'bar'}
-    return jsonify(d)
-
-
+    search = Search(app.config["INDEX_DIR"])
+    return jsonify(search.get_list("gdoc"))
 
 
 @app.errorhandler(404)

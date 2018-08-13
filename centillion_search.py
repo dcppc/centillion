@@ -947,6 +947,22 @@ class Search:
 
         return counts
 
+
+    def get_list(self,type):
+        json_results = []
+        item_keys = ['title','owner_name','url','mimetype']
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse(type)
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for r in results:
+                d = {}
+                for k in item_keys:
+                    d[k] = r[k]
+                json_results.append(d)
+        return json_results
+
+
 if __name__ == "__main__":
     search = Search("search_index")
 
