@@ -238,11 +238,10 @@ def master_list():
 
 
 
-@app.route('/list/gdoc')
-def list_gdoc():
+@app.route('/list/<doctype>')
+def list_docs(doctype):
     search = Search(app.config["INDEX_DIR"])
-    return jsonify(search.get_list("gdoc"))
-
+    return jsonify(search.get_list(doctype))
 
 @app.errorhandler(404)
 def oops(e):

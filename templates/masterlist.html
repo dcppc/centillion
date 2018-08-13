@@ -41,6 +41,9 @@
 
     <div class="row">
 
+
+
+
         {#
          # google drive files panel
          #}
@@ -52,7 +55,7 @@
                         <h2 class="masterlist-header">
                             <a class="collapsed" 
                                 role="button"
-                                onClick="load_gdocs_table()"
+                                onClick="load_gdoc_table()"
                                 data-toggle="collapse" 
                                 data-parent="#accordion"
                                 href="#collapseDrive" 
@@ -65,20 +68,7 @@
                     </div>
                     <div id="collapseDrive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="googleDrive">
                         <div class="panel-body">
-                            <table class="table">
-
-                                <tr class="header-row">
-                                    <th>File Name</th>
-                                    <th>Owner</th>
-                                    <th>Type</th>
-                                </tr>
-
-
-                                <tr>
-                                    <td>Lorem ipsum dolor sit amet</td>
-                                    <td>Maecenas</td>
-                                    <td>vehicula</td>
-                                </tr>
+                            <table class="table table-striped" id="gdocs-master-list">
 
                             </table>
                         </div>
@@ -86,6 +76,116 @@
                 </div>
             </div>
         </div>
+
+
+
+        {#
+         # github issue panel
+         #}
+        <div class="panel">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="githubIssues">
+
+                        <h2 class="masterlist-header">
+                            <a class="collapsed" 
+                                role="button"
+                                onClick="load_issue_table()"
+                                data-toggle="collapse" 
+                                data-parent="#accordion"
+                                href="#collapseIssues" 
+                                aria-expanded="true"
+                                aria-controls="collapseIssues">
+                                Github Issues <small>indexed by centillion</small>
+                            </a>
+                        </h2>
+
+                    </div>
+                    <div id="collapseIssues" class="panel-collapse collapse" role="tabpanel" 
+                        aria-labelledby="githubIssues">
+                        <div class="panel-body">
+                            <table class="table table-striped" id="issues-master-list">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        {#
+         # github file panel
+         #}
+        <div class="panel">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="githubFiles">
+
+                        <h2 class="masterlist-header">
+                            <a class="collapsed" 
+                                role="button"
+                                onClick="load_ghfile_table()"
+                                data-toggle="collapse" 
+                                data-parent="#accordion"
+                                href="#collapseFiles" 
+                                aria-expanded="true"
+                                aria-controls="collapseFiles">
+                                Github Files <small>indexed by centillion</small>
+                            </a>
+                        </h2>
+
+                    </div>
+                    <div id="collapseFiles" class="panel-collapse collapse" role="tabpanel" 
+                        aria-labelledby="githubFiles">
+                        <div class="panel-body">
+                            <table class="table table-striped" id="ghfiles-master-list">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {#
+         # gh markdown file panel
+         #}
+        <div class="panel">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="markdown">
+
+                        <h2 class="masterlist-header">
+                            <a class="collapsed" 
+                                role="button"
+                                onClick="load_markdown_table()"
+                                data-toggle="collapse" 
+                                data-parent="#accordion"
+                                href="#collapseMarkdown" 
+                                aria-expanded="true"
+                                aria-controls="collapseMarkdown">
+                                Github Markdown Files <small>indexed by centillion</small>
+                            </a>
+                        </h2>
+
+                    </div>
+                    <div id="collapseMarkdown" class="panel-collapse collapse" role="tabpanel" 
+                        aria-labelledby="markdown">
+                        <div class="panel-body">
+                            <table class="table table-striped" id="markdown-master-list">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
 
 
