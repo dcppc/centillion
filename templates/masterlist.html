@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+{% block body %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="container">
+    <div class="alert alert-success alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <center>
+                <a href="{{ url_for('search')}}?query=&fields=">
+                <img src="{{ url_for('static', filename='centillion_white.png') }}">
+                </a>
+                {% if config['TAGLINE'] %}
+                    <h2><a href="{{ url_for('search')}}?query=&fields=">
+                        {{config['TAGLINE']}}
+                    </a></h2>
+                {% endif %}
+            </center>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<div class="container">
+
+    <div class="row">
+
+
+
+        {#
+         # google drive files panel
+         #}
+        <div class="panel">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="googleDrive">
+
+                        <h2 class="masterlist-header">
+                            <a class="collapsed" role="button"
+                                data-toggle="collapse" data-parent="#accordion"
+                                href="#collapseDrive" aria-expanded="true"
+                                aria-controls="collapseDrive">
+                                Google Drive Files <small>indexed by centillion</small>
+                            </a>
+                        </h2>
+
+                    </div>
+                    <div id="collapseDrive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="googleDrive">
+                        <div class="panel-body">
+                            <table class="table">
+
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Owner</th>
+                                    <th>Type</th>
+                                </tr>
+
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+                                <tr>
+                                    <td>Lorem ipsum dolor sit amet</td>
+                                    <td>Maecenas</td>
+                                    <td>vehicula</td>
+                                </tr>
+
+
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+{% endblock %}
+

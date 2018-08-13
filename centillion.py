@@ -101,9 +101,7 @@ def index():
 
         return contents404
 
-### @app.route('/')
-### def index():
-###     return redirect(url_for("search", query="", fields=""))
+
 
 @app.route('/search')
 def search():
@@ -211,6 +209,33 @@ def control_panel():
                                            totals={})
 
     return contents403
+
+
+
+@app.route('/master_list')
+def master_list():
+
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+
+    username = github.get("/user").json()['login']
+
+    resp = github.get("/user/orgs")
+    if resp.ok:
+
+        all_orgs = resp.json()
+        for org in all_orgs:
+            if org['login']=='dcppc':
+
+                copper_team_id = '2700235'
+
+                mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
+                if mresp.status_code==204:
+
+                    return render_template("masterlist.html")
+
+    return contents403
+
 
 
 @app.errorhandler(404)
