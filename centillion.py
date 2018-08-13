@@ -178,7 +178,7 @@ def update_index():
 
                     #gh_oauth_token = github.token['access_token']
                     gh_access_token = app.config['GITHUB_TOKEN']
-                    gh_access_token = app.config['GROUPSIO_TOKEN']
+                    groupsio_token = app.config['GROUPSIO_TOKEN']
 
                     # --------------------
                     # Business as usual
