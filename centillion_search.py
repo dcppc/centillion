@@ -963,13 +963,13 @@ class Search:
         if doctype=='gdoc':
             item_keys = ['title','owner_name','url','mimetype']
         elif doctype=='issue':
-            item_keys = ['title','repo_name','url']
+            item_keys = ['title','repo_name','repo_url','url']
         elif doctype=='ghfile':
-            item_keys = ['title','repo_name','url']
+            item_keys = ['title','repo_name','repo_url','url']
         elif doctype=='markdown':
-            item_keys = ['title','repo_name','url']
+            item_keys = ['title','repo_name','repo_url','url']
         else:
-            raise Exception("Could not find document of type %s")
+            raise Exception("Could not find document of type %s"%(doctype))
 
         json_results = []
 
