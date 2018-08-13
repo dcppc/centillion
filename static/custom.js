@@ -51,7 +51,9 @@ function load_issue_table(){
                 r[++j] = result[i]['title'];
                 r[++j] = '</a>'
                 r[++j] = '</td><td>';
+                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
                 r[++j] = result[i]['repo_name'];
+                r[++j] = '</a>'
                 r[++j] = '</td></tr>';
             }
             r[++j] = '</tbody>'
@@ -79,7 +81,9 @@ function load_ghfile_table(){
                 r[++j] = result[i]['title'];
                 r[++j] = '</a>'
                 r[++j] = '</td><td>';
+                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
                 r[++j] = result[i]['repo_name'];
+                r[++j] = '</a>'
                 r[++j] = '</td></tr>';
             }
             r[++j] = '</tbody>'
@@ -107,7 +111,9 @@ function load_markdown_table(){
                 r[++j] = result[i]['title'];
                 r[++j] = '</a>'
                 r[++j] = '</td><td>';
-                r[++j] = result[i]['owner_name'];
+                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
+                r[++j] = result[i]['repo_name'];
+                r[++j] = '</a>'
                 r[++j] = '</td></tr>';
             }
             r[++j] = '</tbody>'
