@@ -155,12 +155,13 @@ class GroupsIOArchivesCrawler(object):
         # First page:
 
         # Extract a list of (title, link) items
+        import pdb; pdb.set_trace()
+        # r is 404...
         items = self.extract_archive_page_items_(r)
 
         for (title, link) in items:
             # Get the thread page:
             r = s.get(link)
-            import pdb; pdb.set_trace()
 
             # Do processing:
 
