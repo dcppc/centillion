@@ -5,6 +5,13 @@ var markdown_table = false;
 
 function load_gdoc_table(){
     $.getJSON("/list/gdoc", function(result){
+
+        /*
+         * instead of this approach, we need to check
+         * on div#collapseDrive aria-expanded attribute
+         * if true, it is expanded and we need to call the api
+         * otherwise, don't
+         */
         if(!gdoc_table) {
             var r = new Array(), j = -1, size=result.length;
             r[++j] = '<thead>'
@@ -65,8 +72,10 @@ function load_issue_table(){
 }
 
 function load_ghfile_table(){
-    $.getJSON("/list/gghfile", function(result){
+    $.getJSON("/list/ghfile", function(result){
         if(!ghfile_table) {
+            console.log("-----------");
+            console.log(result);
             var r = new Array(), j = -1, size=result.length;
             r[++j] = '<thead>'
             r[++j] = '<tr class="header-row">';
@@ -87,7 +96,7 @@ function load_ghfile_table(){
                 r[++j] = '</td></tr>';
             }
             r[++j] = '</tbody>'
-            $('#ghfile-master-list').html(r.join(''));
+            $('#ghfiles-master-list').html(r.join(''));
             ghfile_table = true;
         }
     });
