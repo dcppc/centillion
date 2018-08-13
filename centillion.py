@@ -5,7 +5,7 @@ import codecs
 import os, json
 
 from werkzeug.contrib.fixers import ProxyFix
-from flask import Flask, request, redirect, url_for, render_template, flash
+from flask import Flask, request, redirect, url_for, render_template, flash, jsonify
 from flask_dance.contrib.github import make_github_blueprint, github
 
 # create our application
@@ -235,6 +235,14 @@ def master_list():
                     return render_template("masterlist.html")
 
     return contents403
+
+
+
+@app.route('/list/gdoc')
+def list_gdoc():
+    d = {'hello':'world','this':'that','foo':'bar'}
+    return jsonify(d)
+
 
 
 
