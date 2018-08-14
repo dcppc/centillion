@@ -32,11 +32,13 @@
         <div class="col-xs-12">
             <center>
                 <form action="{{ url_for('search') }}" name="search">
-                    <input type="text" name="query" value="{{ query }}"> <br />
-                    <button type="submit" style="font-size: 20px; padding: 10px; padding-left: 50px; padding-right: 50px;" 
+                    <p><input type="text" name="query" value="{{ query }}">
+                    </p>
+                    <p><button id="the-big-one" type="submit" style="font-size: 20px; padding: 10px; padding-left: 50px; padding-right: 50px;" 
                         value="search" class="btn btn-primary">Search</button>
-                    <br />
-                    <a href="{{ url_for('search')}}?query=&fields=">[clear all results]</a>
+                    </p>
+                    <p><a href="{{ url_for('search')}}?query=&fields=">[clear all results]</a>
+                    </p>
                 </form>
             </center>
         </div>
