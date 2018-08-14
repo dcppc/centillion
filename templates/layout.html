@@ -8,6 +8,17 @@
 <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='custom.js') }}"></script>
 
+
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dataTables.bootstrap.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dataTables.responsive.css') }}">
+
+<script src="{{ url_for('static', filename='jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='dataTables.responsive.js') }}"></script>
+
+
+
 <div>
     {% block body %}{% endblock %}
 </div>
