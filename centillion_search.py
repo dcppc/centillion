@@ -947,6 +947,45 @@ class Search:
 
         return counts
 
+
+    def get_list(self,doctype):
+        """
+        Get a listing of all files, 
+        so we can construct the page that 
+        lists everyone and everything that
+        centillion indexes.
+        """
+        # Unfortunately, we have to treat
+        # each doctype separately, b/c of
+        # what is most relevant to display
+        # in the everything-list.
+        item_keys=''
+        if doctype=='gdoc':
+            item_keys = ['title','owner_name','url','mimetype']
+        elif doctype=='issue':
+            item_keys = ['title','repo_name','repo_url','url']
+        elif doctype=='ghfile':
+            item_keys = ['title','repo_name','repo_url','url']
+        elif doctype=='markdown':
+            item_keys = ['title','repo_name','repo_url','url']
+        else:
+            raise Exception("Could not find document of type %s"%(doctype))
+
+        json_results = []
+
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse(doctype)
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for r in results:
+                d = {}
+                for k in item_keys:
+                    d[k] = r[k]
+                json_results.append(d)
+
+        return json_results
+
+
 if __name__ == "__main__":
     search = Search("search_index")
 

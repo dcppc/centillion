@@ -1,0 +1,229 @@
+//////////////////////////////////
+// Centillion Master List
+// Javascript Functions 
+//
+// This file contains javascript functions used by
+// the master_list page of centillion. The master
+// list page uses the search engine as an API to
+// get a list of all documents by type.
+
+
+///////////////////////////////////
+// Process get parameters
+//
+// When the document is loaded, parse the GET params
+// from the URL (everything after the ?).
+//
+// If the "doctype" parameter is in the URL, use it to
+// determine which panel to open automatically.
+
+$(document).ready(function() {
+    var url_string = document.location.toString();
+    var url = new URL(url_string);
+    var d = url.searchParams.get("doctype");
+
+    if (d==='gdoc') {
+        load_gdoc_table();
+        var divList = $('div#collapseDrive').addClass('in');
+
+    } else if (d==='issue') {
+        load_issue_table();
+        var divList = $('div#collapseIssues').addClass('in');
+
+    } else if (d==='ghfile') {
+        load_ghfile_table();
+        var divList = $('div#collapseFiles').addClass('in');
+
+    } else if (d==='markdown') {
+        load_markdown_table();
+        var divList = $('div#collapseMarkdown').addClass('in');
+
+    }
+});
+
+
+
+//////////////////////////////////
+// API-to-Table Functions
+//
+// These functions ask centillion for a list of all documents
+// of a given type, and load the results into an HTML table.
+//
+// The dataTable bootstrap plugin is used to make the tables
+// sortable, searchable, and slick.
+//
+// Sections:
+// ----------
+// Google Drive files
+// Github issues
+// Github files
+// Github markdown
+
+// ------------------------
+// Google Drive
+
+function load_gdoc_table(){
+    var divList = $('div#collapseDrive').attr('class');
+    if (divList.indexOf('in') !== -1) {
+        console.log('Closing Google Drive master list');
+    } else { 
+        console.log('Opening Google Drive master list');
+
+        $.getJSON("/list/gdoc", function(result){
+
+            var r = new Array(), j = -1, size=result.length;
+            r[++j] = '<thead>'
+            r[++j] = '<tr class="header-row">';
+            r[++j] = '<th width="50%">File Name</th>';
+            r[++j] = '<th width="30%">Owner</th>';
+            r[++j] = '<th width="20%">Type</th>';
+            r[++j] = '</tr>';
+            r[++j] = '</thead>'
+            r[++j] = '<tbody>'
+            for (var i=0; i<size; i++){
+                r[++j] = '<tr><td>';
+                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                r[++j] = result[i]['title'];
+                r[++j] = '</a>'
+                r[++j] = '</td><td>';
+                r[++j] = result[i]['owner_name'];
+                r[++j] = '</td><td>';
+                r[++j] = result[i]['mimetype'];
+                r[++j] = '</td></tr>';
+            }
+            r[++j] = '</tbody>'
+            $('#gdocs-master-list').html(r.join(''));
+            $('#gdocs-master-list').DataTable({
+                responsive: true,
+                lengthMenu: [50,100,250,500]
+            });
+        });
+        console.log('Finished loading Google Drive master list');
+    }
+}
+
+// ------------------------
+// Github issues
+
+function load_issue_table(){
+    var divList = $('div#collapseIssues').attr('class');
+    if (divList.indexOf('in') !== -1) {
+        console.log('Closing Github issues master list');
+    } else { 
+        console.log('Opening Github issues master list');
+
+        $.getJSON("/list/issue", function(result){
+            var r = new Array(), j = -1, size=result.length;
+            r[++j] = '<thead>'
+            r[++j] = '<tr class="header-row">';
+            r[++j] = '<th width="70%">Issue Name</th>';
+            r[++j] = '<th width="30%">Repository</th>';
+            r[++j] = '</tr>';
+            r[++j] = '</thead>'
+            r[++j] = '<tbody>'
+            for (var i=0; i<size; i++){
+                r[++j] ='<tr><td>';
+                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                r[++j] = result[i]['title'];
+                r[++j] = '</a>'
+                r[++j] = '</td><td>';
+                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
+                r[++j] = result[i]['repo_name'];
+                r[++j] = '</a>'
+                r[++j] = '</td></tr>';
+            }
+            r[++j] = '</tbody>'
+            $('#issues-master-list').html(r.join(''));
+            $('#issues-master-list').DataTable({
+                responsive: true,
+                lengthMenu: [50,100,250,500]
+            });
+        });
+        console.log('Finished loading Github issues master list');
+    }
+}
+
+// ------------------------
+// Github files
+
+function load_ghfile_table(){
+    var divList = $('div#collapseFiles').attr('class');
+    if (divList.indexOf('in') !== -1) {
+        console.log('Closing Github files master list');
+    } else { 
+        console.log('Opening Github files master list');
+
+        $.getJSON("/list/ghfile", function(result){
+            console.log("-----------");
+            console.log(result);
+            var r = new Array(), j = -1, size=result.length;
+            r[++j] = '<thead>'
+            r[++j] = '<tr class="header-row">';
+            r[++j] = '<th width="70%">File Name</th>';
+            r[++j] = '<th width="30%">Repository</th>';
+            r[++j] = '</tr>';
+            r[++j] = '</thead>'
+            r[++j] = '<tbody>'
+            for (var i=0; i<size; i++){
+                r[++j] ='<tr><td>';
+                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                r[++j] = result[i]['title'];
+                r[++j] = '</a>'
+                r[++j] = '</td><td>';
+                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
+                r[++j] = result[i]['repo_name'];
+                r[++j] = '</a>'
+                r[++j] = '</td></tr>';
+            }
+            r[++j] = '</tbody>'
+            $('#ghfiles-master-list').html(r.join(''));
+            $('#ghfiles-master-list').DataTable({
+                responsive: true,
+                lengthMenu: [50,100,250,500]
+            });
+        });
+        console.log('Finished loading Github file list');
+    }
+}
+
+// ------------------------
+// Github Markdown
+
+function load_markdown_table(){
+    var divList = $('div#collapseMarkdown').attr('class');
+    if (divList.indexOf('in') !== -1) {
+        console.log('Closing Github markdown master list');
+    } else { 
+        console.log('Opening Github markdown master list');
+
+        $.getJSON("/list/markdown", function(result){
+            var r = new Array(), j = -1, size=result.length;
+            r[++j] = '<thead>'
+            r[++j] = '<tr class="header-row">';
+            r[++j] = '<th width="70%">Markdown File Name</th>';
+            r[++j] = '<th width="30%">Repo</th>';
+            r[++j] = '</tr>';
+            r[++j] = '</thead>'
+            r[++j] = '<tbody>'
+            for (var i=0; i<size; i++){
+                r[++j] ='<tr><td>';
+                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                r[++j] = result[i]['title'];
+                r[++j] = '</a>'
+                r[++j] = '</td><td>';
+                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
+                r[++j] = result[i]['repo_name'];
+                r[++j] = '</a>'
+                r[++j] = '</td></tr>';
+            }
+            r[++j] = '</tbody>'
+            $('#markdown-master-list').html(r.join(''));
+            $('#markdown-master-list').DataTable({
+                responsive: true,
+                lengthMenu: [50,100,250,500]
+            });
+        });
+        console.log('Finished loading Markdown list');
+    }
+}
+

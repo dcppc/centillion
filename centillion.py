@@ -5,7 +5,7 @@ import codecs
 import os, json
 
 from werkzeug.contrib.fixers import ProxyFix
-from flask import Flask, request, redirect, url_for, render_template, flash
+from flask import Flask, request, redirect, url_for, render_template, flash, jsonify
 from flask_dance.contrib.github import make_github_blueprint, github
 
 # create our application
@@ -101,9 +101,7 @@ def index():
 
         return contents404
 
-### @app.route('/')
-### def index():
-###     return redirect(url_for("search", query="", fields=""))
+
 
 @app.route('/search')
 def search():
@@ -212,6 +210,38 @@ def control_panel():
 
     return contents403
 
+
+
+@app.route('/master_list')
+def master_list():
+
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+
+    username = github.get("/user").json()['login']
+
+    resp = github.get("/user/orgs")
+    if resp.ok:
+
+        all_orgs = resp.json()
+        for org in all_orgs:
+            if org['login']=='dcppc':
+
+                copper_team_id = '2700235'
+
+                mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
+                if mresp.status_code==204:
+
+                    return render_template("masterlist.html")
+
+    return contents403
+
+
+
+@app.route('/list/<doctype>')
+def list_docs(doctype):
+    search = Search(app.config["INDEX_DIR"])
+    return jsonify(search.get_list(doctype))
 
 @app.errorhandler(404)
 def oops(e):

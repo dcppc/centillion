@@ -2,6 +2,10 @@ span.badge {
     vertical-align: text-bottom;
 }
 
+h2.masterlist-header a {
+    text-decoration: none;
+}
+
 a.badgelinks, a.badgelinks:hover {
     color: #fff;
     text-decoration: none;
