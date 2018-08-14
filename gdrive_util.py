@@ -51,3 +51,6 @@ class GDrive(object):
         service = build('drive', 'v3', http=creds.authorize(Http()))
         return service
 
+if __name__=="__main__":
+    g = GDrive()
+    s = g.get_service()
