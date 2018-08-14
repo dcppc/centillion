@@ -158,6 +158,12 @@
                             <br/>
                             <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
 
+                        {% elif e.kind=="emailthread" %}
+                            <b>Groups.io Email Thread:</b>
+                            <a href='{{e.url}}'>{{e.title}}</a>
+                            <br/>
+                            <b>Started By:</b> {{e.owner_name}}
+
                         {% else %}
                             <b>Item:</b> (<a href='{{e.url}}'>link</a>)
 
