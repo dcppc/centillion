@@ -87,10 +87,27 @@
                         <div class="row">
                             <div class="col-xs-12 info">
                                 <b>Indexing:</b>
-                                <span class="badge">{{totals["gdoc"]}}</span> Google Documents,
-                                <span class="badge">{{totals["issue"]}}</span> Github issues,
-                                <span class="badge">{{totals["ghfile"]}}</span> Github files,
-                                <span class="badge">{{totals["markdown"]}}</span> Github markdown files.
+
+                                <span class="badge">{{totals["gdoc"]}}</span>
+                                <a href="/master_list?doctype=gdoc">
+                                Google Documents
+                                </a>,
+
+                                <span class="badge">{{totals["issue"]}}</span>
+                                <a href="/master_list?doctype=issue">
+                                Github issues
+                                </a>,
+
+                                <span class="badge">{{totals["ghfile"]}}</span>
+                                <a href="/master_list?doctype=ghfile">
+                                Github files
+                                </a>,
+
+                                <span class="badge">{{totals["markdown"]}}</span>
+                                <a href="/master_list?doctype=markdown">
+                                Github Markdown files
+                                </a>
+
                             </div>
                         </div>
                 </div>
