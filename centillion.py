@@ -49,10 +49,26 @@ class UpdateIndexTask(object):
         from get_centillion_config import get_centillion_config
         config = get_centillion_config('config_centillion.json')
 
-        search.update_index_emailthreads(self.groupsio_credentials,config)
-        search.update_index_ghfiles(self.gh_token,config)
-        search.update_index_issues(self.gh_token,config)
-        search.update_index_gdocs(config)
+        try:
+            search.update_index_emailthreads(self.groupsio_credentials,config)
+        except:
+            continue
+
+        try:
+            search.update_index_ghfiles(self.gh_token,config)
+        except:
+            continue
+
+        try:
+            search.update_index_issues(self.gh_token,config)
+        except:
+            continue
+
+        try:
+            search.update_index_gdocs(config)
+        except:
+            continue
+
 
 
 
