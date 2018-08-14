@@ -86,11 +86,28 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-xs-12 info">
-                                <b>Indexing:</b> <span
-                                    class="badge">{{totals["gdoc"]}}</span> Google Documents,
-                                <span class="badge">{{totals["issue"]}}</span> Github issues,
-                                <span class="badge">{{totals["ghfile"]}}</span> Github files,
-                                <span class="badge">{{totals["markdown"]}}</span> Github markdown files.
+                                <b>Indexing:</b>
+
+                                <span class="badge">{{totals["gdoc"]}}</span>
+                                <a href="/master_list?doctype=gdoc">
+                                Google Documents
+                                </a>,
+
+                                <span class="badge">{{totals["issue"]}}</span>
+                                <a href="/master_list?doctype=issue">
+                                Github issues
+                                </a>,
+
+                                <span class="badge">{{totals["ghfile"]}}</span>
+                                <a href="/master_list?doctype=ghfile">
+                                Github files
+                                </a>,
+
+                                <span class="badge">{{totals["markdown"]}}</span>
+                                <a href="/master_list?doctype=markdown">
+                                Github Markdown files
+                                </a>
+
                             </div>
                         </div>
                 </div>
@@ -152,33 +169,6 @@
 
                 </li>
             {% endfor %}
-        </ul>
-
-    </div>
-</div>
-
-<div class="container">
-    <div class="row">
-        <ul class="list-group">
-
-            {% if config['FOOTER_REPO_NAME'] %}
-                {% if config['FOOTER_REPO_ORG'] %}
-
-                    <li  class="list-group-item">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-xs-12 info">
-                                    More information about {{config['FOOTER_REPO_NAME']}} can be found
-                                    in the <a href="https://github.com/{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}">{{config['FOOTER_REPO_ORG']}}/{{config['FOOTER_REPO_NAME']}}</a>
-                                    repository on Github.
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-
-                {% endif %}
-            {% endif %}
-
         </ul>
 
     </div>
