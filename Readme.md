@@ -1,4 +1,4 @@
-# The Centillion
+# Centillion
 
 **centillion**: a pan-github-markdown-issues-google-docs search engine.
 
