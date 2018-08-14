@@ -1,14 +1,16 @@
 <!doctype html>
 <title>Centillion Search Engine</title>
+
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='github-markdown.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 
 <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='custom.js') }}"></script>
+<script src="{{ url_for('static', filename='centillion_master_list.js') }}"></script>
 
 
+{# ########## dataTables plugin ############ #}
 
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dataTables.responsive.css') }}">
@@ -18,6 +20,8 @@
 <script src="{{ url_for('static', filename='dataTables.responsive.js') }}"></script>
 
 
+
+{# ########## github fork corner ############ #}
 
 <div>
     {% block body %}{% endblock %}
