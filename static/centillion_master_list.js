@@ -26,6 +26,10 @@ $(document).ready(function() {
         load_gdoc_table();
         var divList = $('div#collapseDrive').addClass('in');
 
+    } else if (d==='emailthread') {
+        load_emailthreads_table();
+        var divList = $('div#collapseThreads').addClass('in');
+
     } else if (d==='issue') {
         load_issue_table();
         var divList = $('div#collapseIssues').addClass('in');
@@ -58,6 +62,7 @@ $(document).ready(function() {
 // Github issues
 // Github files
 // Github markdown
+// Groups.io email threads
 
 // ------------------------
 // Google Drive
@@ -227,3 +232,42 @@ function load_markdown_table(){
     }
 }
 
+
+// ------------------------
+// Groups.io Email Threads
+
+function load_emailthreads_table(){
+    var divList = $('div#collapseThreads').attr('class');
+    if (divList.indexOf('in') !== -1) {
+        console.log('Closing Groups.io email threads master list');
+    } else { 
+        console.log('Opening Groups.io email threads master list');
+
+        $.getJSON("/list/emailthread", function(result){
+            var r = new Array(), j = -1, size=result.length;
+            r[++j] = '<thead>'
+            r[++j] = '<tr class="header-row">';
+            r[++j] = '<th width="70%">Topic</th>';
+            r[++j] = '<th width="30%">Started By</th>';
+            r[++j] = '</tr>';
+            r[++j] = '</thead>'
+            r[++j] = '<tbody>'
+            for (var i=0; i<size; i++){
+                r[++j] ='<tr><td>';
+                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                r[++j] = result[i]['title'];
+                r[++j] = '</a>'
+                r[++j] = '</td><td>';
+                r[++j] = result[i]['owner_name'];
+                r[++j] = '</td></tr>';
+            }
+            r[++j] = '</tbody>'
+            $('#emailthreads-master-list').html(r.join(''));
+            $('#emailthreads-master-list').DataTable({
+                responsive: true,
+                lengthMenu: [50,100,250,500]
+            });
+        });
+        console.log('Finished loading Groups.io email threads list');
+    }
+}

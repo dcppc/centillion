@@ -67,6 +67,8 @@ class GroupsIOArchivesCrawler(object):
         Spider will crawl the email archives of the entire group
         by crawling the email archives of each subgroup.
         """
+        self.archives = {}
+
         subgroups = self.get_subgroups_list()
 
         # ------------------------------
@@ -98,9 +100,9 @@ class GroupsIOArchivesCrawler(object):
         # Done. archives are now tucked away
         # in the variable self.archives
         # 
-        # self.archives is a list of dictionaries,
-        # with each dictionary containing info about
-        # a topic/email thread in a subgroup.
+        # self.archives is a dictionary of dictionaries,
+        # with each key a URL and each value a dictionary
+        # containing info about a thread.
         # ------------------------------
 
 
@@ -138,8 +140,6 @@ class GroupsIOArchivesCrawler(object):
         list of dictionaries.
 
         """
-        self.archives = []
-
         prefix = "https://{group}.groups.io".format(group=self.group_name)
 
         url = self.url.format(group=self.group_name, 
@@ -296,15 +296,9 @@ class GroupsIOArchivesCrawler(object):
                     'original_sender' : original_sender,
                     'content' : full_content
             }
-            
-            print('*'*40)
-            for k in thread.keys():
-                if k=='content':
-                    pass
-                else:
-                    print("%s : %s"%(k,thread[k]))
-            print('*'*40)
-            self.archives.append(thread)
+
+            print(" + Archiving thread: %s"%(thread['subject']))
+            self.archives[permalink] = thread
 
 
     def extract_archive_page_items_(self, response):
@@ -327,7 +321,7 @@ class GroupsIOArchivesCrawler(object):
             subject = row.find('span',{'class':'subject'})
             title = subject.get_text()
             link = row.find('a')['href']
-            print(title)
+            #print(title)
             results.append((title,link))
 
         return results

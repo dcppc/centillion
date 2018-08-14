@@ -368,6 +368,9 @@ class Search:
 
 
 
+    # ------------------------------
+    # Add a single github file 
+    # to a search index.
 
     def add_ghfile(self, writer, d, gh_token, config, update=True):
         """
@@ -463,6 +466,41 @@ class Search:
                     issue_url = '',
                     content = ''
             )
+
+
+
+
+    # ------------------------------
+    # Add a single github file 
+    # to a search index.
+
+    def add_emailthread(self, writer, d, config, update=True):
+        """
+        Use a Github file API record to add a filename
+        to the search index.
+        """
+        indexed_time = clean_timestamp(datetime.now())
+
+        # Now create the actual search index record
+        writer.add_document(
+                id = d['permalink'],
+                kind = 'emailthread',
+                created_time = '',
+                modified_time = '',
+                indexed_time = indexed_time,
+                title = d['subject'],
+                url = d['permalink'],
+                mimetype='',
+                owner_email='',
+                owner_name=d['original_sender'],
+                repo_name = '',
+                repo_url = '',
+                github_user = '',
+                issue_title = '',
+                issue_url = '',
+                content = d['content']
+        )
+
 
 
 
@@ -817,27 +855,89 @@ class Search:
     # Groups.io Emails
 
 
-    def update_index_groupsioemails(self, groupsio_token, config):
+    def update_index_emailthreads(self, groupsio_token, config):
         """
         Update the search index using the email archives
-        of groups.io groups.
+        of groups.io groups. This method looks deceptively
+        simple, all the logic is hidden in the spider
+        (groupsio_util.py).
 
-        This requires the use of a spider.
         RELEASE THE SPIDER!!!
         """
+        # Algorithm:
+        # - get set of indexed ids
+        # - get set of remote ids
+        # - drop indexed ids not in remote ids
+        # - index all remote ids
+
+        # Get the set of indexed ids:
+        # ------
+        indexed_ids = set()
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("emailthread")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_ids.add(result['id'])
+
+        # Get the set of remote ids:
+        # ------
         spider = GroupsIOArchivesCrawler(groupsio_token,'dcppc')
 
-        # - ask spider to crawl the archives
+        # ask spider to crawl the archives
         spider.crawl_group_archives()
 
-        # - ask spider for list of all email records
-        #   - 1 email = 1 dictionary
-        #   - email records compiled by the spider
+        # now spider.archives is a list of dictionaries
+        # that each represent a thread:
+        #   thread = {
+        #           'permalink' : permalink,
+        #           'subject' : subject,
+        #           'original_sender' : original_sender,
+        #           'content' : full_content
+        #   }
+        #
+        # It is hard to reliablly extract more information
+        # than that from the email thread.
+
+        # archives is a dictionary
+        # keys are IDs (urls)
+        # values are dictionaries
         archives = spider.get_archives()
 
-        # - email object is sent off to add email method
+        # Start by collecting all the things
+        remote_ids = set()
+        for k in archives.keys():
+            remote_ids.add(k)
 
-        print("Finished indexing groups.io emails")
+        writer = self.ix.writer()
+        count = 0
+
+        # Drop any id in indexed_ids
+        # not in remote_ids
+        drop_ids = indexed_ids - remote_ids
+        for drop_id in drop_ids:
+            writer.delete_by_term('id',drop_id)
+
+        # Update any id in indexed_ids
+        # and in remote_ids
+        update_ids = indexed_ids & remote_ids
+        for update_id in update_ids:
+            # cop out: just delete and re-add
+            writer.delete_by_term('id',update_id)
+            item = archives[update_id]
+            self.add_emailthread(writer, item, config, update=True)
+            count += 1
+
+        # Add any issue not in indexed_ids
+        # and in remote_ids
+        add_ids = remote_ids - indexed_ids
+        for add_id in add_ids:
+            item = archives[add_id]
+            self.add_emailthread(writer, item, config, update=False)
+            count += 1
+
+        writer.commit()
+        print("Done, updated %d Groups.io email threads in the index" % count)
 
 
     # ---------------------------------
@@ -952,6 +1052,7 @@ class Search:
                 "issue" : None,
                 "ghfile" : None,
                 "markdown" : None,
+                "emailthread" : None,
                 "total" : None
         }
         for key in counts.keys():
@@ -979,6 +1080,8 @@ class Search:
         item_keys=''
         if doctype=='gdoc':
             item_keys = ['title','owner_name','url','mimetype']
+        elif doctype=='emailthread':
+            item_keys = ['title','owner_name','url']
         elif doctype=='issue':
             item_keys = ['title','repo_name','repo_url','url']
         elif doctype=='ghfile':
