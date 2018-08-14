@@ -27,10 +27,16 @@ You provide:
 
 
 class UpdateIndexTask(object):
-    def __init__(self, gh_access_token, diff_index=False):
+    def __init__(self, app_config, diff_index=False):
         self.diff_index = diff_index
         thread = threading.Thread(target=self.run, args=())
-        self.gh_access_token = gh_access_token
+
+        self.gh_token = app_config['GITHUB_TOKEN']
+        self.groupsio_credentials = {
+                'groupsio_token' :     app_config['GROUPSIO_TOKEN'],
+                'groupsio_username' :  app_config['GROUPSIO_USERNAME'],
+                'groupsio_password' :  app_config['GROUPSIO_PASSWORD']
+        }
         thread.daemon = True
         thread.start()
 
@@ -43,9 +49,10 @@ class UpdateIndexTask(object):
         from get_centillion_config import get_centillion_config
         config = get_centillion_config('config_centillion.json')
 
-        search.update_index_ghfiles(self.gh_access_token,config)
-        search.update_index_issues(self.gh_access_token,config)
-        search.update_index_gdocs(config)
+        search.update_index_emailthreads(self.groupsio_credentials,config)
+        ###search.update_index_ghfiles(self.gh_token,config)
+        ###search.update_index_issues(self.gh_token,config)
+        ###search.update_index_gdocs(config)
 
 
 
@@ -170,12 +177,9 @@ def update_index():
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
 
-                    #gh_oauth_token = github.token['access_token']
-                    gh_access_token = app.config['GITHUB_TOKEN']
-
                     # --------------------
                     # Business as usual
-                    UpdateIndexTask(gh_access_token, 
+                    UpdateIndexTask(app.config,
                                     diff_index=False)
                     flash("Rebuilding index, check console output")
                     return render_template("controlpanel.html", 

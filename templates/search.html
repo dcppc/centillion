@@ -32,11 +32,13 @@
         <div class="col-xs-12">
             <center>
                 <form action="{{ url_for('search') }}" name="search">
-                    <input type="text" name="query" value="{{ query }}"> <br />
-                    <button type="submit" style="font-size: 20px; padding: 10px; padding-left: 50px; padding-right: 50px;" 
+                    <p><input type="text" name="query" value="{{ query }}">
+                    </p>
+                    <p><button id="the-big-one" type="submit" style="font-size: 20px; padding: 10px; padding-left: 50px; padding-right: 50px;" 
                         value="search" class="btn btn-primary">Search</button>
-                    <br />
-                    <a href="{{ url_for('search')}}?query=&fields=">[clear all results]</a>
+                    </p>
+                    <p><a href="{{ url_for('search')}}?query=&fields=">[clear all results]</a>
+                    </p>
                 </form>
             </center>
         </div>
@@ -106,8 +108,12 @@
                                 <span class="badge">{{totals["markdown"]}}</span>
                                 <a href="/master_list?doctype=markdown">
                                 Github Markdown files
-                                </a>
+                                </a>,
 
+                                <span class="badge">{{totals["emailthread"]}}</span>
+                                <a href="/master_list?doctype=emailthread">
+                                Groups.io email threads
+                                </a>
                             </div>
                         </div>
                 </div>
@@ -151,6 +157,12 @@
                             <a href='{{e.url}}'>{{e.title}}</a>
                             <br/>
                             <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
+
+                        {% elif e.kind=="emailthread" %}
+                            <b>Groups.io Email Thread:</b>
+                            <a href='{{e.url}}'>{{e.title}}</a>
+                            <br/>
+                            <b>Started By:</b> {{e.owner_name}}
 
                         {% else %}
                             <b>Item:</b> (<a href='{{e.url}}'>link</a>)
