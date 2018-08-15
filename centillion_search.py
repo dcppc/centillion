@@ -110,25 +110,33 @@ class Search:
         try:
             self.update_index_emailthreads(groupsio_credentials, config)
         except GroupsIOException as e:
-            print("ERROR: Failed to update Groups.io email threads, hit API rate limit")
+            print("ERROR: While re-indexing: failed to update Groups.io email threads, hit API rate limit")
+            print(repr(e))
+            print("Continuing...")
             pass
 
         try:
             search.update_index_ghfiles(self.gh_token,config)
-        except:
-            print("ERROR: Failed to update Github files")
+        except Exception as e:
+            print("ERROR: While re-indexing: failed to update Github files")
+            print(repr(e))
+            print("Continuing...")
             pass
 
         try:
             search.update_index_issues(self.gh_token,config)
         except:
-            print("ERROR: Failed to update Github issues")
+            print("ERROR: While re-indexing: failed to update Github issues")
+            print(repr(e))
+            print("Continuing...")
             pass
 
         try:
             search.update_index_gdocs(config)
         except:
-            print("ERROR: Failed to update Google Drive files")
+            print("ERROR: While re-indexing: failed to update Google Drive files")
+            print(repr(e))
+            print("Continuing...")
             pass
 
 
