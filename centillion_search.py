@@ -5,7 +5,7 @@ from github import Github, GithubException
 import base64
 
 from gdrive_util import GDrive
-from groupsio_util import GroupsIOArchivesCrawler
+from groupsio_util import GroupsIOArchivesCrawler, GroupsIOException
 from apiclient.http import MediaIoBaseDownload
 
 import mistune
@@ -97,6 +97,39 @@ class Search:
 
     def __init__(self, index_folder):
         self.open_index(index_folder)
+
+
+    # ------------------------------
+    # Update the entire index
+
+    def update_index(self, groupsio_credentials, gh_token, config):
+        """
+        Update the entire search index
+        """
+        self.update_index_emailthreads(groupsio_credentials, config)
+        try:
+            self.update_index_emailthreads(groupsio_credentials, config)
+        except GroupsIOException as e:
+            print("ERROR: Failed to update Groups.io email threads, hit API rate limit")
+            pass
+
+        try:
+            search.update_index_ghfiles(self.gh_token,config)
+        except:
+            print("ERROR: Failed to update Github files")
+            pass
+
+        try:
+            search.update_index_issues(self.gh_token,config)
+        except:
+            print("ERROR: Failed to update Github issues")
+            pass
+
+        try:
+            search.update_index_gdocs(config)
+        except:
+            print("ERROR: Failed to update Google Drive files")
+            pass
 
 
     # ------------------------------
@@ -899,6 +932,9 @@ class Search:
         # It is hard to reliablly extract more information
         # than that from the email thread.
 
+        writer = self.ix.writer()
+        count = 0
+
         # archives is a dictionary
         # keys are IDs (urls)
         # values are dictionaries
@@ -909,29 +945,12 @@ class Search:
         for k in archives.keys():
             remote_ids.add(k)
 
-        writer = self.ix.writer()
-        count = 0
-
-        # Drop any id in indexed_ids
-        # not in remote_ids
-        drop_ids = indexed_ids - remote_ids
-        for drop_id in drop_ids:
+        # drop indexed_ids
+        for drop_id in indexed_ids:
             writer.delete_by_term('id',drop_id)
 
-        # Update any id in indexed_ids
-        # and in remote_ids
-        update_ids = indexed_ids & remote_ids
-        for update_id in update_ids:
-            # cop out: just delete and re-add
-            writer.delete_by_term('id',update_id)
-            item = archives[update_id]
-            self.add_emailthread(writer, item, config, update=True)
-            count += 1
-
-        # Add any issue not in indexed_ids
-        # and in remote_ids
-        add_ids = remote_ids - indexed_ids
-        for add_id in add_ids:
+        # add remote_ids
+        for add_id in remote_ids:
             item = archives[add_id]
             self.add_emailthread(writer, item, config, update=False)
             count += 1
