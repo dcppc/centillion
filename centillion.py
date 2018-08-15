@@ -79,6 +79,11 @@ contents200 = "<html><body><h1>Status: OK 200</h1></body></html>"
 
 @app.route('/')
 def index():
+    return render_template("landing.html")
+
+
+@app.route('/log_in')
+def log_in():
 
     if not github.authorized:
         return redirect(url_for("github.login"))
@@ -253,5 +258,5 @@ def oops(e):
 if __name__ == '__main__':
     # if running local instance, set to true
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
-    app.run(host="0.0.0.0",port=5000)
+    app.run(host="0.0.0.0",port=5001)
 
