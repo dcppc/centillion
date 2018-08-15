@@ -79,9 +79,11 @@ function load_gdoc_table(){
             var r = new Array(), j = -1, size=result.length;
             r[++j] = '<thead>'
             r[++j] = '<tr class="header-row">';
-            r[++j] = '<th width="50%">File Name</th>';
-            r[++j] = '<th width="30%">Owner</th>';
-            r[++j] = '<th width="20%">Type</th>';
+            r[++j] = '<th width="40%">File Name</th>';
+            r[++j] = '<th width="15%">Owner</th>';
+            r[++j] = '<th width="15%">Type</th>';
+            r[++j] = '<th width="15%">Created</th>';
+            r[++j] = '<th width="15%">Modified</th>';
             r[++j] = '</tr>';
             r[++j] = '</thead>'
             r[++j] = '<tbody>'
@@ -94,6 +96,10 @@ function load_gdoc_table(){
                 r[++j] = result[i]['owner_name'];
                 r[++j] = '</td><td>';
                 r[++j] = result[i]['mimetype'];
+                r[++j] = '</td><td>';
+                r[++j] = result[i]['created_time'];
+                r[++j] = '</td><td>';
+                r[++j] = result[i]['modified_time'];
                 r[++j] = '</td></tr>';
             }
             r[++j] = '</tbody>'
@@ -121,8 +127,10 @@ function load_issue_table(){
             var r = new Array(), j = -1, size=result.length;
             r[++j] = '<thead>'
             r[++j] = '<tr class="header-row">';
-            r[++j] = '<th width="70%">Issue Name</th>';
-            r[++j] = '<th width="30%">Repository</th>';
+            r[++j] = '<th>Issue Name</th>';
+            r[++j] = '<th width="15%">Repository</th>';
+            r[++j] = '<th width="15%">Created</th>';
+            r[++j] = '<th width="15%">Modified</th>';
             r[++j] = '</tr>';
             r[++j] = '</thead>'
             r[++j] = '<tbody>'
@@ -135,6 +143,10 @@ function load_issue_table(){
                 r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
                 r[++j] = result[i]['repo_name'];
                 r[++j] = '</a>'
+                r[++j] = '</td><td>';
+                r[++j] = result[i]['created_time'];
+                r[++j] = '</td><td>';
+                r[++j] = result[i]['modified_time'];
                 r[++j] = '</td></tr>';
             }
             r[++j] = '</tbody>'

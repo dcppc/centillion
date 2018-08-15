@@ -17,6 +17,7 @@ import pypandoc
 import os.path
 import codecs
 from datetime import datetime
+import dateutil.parser
 
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh.analysis import StemmingAnalyzer
@@ -1079,11 +1080,11 @@ class Search:
         # in the everything-list.
         item_keys=''
         if doctype=='gdoc':
-            item_keys = ['title','owner_name','url','mimetype']
+            item_keys = ['title','owner_name','url','mimetype','created_time','modified_time']
+        elif doctype=='issue':
+            item_keys = ['title','repo_name','repo_url','url','created_time','modified_time']
         elif doctype=='emailthread':
             item_keys = ['title','owner_name','url']
-        elif doctype=='issue':
-            item_keys = ['title','repo_name','repo_url','url']
         elif doctype=='ghfile':
             item_keys = ['title','repo_name','repo_url','url']
         elif doctype=='markdown':
@@ -1100,7 +1101,11 @@ class Search:
             for r in results:
                 d = {}
                 for k in item_keys:
-                    d[k] = r[k]
+                    if k=='created_time' or k=='modified_time':
+                        #d[k] = r[k]
+                        d[k] = dateutil.parser.parse(r[k]).strftime("%Y-%m-%d")
+                    else:
+                        d[k] = r[k]
                 json_results.append(d)
 
         return json_results
