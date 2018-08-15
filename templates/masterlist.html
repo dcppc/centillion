@@ -1,52 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="container">
-    <div class="alert alert-success alert-dismissible">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <ul class=flashes>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-{% endif %}
-{% endwith %}
-
-<div class="container">
-
-    <div class="row">
-        <div class="col-md-12">
-            <center>
-                <a href="{{ url_for('search')}}?query=&fields=">
-                <img src="{{ url_for('static', filename='centillion_white.png') }}">
-                </a>
-                {% if config['TAGLINE'] %}
-                    <h2><a href="{{ url_for('search')}}?query=&fields=">
-                        {{config['TAGLINE']}}
-                    </a></h2>
-                {% endif %}
-            </center>
-        </div>
-    </div>
-
-</div>
-
 <hr />
 
 <div class="container">
 
     <div class="row">
 
-
-
-
-        {#
-         # google drive files panel
-         #}
+    {#
+     # google drive files panel
+     #}
+    <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
@@ -76,12 +40,14 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
 
-        {#
-         # github issue panel
-         #}
+    {#
+     # github issue panel
+     #}
+    <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
@@ -112,13 +78,15 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
 
 
-        {#
-         # github file panel
-         #}
+    {#
+     # github file panel
+     #}
+    <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
@@ -149,11 +117,13 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
-        {#
-         # gh markdown file panel
-         #}
+    {#
+     # gh markdown file panel
+     #}
+    <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
@@ -184,12 +154,14 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
 
-        {#
-         # groups.io
-         #}
+    {#
+     # groups.io
+     #}
+    <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
@@ -220,11 +192,9 @@
                 </div>
             </div>
         </div>
-
-
-
-
     </div>
+
+
 
 </div>
 
