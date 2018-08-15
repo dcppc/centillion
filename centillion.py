@@ -11,6 +11,7 @@ from flask_dance.contrib.github import make_github_blueprint, github
 # create our application
 from centillion_search import Search
 
+import config_centillion
 
 """
 The Centillion
@@ -46,8 +47,8 @@ class UpdateIndexTask(object):
         if(self.diff_index):
             raise Exception("diff index not implemented")
 
-        from get_centillion_config import get_centillion_config
-        config = get_centillion_config('config_centillion.json')
+        #from get_centillion_config import get_centillion_config
+        config = config_centillion.config
 
         search.update_index(self.groupsio_credentials,
                             self.gh_token,

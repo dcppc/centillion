@@ -734,28 +734,13 @@ class Search:
         writer = self.ix.writer()
         count = 0
 
-        # Drop any issues in indexed_issues
-        # not in remote_issues
-        drop_issues = indexed_issues - remote_issues
-        for drop_issue in drop_issues:
+        # Drop issues in indexed_issues
+        for drop_issue in indexed_issues:
             writer.delete_by_term('id',drop_issue)
 
 
-        # Update any issue in indexed_issues
-        # and in remote_issues
-        update_issues = indexed_issues & remote_issues
-        for update_issue in update_issues:
-            # cop out
-            writer.delete_by_term('id',update_issue)
-            item = full_items[update_issue]
-            self.add_issue(writer, item, gh_token, config, update=True)
-            count += 1
-
-
-        # Add any issue not in indexed_issues
-        # and in remote_issues
-        add_issues = remote_issues - indexed_issues
-        for add_issue in add_issues:
+        # Add any issue in remote_issues
+        for add_issue in remote_issues:
             item = full_items[add_issue]
             self.add_issue(writer, item, gh_token, config, update=False)
             count += 1
@@ -847,41 +832,35 @@ class Search:
                 fpath = d['path']
                 _, fname = os.path.split(fpath)
                 _, fext = os.path.splitext(fpath)
+                fpathpieces = fpath.split('/')
 
-                key = d['sha']
+                ignore_file = fname[0]=='.' or fname[0]=='_'
+                ignore_dir = False
+                for piece in fpathpieces:
+                    if piece[0]=='.' or piece[0]=='_':
+                        ignore_dir = True
 
-                d['org'] = this_org
-                d['repo'] = this_repo
-                value = d
+                if not ignore_file and not ignore_dir:
+                    key = d['sha']
 
-                remote_ids.add(key)
-                full_items[key] = value
+                    d['org'] = this_org
+                    d['repo'] = this_repo
+                    value = d
+
+                    remote_ids.add(key)
+                    full_items[key] = value
 
         writer = self.ix.writer()
         count = 0
 
         # Drop any id in indexed_ids
-        # not in remote_ids
-        drop_ids = indexed_ids - remote_ids
-        for drop_id in drop_ids:
+        for drop_id in indexed_ids:
             writer.delete_by_term('id',drop_id)
 
 
-        # Update any id in indexed_ids
+        # Add any issue in remote_ids
         # and in remote_ids
-        update_ids = indexed_ids & remote_ids
-        for update_id in update_ids:
-            # cop out: just delete and re-add
-            writer.delete_by_term('id',update_id)
-            item = full_items[update_id]
-            self.add_ghfile(writer, item, gh_token, config, update=True)
-            count += 1
-
-
-        # Add any issue not in indexed_ids
-        # and in remote_ids
-        add_ids = remote_ids - indexed_ids
-        for add_id in add_ids:
+        for add_id in remote_ids:
             item = full_items[add_id]
             self.add_ghfile(writer, item, gh_token, config, update=False)
             count += 1
