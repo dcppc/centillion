@@ -258,5 +258,5 @@ def oops(e):
 if __name__ == '__main__':
     # if running local instance, set to true
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
-    app.run(host="0.0.0.0",port=5001)
+    app.run(host="0.0.0.0",port=5000)
 
