@@ -189,8 +189,9 @@ def update_index(run_which):
                                     diff_index=False,
                                     run_which = run_which)
                     flash("Rebuilding index, check console output")
-                    return render_template("controlpanel.html", 
-                                           totals={})
+                    # This redirects user to /control_panel route
+                    # to prevent accidental re-indexing
+                    return redirect(url_for("control_panel"))
 
     return contents403
 
