@@ -103,49 +103,53 @@ class Search:
     # ------------------------------
     # Update the entire index
 
-    def update_index(self, groupsio_credentials, gh_token, config):
+    def update_index(self, groupsio_credentials, gh_token, run_which, config):
         """
         Update the entire search index
         """
-        try:
-            self.update_index_emailthreads(groupsio_credentials, config)
-        except GroupsIOException as e:
-            print("ERROR: While re-indexing: failed to update Groups.io email threads, hit API rate limit")
-            print("-"*40)
-            print(repr(e))
-            print("-"*40)
-            print("Continuing...")
-            pass
+        if run_which=='all' or run_which=='emailthreads':
+            try:
+                self.update_index_emailthreads(groupsio_credentials, config)
+            except GroupsIOException as e:
+                print("ERROR: While re-indexing: failed to update Groups.io email threads, hit API rate limit")
+                print("-"*40)
+                print(repr(e))
+                print("-"*40)
+                print("Continuing...")
+                pass
 
-        try:
-            search.update_index_ghfiles(self.gh_token,config)
-        except Exception as e:
-            print("ERROR: While re-indexing: failed to update Github files")
-            print("-"*40)
-            print(repr(e))
-            print("-"*40)
-            print("Continuing...")
-            pass
+        if run_which=='all' or run_which=='ghfiles':
+            try:
+                search.update_index_ghfiles(self.gh_token,config)
+            except Exception as e:
+                print("ERROR: While re-indexing: failed to update Github files")
+                print("-"*40)
+                print(repr(e))
+                print("-"*40)
+                print("Continuing...")
+                pass
 
-        try:
-            search.update_index_issues(self.gh_token,config)
-        except Exception as e:
-            print("ERROR: While re-indexing: failed to update Github issues")
-            print("-"*40)
-            print(repr(e))
-            print("-"*40)
-            print("Continuing...")
-            pass
+        if run_which=='all' or run_which=='issues':
+            try:
+                search.update_index_issues(self.gh_token,config)
+            except Exception as e:
+                print("ERROR: While re-indexing: failed to update Github issues")
+                print("-"*40)
+                print(repr(e))
+                print("-"*40)
+                print("Continuing...")
+                pass
 
-        try:
-            search.update_index_gdocs(config)
-        except Exception as e:
-            print("ERROR: While re-indexing: failed to update Google Drive files")
-            print("-"*40)
-            print(repr(e))
-            print("-"*40)
-            print("Continuing...")
-            pass
+        if run_which=='all' or run_which=='gdocs':
+            try:
+                search.update_index_gdocs(config)
+            except Exception as e:
+                print("ERROR: While re-indexing: failed to update Google Drive files")
+                print("-"*40)
+                print(repr(e))
+                print("-"*40)
+                print("Continuing...")
+                pass
 
 
     # ------------------------------
