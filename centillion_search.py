@@ -107,12 +107,13 @@ class Search:
         """
         Update the entire search index
         """
-        self.update_index_emailthreads(groupsio_credentials, config)
         try:
             self.update_index_emailthreads(groupsio_credentials, config)
         except GroupsIOException as e:
             print("ERROR: While re-indexing: failed to update Groups.io email threads, hit API rate limit")
+            print("-"*40)
             print(repr(e))
+            print("-"*40)
             print("Continuing...")
             pass
 
@@ -120,7 +121,9 @@ class Search:
             search.update_index_ghfiles(self.gh_token,config)
         except Exception as e:
             print("ERROR: While re-indexing: failed to update Github files")
+            print("-"*40)
             print(repr(e))
+            print("-"*40)
             print("Continuing...")
             pass
 
@@ -128,7 +131,9 @@ class Search:
             search.update_index_issues(self.gh_token,config)
         except:
             print("ERROR: While re-indexing: failed to update Github issues")
+            print("-"*40)
             print(repr(e))
+            print("-"*40)
             print("Continuing...")
             pass
 
@@ -136,7 +141,9 @@ class Search:
             search.update_index_gdocs(config)
         except:
             print("ERROR: While re-indexing: failed to update Google Drive files")
+            print("-"*40)
             print(repr(e))
+            print("-"*40)
             print("Continuing...")
             pass
 
