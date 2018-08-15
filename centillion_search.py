@@ -129,7 +129,7 @@ class Search:
 
         try:
             search.update_index_issues(self.gh_token,config)
-        except:
+        except Exception as e:
             print("ERROR: While re-indexing: failed to update Github issues")
             print("-"*40)
             print(repr(e))
@@ -139,7 +139,7 @@ class Search:
 
         try:
             search.update_index_gdocs(config)
-        except:
+        except Exception as e:
             print("ERROR: While re-indexing: failed to update Google Drive files")
             print("-"*40)
             print(repr(e))
