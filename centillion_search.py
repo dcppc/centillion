@@ -120,7 +120,7 @@ class Search:
 
         if run_which=='all' or run_which=='ghfiles':
             try:
-                search.update_index_ghfiles(self.gh_token,config)
+                self.update_index_ghfiles(gh_token,config)
             except Exception as e:
                 print("ERROR: While re-indexing: failed to update Github files")
                 print("-"*40)
@@ -131,7 +131,7 @@ class Search:
 
         if run_which=='all' or run_which=='issues':
             try:
-                search.update_index_issues(self.gh_token,config)
+                self.update_index_issues(gh_token,config)
             except Exception as e:
                 print("ERROR: While re-indexing: failed to update Github issues")
                 print("-"*40)
@@ -142,7 +142,7 @@ class Search:
 
         if run_which=='all' or run_which=='gdocs':
             try:
-                search.update_index_gdocs(config)
+                self.update_index_gdocs(config)
             except Exception as e:
                 print("ERROR: While re-indexing: failed to update Google Drive files")
                 print("-"*40)
