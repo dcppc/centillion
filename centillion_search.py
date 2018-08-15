@@ -744,7 +744,7 @@ class Search:
         # ------
         indexed_ids = set()
         p = QueryParser("kind", schema=self.ix.schema)
-        q = p.parse("ghfiles")
+        q = p.parse("ghfile")
         with self.ix.searcher() as s:
             results = s.search(q,limit=None)
             for result in results:
