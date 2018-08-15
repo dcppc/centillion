@@ -1,6 +1,9 @@
 import requests, os, re
 from bs4 import BeautifulSoup
 
+class GroupsIOException(Exception):
+    pass
+
 class GroupsIOArchivesCrawler(object):
     """
     This is a Groups.io spider
@@ -58,6 +61,10 @@ class GroupsIOArchivesCrawler(object):
             k = group['id']
             v = re.sub(r'dcppc\+','',group['name'])
             subgroups[k] = v
+
+            ## Short circuit
+            ## for debugging purposes
+            #break
 
         return subgroups
 
@@ -313,7 +320,7 @@ class GroupsIOArchivesCrawler(object):
         soup = BeautifulSoup(response.content,"html.parser")
         rows = soup.find_all('tr',{'class':'test'})
         if 'rate limited' in soup.text:
-            raise Exception("Error: rate limit in place for Groups.io")
+            raise GroupsIOException("Error: rate limit in place for Groups.io")
 
         results = []
         for row in rows:
@@ -369,7 +376,7 @@ class GroupsIOArchivesCrawler(object):
         
         if csrf=='':
             err = "ERROR: Could not find csrf token on page."
-            raise Exception(err)
+            raise GroupsIOException(err)
     
         return csrf
 

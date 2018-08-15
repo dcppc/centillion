@@ -50,27 +50,9 @@ class UpdateIndexTask(object):
         #from get_centillion_config import get_centillion_config
         config = config_centillion.config
 
-        try:
-            search.update_index_emailthreads(self.groupsio_credentials,config)
-        except:
-            pass
-
-        try:
-            search.update_index_ghfiles(self.gh_token,config)
-        except:
-            pass
-
-        try:
-            search.update_index_issues(self.gh_token,config)
-        except:
-            pass
-
-        try:
-            search.update_index_gdocs(config)
-        except:
-            pass
-
-
+        search.update_index(self.groupsio_credentials,
+                            self.gh_token,
+                            config)
 
 
 app = Flask(__name__)
