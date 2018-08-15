@@ -24,6 +24,47 @@
 {# ########## github fork corner ############ #}
 
 <div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="container">
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <ul class=flashes>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="container">
+    
+        {#
+        banner image
+        #}
+        <div class="row">
+            <div class="col12sm">
+                <center>
+                    <a href="{{ url_for('search')}}?query=&fields=">
+                    <img src="{{ url_for('static', filename='centillion_white.png') }}">
+                    </a>
+                    {#
+                    need a tag line
+                    #}
+                    {% if config['TAGLINE'] %}
+                        <h2><a href="{{ url_for('search')}}?query=&fields=">
+                            {{config['TAGLINE']}}
+                        </a></h2>
+                    {% endif %}
+                </center>
+            </div>
+        </div>
+    
+    </div>
+
     {% block body %}{% endblock %}
 </div>
 
