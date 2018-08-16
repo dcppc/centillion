@@ -1,7 +1,31 @@
+td#search-results-score-col,
+td#search-results-type-col {
+    width: 100px;
+}
+
+div.container {
+    width: 90%;
+}
+
+@media (max-width: $screen-xs-max) {
+    .col-xs-auto { width: auto; }
+}
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    .col-sm-auto { width: auto; }
+}
+@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+    .col-md-auto { width: auto; }
+}
+@media (min-width: $screen-lg-min) {
+    .col-lg-auto { width: auto; }
+}
+
+/* control panel button width */
 .btn-reindex-type, .btn-reindex-all {
     width: 350px;
 }
 
+/* landing page github button */
 #github-button {
     display:inline-block;
     font-size: 20px;
@@ -10,21 +34,23 @@
     text-align: center;
 }
 
+/* search button */
 #the-big-one {
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
+/* badges for number of docs indexed */
 span.badge {
     vertical-align: text-bottom;
 }
 
-h2.masterlist-header a {
+a.badgelinks, a.badgelinks:hover {
+    color: #fff;
     text-decoration: none;
 }
 
-a.badgelinks, a.badgelinks:hover {
-    color: #fff;
+h2.masterlist-header a {
     text-decoration: none;
 }
 
