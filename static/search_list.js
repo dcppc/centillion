@@ -26,6 +26,11 @@ $(document).ready(function() {
         responsive: true,
         searching: false,
         order: [[0,'desc']],
+        aoColumnDefs: [
+            { bSortable: false,
+              aTargets : [2]
+            }
+        ],
         lengthMenu: [50,100,250,500]
     });
 
