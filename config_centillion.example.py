@@ -23,13 +23,6 @@ config = {
         "dcppc/design-guidelines",
         "dcppc/2018-may-workshop",
         "dcppc/centillion"
-    ],
-    "github_ignore_files_re" : [
-        '^\.*',
-        '^_*'
-    ],
-    "github_ignore_dirs_re" : [
-        '^_*'
     ]
 }
 
