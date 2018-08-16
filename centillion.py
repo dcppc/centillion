@@ -28,8 +28,9 @@ You provide:
 
 
 class UpdateIndexTask(object):
-    def __init__(self, app_config, diff_index=False):
+    def __init__(self, app_config, diff_index=False,run_which='all'):
         self.diff_index = diff_index
+        self.run_which = run_which
         thread = threading.Thread(target=self.run, args=())
 
         self.gh_token = app_config['GITHUB_TOKEN']
@@ -52,6 +53,7 @@ class UpdateIndexTask(object):
 
         search.update_index(self.groupsio_credentials,
                             self.gh_token,
+                            self.run_which,
                             config)
 
 
@@ -165,8 +167,8 @@ def search():
     return contents403
 
 
-@app.route('/update_index')
-def update_index():
+@app.route('/update_index/<run_which>')
+def update_index(run_which):
     if not github.authorized:
         return redirect(url_for("github.login"))
     username = github.get("/user").json()['login']
@@ -180,13 +182,14 @@ def update_index():
                 if mresp.status_code==204:
                     # Business as usual
                     UpdateIndexTask(app.config,
-                                    diff_index=False)
+                                    diff_index=False,
+                                    run_which = run_which)
                     flash("Rebuilding index, check console output")
-                    return render_template("controlpanel.html", 
-                                           totals={})
+                    # This redirects user to /control_panel route
+                    # to prevent accidental re-indexing
+                    return redirect(url_for("control_panel"))
 
     return contents403
-
 
 
 @app.route('/control_panel')
