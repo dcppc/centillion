@@ -17,6 +17,12 @@
 // If the "doctype" parameter is in the URL, use it to
 // determine which panel to open automatically.
 
+var initGdocTable = false;
+var initIssuesTable = false;
+var initGhfilesTable = false;
+var initMarkdownTable = false;
+var initEmailthreadsTable = false;
+
 $(document).ready(function() {
     var url_string = document.location.toString();
     var url = new URL(url_string);
@@ -68,48 +74,51 @@ $(document).ready(function() {
 // Google Drive
 
 function load_gdoc_table(){
-    var divList = $('div#collapseDrive').attr('class');
-    if (divList.indexOf('in') !== -1) {
-        console.log('Closing Google Drive master list');
-    } else { 
-        console.log('Opening Google Drive master list');
+    if(!initGdocTable) {
+        var divList = $('div#collapseDrive').attr('class');
+        if (divList.indexOf('in') !== -1) {
+            console.log('Closing Google Drive master list');
+        } else { 
+            console.log('Opening Google Drive master list');
 
-        $.getJSON("/list/gdoc", function(result){
+            $.getJSON("/list/gdoc", function(result){
 
-            var r = new Array(), j = -1, size=result.length;
-            r[++j] = '<thead>'
-            r[++j] = '<tr class="header-row">';
-            r[++j] = '<th width="40%">File Name</th>';
-            r[++j] = '<th width="15%">Owner</th>';
-            r[++j] = '<th width="15%">Type</th>';
-            r[++j] = '<th width="15%">Created</th>';
-            r[++j] = '<th width="15%">Modified</th>';
-            r[++j] = '</tr>';
-            r[++j] = '</thead>'
-            r[++j] = '<tbody>'
-            for (var i=0; i<size; i++){
-                r[++j] = '<tr><td>';
-                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
-                r[++j] = result[i]['title'];
-                r[++j] = '</a>'
-                r[++j] = '</td><td>';
-                r[++j] = result[i]['owner_name'];
-                r[++j] = '</td><td>';
-                r[++j] = result[i]['mimetype'];
-                r[++j] = '</td><td>';
-                r[++j] = result[i]['created_time'];
-                r[++j] = '</td><td>';
-                r[++j] = result[i]['modified_time'];
-                r[++j] = '</td></tr>';
-            }
-            r[++j] = '</tbody>'
-            $('#gdocs-master-list').html(r.join(''));
-            $('#gdocs-master-list').DataTable({
-                responsive: true,
-                lengthMenu: [50,100,250,500]
+                var r = new Array(), j = -1, size=result.length;
+                r[++j] = '<thead>'
+                r[++j] = '<tr class="header-row">';
+                r[++j] = '<th width="40%">File Name</th>';
+                r[++j] = '<th width="15%">Owner</th>';
+                r[++j] = '<th width="15%">Type</th>';
+                r[++j] = '<th width="15%">Created</th>';
+                r[++j] = '<th width="15%">Modified</th>';
+                r[++j] = '</tr>';
+                r[++j] = '</thead>'
+                r[++j] = '<tbody>'
+                for (var i=0; i<size; i++){
+                    r[++j] = '<tr><td>';
+                    r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                    r[++j] = result[i]['title'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['owner_name'];
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['mimetype'];
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['created_time'];
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['modified_time'];
+                    r[++j] = '</td></tr>';
+                }
+                r[++j] = '</tbody>'
+                $('#gdocs-master-list').html(r.join(''));
+                $('#gdocs-master-list').DataTable({
+                    responsive: true,
+                    lengthMenu: [50,100,250,500]
+                });
+                initGdocTable = true;
             });
-        });
-        console.log('Finished loading Google Drive master list');
+            console.log('Finished loading Google Drive master list');
+        }
     }
 }
 
@@ -117,46 +126,49 @@ function load_gdoc_table(){
 // Github issues
 
 function load_issue_table(){
-    var divList = $('div#collapseIssues').attr('class');
-    if (divList.indexOf('in') !== -1) {
-        console.log('Closing Github issues master list');
-    } else { 
-        console.log('Opening Github issues master list');
+    if(!initIssuesTable) {
+        var divList = $('div#collapseIssues').attr('class');
+        if (divList.indexOf('in') !== -1) {
+            console.log('Closing Github issues master list');
+        } else { 
+            console.log('Opening Github issues master list');
 
-        $.getJSON("/list/issue", function(result){
-            var r = new Array(), j = -1, size=result.length;
-            r[++j] = '<thead>'
-            r[++j] = '<tr class="header-row">';
-            r[++j] = '<th>Issue Name</th>';
-            r[++j] = '<th width="15%">Repository</th>';
-            r[++j] = '<th width="15%">Created</th>';
-            r[++j] = '<th width="15%">Modified</th>';
-            r[++j] = '</tr>';
-            r[++j] = '</thead>'
-            r[++j] = '<tbody>'
-            for (var i=0; i<size; i++){
-                r[++j] ='<tr><td>';
-                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
-                r[++j] = result[i]['title'];
-                r[++j] = '</a>'
-                r[++j] = '</td><td>';
-                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
-                r[++j] = result[i]['repo_name'];
-                r[++j] = '</a>'
-                r[++j] = '</td><td>';
-                r[++j] = result[i]['created_time'];
-                r[++j] = '</td><td>';
-                r[++j] = result[i]['modified_time'];
-                r[++j] = '</td></tr>';
-            }
-            r[++j] = '</tbody>'
-            $('#issues-master-list').html(r.join(''));
-            $('#issues-master-list').DataTable({
-                responsive: true,
-                lengthMenu: [50,100,250,500]
+            $.getJSON("/list/issue", function(result){
+                var r = new Array(), j = -1, size=result.length;
+                r[++j] = '<thead>'
+                r[++j] = '<tr class="header-row">';
+                r[++j] = '<th>Issue Name</th>';
+                r[++j] = '<th width="15%">Repository</th>';
+                r[++j] = '<th width="15%">Created</th>';
+                r[++j] = '<th width="15%">Modified</th>';
+                r[++j] = '</tr>';
+                r[++j] = '</thead>'
+                r[++j] = '<tbody>'
+                for (var i=0; i<size; i++){
+                    r[++j] ='<tr><td>';
+                    r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                    r[++j] = result[i]['title'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td><td>';
+                    r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
+                    r[++j] = result[i]['repo_name'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['created_time'];
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['modified_time'];
+                    r[++j] = '</td></tr>';
+                }
+                r[++j] = '</tbody>'
+                $('#issues-master-list').html(r.join(''));
+                $('#issues-master-list').DataTable({
+                    responsive: true,
+                    lengthMenu: [50,100,250,500]
+                });
+                initIssuesTable = true;
             });
-        });
-        console.log('Finished loading Github issues master list');
+            console.log('Finished loading Github issues master list');
+        }
     }
 }
 
@@ -164,42 +176,45 @@ function load_issue_table(){
 // Github files
 
 function load_ghfile_table(){
-    var divList = $('div#collapseFiles').attr('class');
-    if (divList.indexOf('in') !== -1) {
-        console.log('Closing Github files master list');
-    } else { 
-        console.log('Opening Github files master list');
+    if(!initGhfilesTable) {
+        var divList = $('div#collapseFiles').attr('class');
+        if (divList.indexOf('in') !== -1) {
+            console.log('Closing Github files master list');
+        } else { 
+            console.log('Opening Github files master list');
 
-        $.getJSON("/list/ghfile", function(result){
-            console.log("-----------");
-            console.log(result);
-            var r = new Array(), j = -1, size=result.length;
-            r[++j] = '<thead>'
-            r[++j] = '<tr class="header-row">';
-            r[++j] = '<th width="70%">File Name</th>';
-            r[++j] = '<th width="30%">Repository</th>';
-            r[++j] = '</tr>';
-            r[++j] = '</thead>'
-            r[++j] = '<tbody>'
-            for (var i=0; i<size; i++){
-                r[++j] ='<tr><td>';
-                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
-                r[++j] = result[i]['title'];
-                r[++j] = '</a>'
-                r[++j] = '</td><td>';
-                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
-                r[++j] = result[i]['repo_name'];
-                r[++j] = '</a>'
-                r[++j] = '</td></tr>';
-            }
-            r[++j] = '</tbody>'
-            $('#ghfiles-master-list').html(r.join(''));
-            $('#ghfiles-master-list').DataTable({
-                responsive: true,
-                lengthMenu: [50,100,250,500]
+            $.getJSON("/list/ghfile", function(result){
+                console.log("-----------");
+                console.log(result);
+                var r = new Array(), j = -1, size=result.length;
+                r[++j] = '<thead>'
+                r[++j] = '<tr class="header-row">';
+                r[++j] = '<th width="70%">File Name</th>';
+                r[++j] = '<th width="30%">Repository</th>';
+                r[++j] = '</tr>';
+                r[++j] = '</thead>'
+                r[++j] = '<tbody>'
+                for (var i=0; i<size; i++){
+                    r[++j] ='<tr><td>';
+                    r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                    r[++j] = result[i]['title'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td><td>';
+                    r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
+                    r[++j] = result[i]['repo_name'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td></tr>';
+                }
+                r[++j] = '</tbody>'
+                $('#ghfiles-master-list').html(r.join(''));
+                $('#ghfiles-master-list').DataTable({
+                    responsive: true,
+                    lengthMenu: [50,100,250,500]
+                });
+                initGhfilesTable = true;
             });
-        });
-        console.log('Finished loading Github file list');
+            console.log('Finished loading Github file list');
+        }
     }
 }
 
@@ -207,40 +222,43 @@ function load_ghfile_table(){
 // Github Markdown
 
 function load_markdown_table(){
-    var divList = $('div#collapseMarkdown').attr('class');
-    if (divList.indexOf('in') !== -1) {
-        console.log('Closing Github markdown master list');
-    } else { 
-        console.log('Opening Github markdown master list');
+    if(!initMarkdownTable) { 
+        var divList = $('div#collapseMarkdown').attr('class');
+        if (divList.indexOf('in') !== -1) {
+            console.log('Closing Github markdown master list');
+        } else { 
+            console.log('Opening Github markdown master list');
 
-        $.getJSON("/list/markdown", function(result){
-            var r = new Array(), j = -1, size=result.length;
-            r[++j] = '<thead>'
-            r[++j] = '<tr class="header-row">';
-            r[++j] = '<th width="70%">Markdown File Name</th>';
-            r[++j] = '<th width="30%">Repo</th>';
-            r[++j] = '</tr>';
-            r[++j] = '</thead>'
-            r[++j] = '<tbody>'
-            for (var i=0; i<size; i++){
-                r[++j] ='<tr><td>';
-                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
-                r[++j] = result[i]['title'];
-                r[++j] = '</a>'
-                r[++j] = '</td><td>';
-                r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
-                r[++j] = result[i]['repo_name'];
-                r[++j] = '</a>'
-                r[++j] = '</td></tr>';
-            }
-            r[++j] = '</tbody>'
-            $('#markdown-master-list').html(r.join(''));
-            $('#markdown-master-list').DataTable({
-                responsive: true,
-                lengthMenu: [50,100,250,500]
+            $.getJSON("/list/markdown", function(result){
+                var r = new Array(), j = -1, size=result.length;
+                r[++j] = '<thead>'
+                r[++j] = '<tr class="header-row">';
+                r[++j] = '<th width="70%">Markdown File Name</th>';
+                r[++j] = '<th width="30%">Repo</th>';
+                r[++j] = '</tr>';
+                r[++j] = '</thead>'
+                r[++j] = '<tbody>'
+                for (var i=0; i<size; i++){
+                    r[++j] ='<tr><td>';
+                    r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                    r[++j] = result[i]['title'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td><td>';
+                    r[++j] = '<a href="' + result[i]['repo_url'] + '" target="_blank">'
+                    r[++j] = result[i]['repo_name'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td></tr>';
+                }
+                r[++j] = '</tbody>'
+                $('#markdown-master-list').html(r.join(''));
+                $('#markdown-master-list').DataTable({
+                    responsive: true,
+                    lengthMenu: [50,100,250,500]
+                });
+                initMarkdownTable = true;
             });
-        });
-        console.log('Finished loading Markdown list');
+            console.log('Finished loading Markdown list');
+        }
     }
 }
 
@@ -249,37 +267,40 @@ function load_markdown_table(){
 // Groups.io Email Threads
 
 function load_emailthreads_table(){
-    var divList = $('div#collapseThreads').attr('class');
-    if (divList.indexOf('in') !== -1) {
-        console.log('Closing Groups.io email threads master list');
-    } else { 
-        console.log('Opening Groups.io email threads master list');
-
-        $.getJSON("/list/emailthread", function(result){
-            var r = new Array(), j = -1, size=result.length;
-            r[++j] = '<thead>'
-            r[++j] = '<tr class="header-row">';
-            r[++j] = '<th width="70%">Topic</th>';
-            r[++j] = '<th width="30%">Started By</th>';
-            r[++j] = '</tr>';
-            r[++j] = '</thead>'
-            r[++j] = '<tbody>'
-            for (var i=0; i<size; i++){
-                r[++j] ='<tr><td>';
-                r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
-                r[++j] = result[i]['title'];
-                r[++j] = '</a>'
-                r[++j] = '</td><td>';
-                r[++j] = result[i]['owner_name'];
-                r[++j] = '</td></tr>';
-            }
-            r[++j] = '</tbody>'
-            $('#emailthreads-master-list').html(r.join(''));
-            $('#emailthreads-master-list').DataTable({
-                responsive: true,
-                lengthMenu: [50,100,250,500]
+    if(!initEmailthreadsTable) { 
+        var divList = $('div#collapseThreads').attr('class');
+        if (divList.indexOf('in') !== -1) {
+            console.log('Closing Groups.io email threads master list');
+        } else { 
+            console.log('Opening Groups.io email threads master list');
+    
+            $.getJSON("/list/emailthread", function(result){
+                var r = new Array(), j = -1, size=result.length;
+                r[++j] = '<thead>'
+                r[++j] = '<tr class="header-row">';
+                r[++j] = '<th width="70%">Topic</th>';
+                r[++j] = '<th width="30%">Started By</th>';
+                r[++j] = '</tr>';
+                r[++j] = '</thead>'
+                r[++j] = '<tbody>'
+                for (var i=0; i<size; i++){
+                    r[++j] ='<tr><td>';
+                    r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
+                    r[++j] = result[i]['title'];
+                    r[++j] = '</a>'
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['owner_name'];
+                    r[++j] = '</td></tr>';
+                }
+                r[++j] = '</tbody>'
+                $('#emailthreads-master-list').html(r.join(''));
+                $('#emailthreads-master-list').DataTable({
+                    responsive: true,
+                    lengthMenu: [50,100,250,500]
+                });
+                initEmailthreadsTable = true
             });
-        });
-        console.log('Finished loading Groups.io email threads list');
+            console.log('Finished loading Groups.io email threads list');
+        }
     }
 }

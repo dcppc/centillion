@@ -81,22 +81,12 @@ contents200 = "<html><body><h1>Status: OK 200</h1></body></html>"
 
 @app.route('/')
 def index():
-    return render_template("landing.html")
-
-
-@app.route('/log_in')
-def log_in():
-
     if not github.authorized:
-        return redirect(url_for("github.login"))
-
+        return render_template("landing.html")
     else:
-
         username = github.get("/user").json()['login']
-
         resp = github.get("/user/orgs")
         if resp.ok:
-
             # If they are in team copper, redirect to search.
             # Otherwise, hit em with a 403
             all_orgs = resp.json()
@@ -105,8 +95,30 @@ def log_in():
                     copper_team_id = '2700235'
                     mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                     if mresp.status_code==204:
+                        # Business as usual
+                        return redirect(url_for("search", query="", fields=""))
 
-                        # --------------------
+            return contents403
+
+        return contents404
+
+
+@app.route('/log_in')
+def log_in():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    else:
+        username = github.get("/user").json()['login']
+        resp = github.get("/user/orgs")
+        if resp.ok:
+            # If they are in team copper, redirect to search.
+            # Otherwise, hit em with a 403
+            all_orgs = resp.json()
+            for org in all_orgs:
+                if org['login']=='dcppc':
+                    copper_team_id = '2700235'
+                    mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
+                    if mresp.status_code==204:
                         # Business as usual
                         return redirect(url_for("search", query="", fields=""))
 
@@ -118,25 +130,17 @@ def log_in():
 
 @app.route('/search')
 def search():
-
     if not github.authorized:
         return redirect(url_for("github.login"))
-
     username = github.get("/user").json()['login']
-
     resp = github.get("/user/orgs")
     if resp.ok:
-
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
-
                 copper_team_id = '2700235'
-
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
-
-                    # --------------------
                     # Business as usual
                     query = request.args['query']
                     fields = request.args.get('fields')
@@ -165,25 +169,17 @@ def search():
 
 @app.route('/update_index/<run_which>')
 def update_index(run_which):
-
     if not github.authorized:
         return redirect(url_for("github.login"))
-
     username = github.get("/user").json()['login']
-
     resp = github.get("/user/orgs")
     if resp.ok:
-
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
-
                 copper_team_id = '2700235'
-
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
-
-                    # --------------------
                     # Business as usual
                     UpdateIndexTask(app.config,
                                     diff_index=False,
@@ -198,24 +194,18 @@ def update_index(run_which):
 
 @app.route('/control_panel')
 def control_panel():
-
     if not github.authorized:
         return redirect(url_for("github.login"))
-
     username = github.get("/user").json()['login']
-
     resp = github.get("/user/orgs")
     if resp.ok:
-
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
-
                 copper_team_id = '2700235'
-
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
-
+                    # Business as usual
                     return render_template("controlpanel.html", 
                                            totals={})
 
@@ -225,24 +215,18 @@ def control_panel():
 
 @app.route('/master_list')
 def master_list():
-
     if not github.authorized:
         return redirect(url_for("github.login"))
-
     username = github.get("/user").json()['login']
-
     resp = github.get("/user/orgs")
     if resp.ok:
-
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
-
                 copper_team_id = '2700235'
-
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
-
+                    # Business as usual
                     return render_template("masterlist.html")
 
     return contents403
@@ -251,8 +235,20 @@ def master_list():
 
 @app.route('/list/<doctype>')
 def list_docs(doctype):
-    search = Search(app.config["INDEX_DIR"])
-    return jsonify(search.get_list(doctype))
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    username = github.get("/user").json()['login']
+    resp = github.get("/user/orgs")
+    if resp.ok:
+        all_orgs = resp.json()
+        for org in all_orgs:
+            if org['login']=='dcppc':
+                copper_team_id = '2700235'
+                mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
+                if mresp.status_code==204:
+                    # Business as usual
+                    search = Search(app.config["INDEX_DIR"])
+                    return jsonify(search.get_list(doctype))
 
 @app.errorhandler(404)
 def oops(e):
