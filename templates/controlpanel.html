@@ -20,17 +20,9 @@
                         <div class="col-md-12">
                             <p class="panel-text">Re-index <i>every</i> document in the
                             remote collection in the search index. <b>Warning: this operation may take a while.</b>
-                            <p/>
-                            <p><a href="{{ url_for('update_index',run_which='all') }}" class="btn btn-large btn-danger">Update Main Index</a>
-                            <p/> 
-                            <p><a href="{{ url_for('update_index',run_which='ghfiles') }}" class="btn btn-large btn-danger">Update Github Files Index</a>
-                            <p/> 
-                            <p><a href="{{ url_for('update_index',run_which='issues') }}" class="btn btn-large btn-danger">Update Github Issues Index</a>
-                            <p/> 
-                            <p><a href="{{ url_for('update_index',run_which='gdocs') }}" class="btn btn-large btn-danger">Update Google Drive Index</a>
-                            <p/> 
-                            <p><a href="{{ url_for('update_index',run_which='emailthreads') }}" class="btn btn-large btn-danger">Update Groups.io Email Threads Index</a>
-                            <p/> 
+                            </p>
+                            <p><a id="re-index-main" href="{{ url_for('update_index',run_which='all') }}" class="btn btn-large btn-danger btn-reindex-all">Update Main Index</a>
+                            </p> 
                         </div>
                     </div>
                 </div>
@@ -38,30 +30,36 @@
             </div>
         </div>
 
-        {# update diff search index #}
-        {#
+
+
+        {# update search index by type #}
         <div class="panel panel-danger">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    Update Diff Search Index
+                    Update Search Index by Type
                 </h3>
             </div>
             <div class="panel-body">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
-                            <p class="panel-text">Diff search index only re-indexes documents created after the last
-                            search index update. <b>Not currently implemented.</b>
-                            <p/> <p>
-                            <a href="#" class="btn btn-large disabled btn-danger">Update Diff Index</a>
-                            <p/> 
+                            <p class="panel-text">Re-index individual document types in the search index.
+                            </p>
+                            <p><a href="{{ url_for('update_index',run_which='gdocs') }}"        class="btn btn-large btn-danger btn-reindex-type">Update Google Drive Index</a>
+                            </p>  
+                            <p><a href="{{ url_for('update_index',run_which='ghfiles') }}"      class="btn btn-large btn-danger btn-reindex-type">Update Github Files Index</a>
+                            </p>  
+                            <p><a href="{{ url_for('update_index',run_which='issues') }}"       class="btn btn-large btn-danger btn-reindex-type">Update Github Issues Index</a>
+                            </p>  
+                            <p><a href="{{ url_for('update_index',run_which='emailthreads') }}" class="btn btn-large btn-danger btn-reindex-type">Update Groups.io Email Threads Index</a>
+                            </p> 
                         </div>
                     </div>
                 </div>
 
             </div>
         </div>
-        #}
+
 
     </div>
 

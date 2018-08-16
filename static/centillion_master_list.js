@@ -110,12 +110,29 @@ function load_gdoc_table(){
                     r[++j] = '</td></tr>';
                 }
                 r[++j] = '</tbody>'
-                $('#gdocs-master-list').html(r.join(''));
-                $('#gdocs-master-list').DataTable({
+
+                // Construct names of id tags
+                var doctype = 'gdocs';
+                var idlabel = '#' + doctype + '-master-list';
+                var filtlabel = idlabel + '_filter';
+
+                // Initialize the DataTable
+                $(idlabel).html(r.join(''));
+                $(idlabel).DataTable({
                     responsive: true,
                     lengthMenu: [50,100,250,500]
                 });
-                initGdocTable = true;
+
+                // Get the search filter section and search box
+                var searchsec = $(filtlabel).find('label');
+                var searchbox = searchsec.find('input');
+
+                // Replace search filter section text,
+                // then re-add the removed search box
+                searchsec.text('Search Metadata: ');
+                searchsec.append(searchbox);
+
+                initGdocTable = true
             });
             console.log('Finished loading Google Drive master list');
         }
@@ -160,11 +177,28 @@ function load_issue_table(){
                     r[++j] = '</td></tr>';
                 }
                 r[++j] = '</tbody>'
-                $('#issues-master-list').html(r.join(''));
-                $('#issues-master-list').DataTable({
+
+                // Construct names of id tags
+                var doctype = 'issues';
+                var idlabel = '#' + doctype + '-master-list';
+                var filtlabel = idlabel + '_filter';
+
+                // Initialize the DataTable
+                $(idlabel).html(r.join(''));
+                $(idlabel).DataTable({
                     responsive: true,
                     lengthMenu: [50,100,250,500]
                 });
+
+                // Get the search filter section and search box
+                var searchsec = $(filtlabel).find('label');
+                var searchbox = searchsec.find('input');
+
+                // Replace search filter section text,
+                // then re-add the removed search box
+                searchsec.text('Search Metadata: ');
+                searchsec.append(searchbox);
+
                 initIssuesTable = true;
             });
             console.log('Finished loading Github issues master list');
@@ -206,11 +240,28 @@ function load_ghfile_table(){
                     r[++j] = '</td></tr>';
                 }
                 r[++j] = '</tbody>'
-                $('#ghfiles-master-list').html(r.join(''));
-                $('#ghfiles-master-list').DataTable({
+
+                // Construct names of id tags
+                var doctype = 'ghfiles';
+                var idlabel = '#' + doctype + '-master-list';
+                var filtlabel = idlabel + '_filter';
+
+                // Initialize the DataTable
+                $(idlabel).html(r.join(''));
+                $(idlabel).DataTable({
                     responsive: true,
                     lengthMenu: [50,100,250,500]
                 });
+
+                // Get the search filter section and search box
+                var searchsec = $(filtlabel).find('label');
+                var searchbox = searchsec.find('input');
+
+                // Replace search filter section text,
+                // then re-add the removed search box
+                searchsec.text('Search Metadata: ');
+                searchsec.append(searchbox);
+
                 initGhfilesTable = true;
             });
             console.log('Finished loading Github file list');
@@ -234,7 +285,7 @@ function load_markdown_table(){
                 r[++j] = '<thead>'
                 r[++j] = '<tr class="header-row">';
                 r[++j] = '<th width="70%">Markdown File Name</th>';
-                r[++j] = '<th width="30%">Repo</th>';
+                r[++j] = '<th width="30%">Repository</th>';
                 r[++j] = '</tr>';
                 r[++j] = '</thead>'
                 r[++j] = '<tbody>'
@@ -250,11 +301,28 @@ function load_markdown_table(){
                     r[++j] = '</td></tr>';
                 }
                 r[++j] = '</tbody>'
-                $('#markdown-master-list').html(r.join(''));
-                $('#markdown-master-list').DataTable({
+
+                // Construct names of id tags
+                var doctype = 'markdown';
+                var idlabel = '#' + doctype + '-master-list';
+                var filtlabel = idlabel + '_filter';
+
+                // Initialize the DataTable
+                $(idlabel).html(r.join(''));
+                $(idlabel).DataTable({
                     responsive: true,
                     lengthMenu: [50,100,250,500]
                 });
+
+                // Get the search filter section and search box
+                var searchsec = $(filtlabel).find('label');
+                var searchbox = searchsec.find('input');
+
+                // Replace search filter section text,
+                // then re-add the removed search box
+                searchsec.text('Search Metadata: ');
+                searchsec.append(searchbox);
+
                 initMarkdownTable = true;
             });
             console.log('Finished loading Markdown list');
@@ -293,14 +361,32 @@ function load_emailthreads_table(){
                     r[++j] = '</td></tr>';
                 }
                 r[++j] = '</tbody>'
-                $('#emailthreads-master-list').html(r.join(''));
-                $('#emailthreads-master-list').DataTable({
+
+                // Construct names of id tags
+                var doctype = 'emailthreads';
+                var idlabel = '#' + doctype + '-master-list';
+                var filtlabel = idlabel + '_filter';
+
+                // Initialize the DataTable
+                $(idlabel).html(r.join(''));
+                $(idlabel).DataTable({
                     responsive: true,
                     lengthMenu: [50,100,250,500]
                 });
-                initEmailthreadsTable = true
+
+                // Get the search filter section and search box
+                var searchsec = $(filtlabel).find('label');
+                var searchbox = searchsec.find('input');
+
+                // Replace search filter section text,
+                // then re-add the removed search box
+                searchsec.text('Search Metadata: ');
+                searchsec.append(searchbox);
+
+                initEmailthreadsTable = true;
             });
             console.log('Finished loading Groups.io email threads list');
         }
     }
 }
+

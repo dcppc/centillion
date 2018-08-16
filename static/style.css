@@ -1,3 +1,7 @@
+.btn-reindex-type, .btn-reindex-all {
+    width: 350px;
+}
+
 #github-button {
     display:inline-block;
     font-size: 20px;
