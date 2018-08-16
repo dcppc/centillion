@@ -20,9 +20,9 @@
                         <div class="col-md-12">
                             <p class="panel-text">Re-index <i>every</i> document in the
                             remote collection in the search index. <b>Warning: this operation may take a while.</b>
-                            <p/>
+                            </p>
                             <p><a id="re-index-main" href="{{ url_for('update_index',run_which='all') }}" class="btn btn-large btn-danger btn-reindex-all">Update Main Index</a>
-                            <p/> 
+                            </p> 
                         </div>
                     </div>
                 </div>
@@ -46,13 +46,13 @@
                             <p class="panel-text">Re-index individual document types in the search index.
                             </p>
                             <p><a href="{{ url_for('update_index',run_which='gdocs') }}"        class="btn btn-large btn-danger btn-reindex-type">Update Google Drive Index</a>
-                            <p/>  
+                            </p>  
                             <p><a href="{{ url_for('update_index',run_which='ghfiles') }}"      class="btn btn-large btn-danger btn-reindex-type">Update Github Files Index</a>
-                            <p/>  
+                            </p>  
                             <p><a href="{{ url_for('update_index',run_which='issues') }}"       class="btn btn-large btn-danger btn-reindex-type">Update Github Issues Index</a>
-                            <p/>  
+                            </p>  
                             <p><a href="{{ url_for('update_index',run_which='emailthreads') }}" class="btn btn-large btn-danger btn-reindex-type">Update Groups.io Email Threads Index</a>
-                            <p/> 
+                            </p> 
                         </div>
                     </div>
                 </div>
