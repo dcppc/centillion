@@ -1032,33 +1032,6 @@ class Search:
 
 
 
-    def search(self, query_list, fields=None):
-
-        with self.ix.searcher() as searcher:
-            query_string = " ".join(query_list)
-            query = None
-            if "\"" in query_string or ":" in query_string:
-                query = QueryParser("content", self.schema).parse(query_string)
-            elif len(fields) == 1 and fields[0] == "filename":
-                pass
-            elif len(fields) == 2:
-                pass
-            else:
-                # If the user does not specify a field,
-                # these are the fields that are actually searched
-                fields = ['title',
-                          'content']
-            if not query:
-                query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string)
-            parsed_query = "%s" % query
-            print("query: %s" % parsed_query)
-            results = searcher.search(query, terms=False, scored=True, groupedby="kind")
-            search_result = self.create_search_result(results)
-
-        return parsed_query, search_result
-
-
-
     def cap(self, s, l):
         return s if len(s) <= l else s[0:l - 3] + '...'
 
@@ -1126,6 +1099,34 @@ class Search:
                 json_results.append(d)
 
         return json_results
+
+
+
+    def search(self, query_list, fields=None):
+
+        with self.ix.searcher() as searcher:
+            query_string = " ".join(query_list)
+            query = None
+            if ":" in query_string:
+                query = QueryParser("content", self.schema).parse(query_string)
+            elif len(fields) == 1 and fields[0] == "filename":
+                pass
+            elif len(fields) == 2:
+                pass
+            else:
+                # If the user does not specify a field,
+                # these are the fields that are actually searched
+                fields = ['title', 'content']
+            if not query:
+                query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string)
+            parsed_query = "%s" % query
+            print("query: %s" % parsed_query)
+            results = searcher.search(query, terms=False, scored=True, groupedby="kind")
+            search_result = self.create_search_result(results)
+
+        return parsed_query, search_result
+
+
 
 
 if __name__ == "__main__":
