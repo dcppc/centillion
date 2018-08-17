@@ -123,15 +123,6 @@ function load_gdoc_table(){
                     lengthMenu: [50,100,250,500]
                 });
 
-                // Get the search filter section and search box
-                var searchsec = $(filtlabel).find('label');
-                var searchbox = searchsec.find('input');
-
-                // Replace search filter section text,
-                // then re-add the removed search box
-                searchsec.text('Search Metadata: ');
-                searchsec.append(searchbox);
-
                 initGdocTable = true
             });
             console.log('Finished loading Google Drive master list');
@@ -190,15 +181,6 @@ function load_issue_table(){
                     lengthMenu: [50,100,250,500]
                 });
 
-                // Get the search filter section and search box
-                var searchsec = $(filtlabel).find('label');
-                var searchbox = searchsec.find('input');
-
-                // Replace search filter section text,
-                // then re-add the removed search box
-                searchsec.text('Search Metadata: ');
-                searchsec.append(searchbox);
-
                 initIssuesTable = true;
             });
             console.log('Finished loading Github issues master list');
@@ -253,15 +235,6 @@ function load_ghfile_table(){
                     lengthMenu: [50,100,250,500]
                 });
 
-                // Get the search filter section and search box
-                var searchsec = $(filtlabel).find('label');
-                var searchbox = searchsec.find('input');
-
-                // Replace search filter section text,
-                // then re-add the removed search box
-                searchsec.text('Search Metadata: ');
-                searchsec.append(searchbox);
-
                 initGhfilesTable = true;
             });
             console.log('Finished loading Github file list');
@@ -314,15 +287,6 @@ function load_markdown_table(){
                     lengthMenu: [50,100,250,500]
                 });
 
-                // Get the search filter section and search box
-                var searchsec = $(filtlabel).find('label');
-                var searchbox = searchsec.find('input');
-
-                // Replace search filter section text,
-                // then re-add the removed search box
-                searchsec.text('Search Metadata: ');
-                searchsec.append(searchbox);
-
                 initMarkdownTable = true;
             });
             console.log('Finished loading Markdown list');
@@ -373,15 +337,6 @@ function load_emailthreads_table(){
                     responsive: true,
                     lengthMenu: [50,100,250,500]
                 });
-
-                // Get the search filter section and search box
-                var searchsec = $(filtlabel).find('label');
-                var searchbox = searchsec.find('input');
-
-                // Replace search filter section text,
-                // then re-add the removed search box
-                searchsec.text('Search Metadata: ');
-                searchsec.append(searchbox);
 
                 initEmailthreadsTable = true;
             });
