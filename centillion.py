@@ -1,5 +1,5 @@
 import threading
-from subprocess import call
+import subprocess
 
 import codecs
 import os, json
@@ -71,10 +71,7 @@ github_bp = make_github_blueprint(
 
 app.register_blueprint(github_bp, url_prefix="/login")
 
-contents404 = "<html><body><h1>Status: Error 404 Page Not Found</h1></body></html>"
-contents403 = "<html><body><h1>Status: Error 403 Access Denied</h1></body></html>"
-contents200 = "<html><body><h1>Status: OK 200</h1></body></html>"
-
+last_searches_file = app.config["INDEX_DIR"] + "/last_searches.txt"
 
 ##############################
 # Flask routes
@@ -98,9 +95,9 @@ def index():
                         # Business as usual
                         return redirect(url_for("search", query="", fields=""))
 
-            return contents403
+            return render_template('403.html')
 
-        return contents404
+        return render_template('404.html')
 
 
 @app.route('/log_in')
@@ -122,9 +119,9 @@ def log_in():
                         # Business as usual
                         return redirect(url_for("search", query="", fields=""))
 
-            return contents403
+            return render_template('403.html')
 
-        return contents404
+        return render_template('404.html')
 
 
 
@@ -154,6 +151,7 @@ def search():
 
                     else:
                         parsed_query, result = search.search(query.split(), fields=[fields])
+                        store_search(query,fields)
 
                     totals = search.get_document_total_count()
 
@@ -164,7 +162,7 @@ def search():
                                            fields=fields, 
                                            totals=totals)
 
-    return contents403
+    return render_template('403.html')
 
 
 @app.route('/update_index/<run_which>')
@@ -189,7 +187,7 @@ def update_index(run_which):
                     # to prevent accidental re-indexing
                     return redirect(url_for("control_panel"))
 
-    return contents403
+    return render_template('403.html')
 
 
 @app.route('/control_panel')
@@ -209,7 +207,7 @@ def control_panel():
                     return render_template("controlpanel.html", 
                                            totals={})
 
-    return contents403
+    return render_template('403.html')
 
 
 
@@ -229,7 +227,7 @@ def master_list():
                     # Business as usual
                     return render_template("masterlist.html")
 
-    return contents403
+    return render_template('403.html')
 
 
 
@@ -250,9 +248,30 @@ def list_docs(doctype):
                     search = Search(app.config["INDEX_DIR"])
                     return jsonify(search.get_list(doctype))
 
+    return render_template('403.html')
+
 @app.errorhandler(404)
 def oops(e):
-    return contents404
+    return render_template('404.html')
+
+
+def store_search(query, fields):
+    """
+    Store searches in a text file
+    """
+    if os.path.exists(last_searches_file):
+        with codecs.open(last_searches_file, 'r', encoding='utf-8') as f:
+            contents = f.readlines()
+    else:
+        contents = []
+
+    search = "query=%s&fields=%s\n" % (query, fields)
+    if not search in contents:
+        contents.insert(0, search)
+
+    with codecs.open(last_searches_file, 'w', encoding='utf-8') as f:
+        f.writelines(contents)
+
 
 if __name__ == '__main__':
     # if running local instance, set to true
