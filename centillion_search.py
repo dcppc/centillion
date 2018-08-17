@@ -1116,7 +1116,7 @@ class Search:
             else:
                 # If the user does not specify a field,
                 # these are the fields that are actually searched
-                fields = ['title', 'content']
+                fields = ['title', 'content','owner_name','owner_email','url']
             if not query:
                 query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string)
             parsed_query = "%s" % query
