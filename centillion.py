@@ -84,19 +84,19 @@ def index():
         username = github.get("/user").json()['login']
         resp = github.get("/user/orgs")
         if resp.ok:
-            # If they are in team copper, redirect to search.
+
+            # If they are in dcppc, redirect to search.
             # Otherwise, hit em with a 403
             all_orgs = resp.json()
             for org in all_orgs:
                 if org['login']=='dcppc':
-                    copper_team_id = '2700235'
-                    mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
-                    if mresp.status_code==204:
-                        # Business as usual
-                        return redirect(url_for("search", query="", fields=""))
+                    # Business as usual
+                    return redirect(url_for("search", query="", fields=""))
 
+            # Not in dcppc
             return render_template('403.html')
 
+        # Could not reach Github
         return render_template('404.html')
 
 
@@ -108,19 +108,19 @@ def log_in():
         username = github.get("/user").json()['login']
         resp = github.get("/user/orgs")
         if resp.ok:
-            # If they are in team copper, redirect to search.
+
+            # If they are in dcppc, redirect to search.
             # Otherwise, hit em with a 403
             all_orgs = resp.json()
             for org in all_orgs:
                 if org['login']=='dcppc':
-                    copper_team_id = '2700235'
-                    mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
-                    if mresp.status_code==204:
-                        # Business as usual
-                        return redirect(url_for("search", query="", fields=""))
+                    # Business as usual
+                    return redirect(url_for("search", query="", fields=""))
 
+            # Not in dcppc
             return render_template('403.html')
 
+        # Could not reach Github
         return render_template('404.html')
 
 
@@ -132,46 +132,55 @@ def search():
     username = github.get("/user").json()['login']
     resp = github.get("/user/orgs")
     if resp.ok:
+
+        # If they are in dcppc, show them search.html
+        # Otherwise, hit em with a 403
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
-                copper_team_id = '2700235'
-                mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
-                if mresp.status_code==204:
-                    # Business as usual
-                    query = request.args['query']
-                    fields = request.args.get('fields')
-                    if fields == 'None':
-                        fields = None
+                # Business as usual
+                query = request.args['query']
+                fields = request.args.get('fields')
+                if fields == 'None':
+                    fields = None
 
-                    search = Search(app.config["INDEX_DIR"])
-                    if not query:
-                        parsed_query = ""
-                        result = []
+                search = Search(app.config["INDEX_DIR"])
+                if not query:
+                    parsed_query = ""
+                    result = []
 
-                    else:
-                        parsed_query, result = search.search(query.split(), fields=[fields])
-                        store_search(query,fields)
+                else:
+                    parsed_query, result = search.search(query.split(), fields=[fields])
+                    store_search(query,fields)
 
-                    totals = search.get_document_total_count()
+                totals = search.get_document_total_count()
 
-                    return render_template('search.html', 
-                                           entries=result, 
-                                           query=query, 
-                                           parsed_query=parsed_query, 
-                                           fields=fields, 
-                                           totals=totals)
+                return render_template('search.html', 
+                                       entries=result, 
+                                       query=query, 
+                                       parsed_query=parsed_query, 
+                                       fields=fields, 
+                                       totals=totals)
 
-    return render_template('403.html')
+        # Not in dcppc 
+        return render_template('403.html')
+
+    # Could not reach Github
+    return render_template('404.html')
 
 
 @app.route('/update_index/<run_which>')
 def update_index(run_which):
+    """
+    TEAM COPPER ONLY!!!
+    """
     if not github.authorized:
         return redirect(url_for("github.login"))
     username = github.get("/user").json()['login']
     resp = github.get("/user/orgs")
     if resp.ok:
+
+        # Only Team Copper members can update the index
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
@@ -192,11 +201,16 @@ def update_index(run_which):
 
 @app.route('/control_panel')
 def control_panel():
+    """
+    TEAM COPPER ONLY!!!
+    """
     if not github.authorized:
         return redirect(url_for("github.login"))
     username = github.get("/user").json()['login']
     resp = github.get("/user/orgs")
     if resp.ok:
+
+        # Only Team Copper members can access the control panel
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
@@ -204,10 +218,13 @@ def control_panel():
                 mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                 if mresp.status_code==204:
                     # Business as usual
-                    return render_template("controlpanel.html", 
-                                           totals={})
+                    return render_template("controlpanel.html")
 
-    return render_template('403.html')
+        # Not in dcppc 
+        return render_template('403.html')
+
+    # Could not reach Github
+    return render_template('404.html')
 
 
 
@@ -218,16 +235,20 @@ def master_list():
     username = github.get("/user").json()['login']
     resp = github.get("/user/orgs")
     if resp.ok:
+
+        # If they are in dcppc, show them masterlist.html
+        # Otherwise, hit em with a 403
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
-                copper_team_id = '2700235'
-                mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
-                if mresp.status_code==204:
-                    # Business as usual
-                    return render_template("masterlist.html")
+                # Business as usual
+                return render_template("masterlist.html")
 
-    return render_template('403.html')
+        # Not in dcppc 
+        return render_template('403.html')
+
+    # Could not reach Github
+    return render_template('404.html')
 
 
 
