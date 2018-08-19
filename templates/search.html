@@ -2,7 +2,7 @@
 {% set active_page = "search" %}
 {% block body %}
 
-<div class="container">
+<div id="search-bar-container" class="container">
     <div class="row">
 
         <div class="col-xs-12">
@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<div class="container">
+<div id="info-bars-container" class="container">
     <div class="row">
 
         <ul class="list-group">
@@ -99,7 +99,7 @@
 </div>
 
 {% if parsed_query %}
-<div class="container">
+<div id="search-results-container" class="container">
     <div class="row">
         <table id="search-results" class="table">
             <thead id="search-results-header">
