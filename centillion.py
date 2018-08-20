@@ -268,6 +268,15 @@ def list_docs(doctype):
 
     return render_template('403.html')
 
+
+@app.route('/feedback', methods=['POST'])
+def parse_request():
+    data = request.get_json()
+    flash("Thank you for your feedback!")
+    with open('dumdumdumdeedum.json','w') as f:
+        json.dumps(data,indent=4)
+
+
 @app.errorhandler(404)
 def oops(e):
     return render_template('404.html')
