@@ -1,30 +1,25 @@
-function add_modal() {
-    console.log('ohai');
+// submitting form with modal:
+// https://stackoverflow.com/a/29068742
+//
+// closing a bootstrap modal with submit button:
+// https://stackoverflow.com/a/33478107
+//
+// flask post data as json:
+// https://stackoverflow.com/a/16664376
 
-    var modal = `<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>        
-    `
-    
-    $('#master-div').prepend(modal);
+/* make the smile green */
+function smile_click() {
+    $('#modal-feedback-smile-div').addClass('smile-active');
+    $('#modal-feedback-smile-icon').addClass('smile-active');
+    $('#modal-feedback-frown-div').removeClass('frown-active');
+    $('#modal-feedback-frown-icon').removeClass('frown-active');
 }
 
-function delete_modal() {
-    $('#master-div').find("#feedback-modal-div").remove();
+/* make the frown red */
+function frown_click() {
+    $('#modal-feedback-smile-div').removeClass('smile-active');
+    $('#modal-feedback-smile-icon').removeClass('smile-active');
+    $('#modal-feedback-frown-div').addClass('frown-active');
+    $('#modal-feedback-frown-icon').addClass('frown-active');
 }
 

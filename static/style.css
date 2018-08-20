@@ -1,4 +1,37 @@
-/* feedback button */
+/* feedback smileys */
+#modal-feedback-smile-icon,
+#modal-feedback-frown-icon {
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+div.smile-active {
+    background-color: #2b2;
+}
+i.smile-active {
+    color: #fff;
+}
+div.frown-active {
+    background-color: #b22;
+}
+i.frown-active {
+    color: #fff;
+}
+
+/* feedback text area */
+#modal-feedback-textarea {
+    width: 100%;
+}
+
+/* feedback buttons */
+button.close {
+    font-size: 35px;
+}
+button#submit-feedback-btn {
+    width: 250px;
+}
 
 button#feedback:hover {
     opacity: 1.0;
