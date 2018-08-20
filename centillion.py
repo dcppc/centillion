@@ -284,29 +284,33 @@ def parse_request():
             if org['login']=='dcppc':
 
 
-                # Business as usual
-                data = request.form.to_dict();
-                data['github_login'] = username
-                data['timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                try:
+                    # Business as usual
+                    data = request.form.to_dict();
+                    data['github_login'] = username
+                    data['timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                feedback_database = 'feedback_database.json'
-                if not os.path.isfile(feedback_database):
-                    with open(feedback_database,'w') as f:
-                        json_data = [data]
-                        json.dump(json_data, f, indent=4)
+                    feedback_database = 'feedback_database.json'
+                    if not os.path.isfile(feedback_database):
+                        with open(feedback_database,'w') as f:
+                            json_data = [data]
+                            json.dump(json_data, f, indent=4)
 
-                else:
-                    json_data = []
-                    with open(feedback_database,'r') as f:
-                        json_data = json.load(f)
+                    else:
+                        json_data = []
+                        with open(feedback_database,'r') as f:
+                            json_data = json.load(f)
 
-                    json_data.append(data)
+                        json_data.append(data)
 
-                    with open(feedback_database,'w') as f:
-                        json.dump(json_data, f, indent=4)
+                        with open(feedback_database,'w') as f:
+                            json.dump(json_data, f, indent=4)
 
-                flash("Thank you for your feedback!")
-                return jsonify({'status':'ok','code':200})
+                    ## Should be done with Javascript
+                    #flash("Thank you for your feedback!")
+                    return jsonify({'status':'ok','message':'Thank you for your feedback!'})
+                except:
+                    return jsonify({'status':'error','message':'An error was encountered while submitting your feedback. Try submitting an issue in the <a href="https://github.com/dcppc/centillion/issues/new">dcppc/centillion</a> repository.'})
 
 
     # nope
