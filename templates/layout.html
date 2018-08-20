@@ -29,13 +29,17 @@
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <div class="container" id="flashed-messages-container">
-        <div class="alert alert-success alert-dismissible">
+        <div class="alert alert-success alert-dismissible fade in">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <!--
             <ul class=flashes>
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
+            -->
+            {% for message in messages %}
+                <p class="lead">{{ message }}</p>
+            {% endfor %}
+            <!--
             </ul>
+            -->
         </div>
     </div>
     {% endif %}
@@ -68,8 +72,8 @@
     </div>
 
     {#
-     feedback modal
-     #}
+    feedback modal
+    #}
     {% include "modal.html" %}
 
     {% block body %}{% endblock %}
