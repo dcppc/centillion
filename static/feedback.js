@@ -26,7 +26,7 @@ function submit_feedback() {
     } else if( $('#modal-feedback-textarea').val()=='' ) {
         alert('Please provide us with some feedback.')
     } else {
-        console.log('ready to post form.');
+        //console.log('ready to post form.');
 
         var user_sentiment = '';
         if(smile_active) {
@@ -40,14 +40,15 @@ function submit_feedback() {
             sentiment : user_sentiment,
             content : escaped_text
         };
-        console.log(data);
+        //console.log(data);
         $.post("/feedback", 
             data, 
-            function() {
-                console.log('ohai');
+            function(response) {
+                //console.log('ohai');
+                //console.log(data)
                 $('#myModal').modal('hide');
                 $('#myModalForm')[0].reset();
-                //$('#modal-feedback-textarea').reset();
+                add_alert(response['message']);
                 frown_unclick();
                 smile_unclick();
         });
@@ -55,6 +56,11 @@ function submit_feedback() {
         // - callback function resets the form 
 
     }
+}
+
+
+function add_alert(msg) {
+    console.log(msg);
 }
 
 
