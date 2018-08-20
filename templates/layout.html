@@ -67,6 +67,11 @@
     
     </div>
 
+    {#
+     feedback modal
+     #}
+    {% include "modal.html" %}
+
     {% block body %}{% endblock %}
 </div>
 
@@ -74,7 +79,6 @@
 
     {# feedback button #}
     <button id="feedback" type="button" 
-                          onClick="add_modal()"
                           data-toggle="modal"
                           data-target="#myModal"
         class="btn btn-lg">Send Feedback</button>
