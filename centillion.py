@@ -262,12 +262,9 @@ def list_docs(doctype):
         all_orgs = resp.json()
         for org in all_orgs:
             if org['login']=='dcppc':
-                copper_team_id = '2700235'
-                mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
-                if mresp.status_code==204:
-                    # Business as usual
-                    search = Search(app.config["INDEX_DIR"])
-                    return jsonify(search.get_list(doctype))
+                # Business as usual
+                search = Search(app.config["INDEX_DIR"])
+                return jsonify(search.get_list(doctype))
 
     return render_template('403.html')
 
