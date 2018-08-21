@@ -294,5 +294,10 @@ def store_search(query, fields):
 if __name__ == '__main__':
     # if running local instance, set to true
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
-    app.run(host="0.0.0.0",port=5000)
+    port = os.environ.get('CENTILLION_PORT','')
+    if port=='':
+        port = 5000
+    else:
+        port = int(port)
+    app.run(host="0.0.0.0",port=port)
 
