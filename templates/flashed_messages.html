@@ -1,0 +1,14 @@
+<div id="messages">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="container" id="flashed-messages-container">
+            <div class="alert alert-success alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {% for message in messages %}
+                        <p class="lead">{{ message }}</p>
+                    {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
+</div>

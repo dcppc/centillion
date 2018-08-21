@@ -7,7 +7,6 @@
 // flask post data as json:
 // https://stackoverflow.com/a/16664376
 
-
 /* this function is called when the user submits
  * the feedback form. it submits a post request
  * to the flask server, which squirrels away the
@@ -26,8 +25,6 @@ function submit_feedback() {
     } else if( $('#modal-feedback-textarea').val()=='' ) {
         alert('Please provide us with some feedback.')
     } else {
-        //console.log('ready to post form.');
-
         var user_sentiment = '';
         if(smile_active) {
             user_sentiment = 'smile';
@@ -36,31 +33,47 @@ function submit_feedback() {
         }
         var escaped_text = $('#modal-feedback-textarea').val();
 
+        // prepare form data 
         var data = {
             sentiment : user_sentiment,
             content : escaped_text
         };
-        //console.log(data);
+        // post the form. the callback function resets the form
         $.post("/feedback", 
             data, 
             function(response) {
-                //console.log('ohai');
-                //console.log(data)
                 $('#myModal').modal('hide');
                 $('#myModalForm')[0].reset();
-                add_alert(response['message']);
+                add_alert(response);
                 frown_unclick();
                 smile_unclick();
         });
-        // - $.post()
-        // - callback function resets the form 
-
     }
 }
 
 
-function add_alert(msg) {
-    console.log(msg);
+function add_alert(response) {
+    str = ""
+    str += '<div id="feedback-messages-container" class="container">';
+
+    if (response['status']=='ok') {
+        // if status is ok, use alert-success
+        str += '    <div id="feedback-messages-alert" class="alert alert-success alert-dismissible fade in">';
+    } else {
+        // otherwise use alert-danger
+        str += '    <div id="feedback-messages-alert" class="alert alert-danger alert-dismissible fade in">';
+    }
+
+    str += '        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+    str += '        <div id="feedback-messages-contianer" class="container-fluid">';
+    str += '            <div id="feedback-messages-div" class="co-xs-12">';
+    str += '                <p>'
+    str += response['message'];
+    str += '                </p>';
+    str += '            </div>';
+    str += '    </div>';
+    str += '</div>';
+    $('div#messages').append(str);
 }
 
 
@@ -117,3 +130,4 @@ $(document).ready(function() {
 
 }
 */
+
