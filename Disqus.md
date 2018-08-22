@@ -3018,7 +3018,7 @@ $ curl -0 -L "https://disqus.com/api/3.0/threads/list.json?forum=dcppc-internal&
 
 ```
 
-$ curl -0 -L "https://disqus.com/api/3.0/threads/list.json?forum=dcppc-internal&api_key=<pbulic-key-here>
+$ curl -0 -L "https://disqus.com/api/3.0/threads/list.json?forum=dcppc-internal&api_key=<public-key-here>
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 22250    0 22250    0     0  24007      0 --:--:-- --:--:-- --:--:-- 24002
@@ -4130,5 +4130,137 @@ $ curl -0 -L "https://disqus.com/api/3.0/threads/list.json?forum=dcppc-internal&
         }
     ]
 }
+```
+
+## threads
+
+### getting a thread
+
+```
+
+$ curl -0 -L "https://disqus.com/api/3.0/threads/listPosts.json?forum=dcppc-internal&api_key=<public-key-here>
+{
+    "cursor": {
+        "prev": null,
+        "hasNext": false,
+        "next": "1534888560416054:1:0",
+        "hasPrev": false,
+        "total": null,
+        "id": "1534888560416054:1:0",
+        "more": false
+    },
+    "code": 0,
+    "response": [
+        {
+            "editableUntil": "2018-08-28T21:57:11",
+            "dislikes": 0,
+            "numReports": 0,
+            "likes": 0,
+            "message": "<p>the first comment didn't show up because it was detected as spam. :(</p>",
+            "id": "4052682999",
+            "createdAt": "2018-08-21T21:57:11",
+            "author": {
+                "username": "disqus_OUz8lgSWvL",
+                "about": "",
+                "name": "charles reid",
+                "disable3rdPartyTrackers": false,
+                "isPowerContributor": false,
+                "joinedAt": "2018-08-10T00:45:42",
+                "profileUrl": "https://disqus.com/by/disqus_OUz8lgSWvL/",
+                "url": "",
+                "location": "",
+                "isPrivate": false,
+                "signedUrl": "",
+                "isPrimary": true,
+                "isAnonymous": false,
+                "id": "294244984",
+                "avatar": {
+                    "small": {
+                        "permalink": "https://disqus.com/api/users/avatars/disqus_OUz8lgSWvL.jpg",
+                        "cache": "https://c.disquscdn.com/uploads/users/29424/4984/avatar32.jpg?1534888632"
+                    },
+                    "isCustom": true,
+                    "permalink": "https://disqus.com/api/users/avatars/disqus_OUz8lgSWvL.jpg",
+                    "cache": "https://c.disquscdn.com/uploads/users/29424/4984/avatar92.jpg?1534888632",
+                    "large": {
+                        "permalink": "https://disqus.com/api/users/avatars/disqus_OUz8lgSWvL.jpg",
+                        "cache": "https://c.disquscdn.com/uploads/users/29424/4984/avatar92.jpg?1534888632"
+                    }
+                }
+            },
+            "media": [],
+            "isSpam": false,
+            "isDeletedByAuthor": false,
+            "isDeleted": false,
+            "parent": 4052680814,
+            "isApproved": true,
+            "isFlagged": false,
+            "raw_message": "the first comment didn't show up because it was detected as spam. :(",
+            "isHighlighted": false,
+            "canVote": false,
+            "thread": "6845448591",
+            "forum": "dcppc-internal",
+            "points": 0,
+            "moderationLabels": [],
+            "isEdited": false,
+            "sb": false
+        },
+        {
+            "editableUntil": "2018-08-28T21:56:00",
+            "dislikes": 0,
+            "numReports": 0,
+            "likes": 0,
+            "message": "<p>This is a second test comment!</p>",
+            "id": "4052680814",
+            "createdAt": "2018-08-21T21:56:00",
+            "author": {
+                "username": "disqus_OUz8lgSWvL",
+                "about": "",
+                "name": "charles reid",
+                "disable3rdPartyTrackers": false,
+                "isPowerContributor": false,
+                "joinedAt": "2018-08-10T00:45:42",
+                "profileUrl": "https://disqus.com/by/disqus_OUz8lgSWvL/",
+                "url": "",
+                "location": "",
+                "isPrivate": false,
+                "signedUrl": "",
+                "isPrimary": true,
+                "isAnonymous": false,
+                "id": "294244984",
+                "avatar": {
+                    "small": {
+                        "permalink": "https://disqus.com/api/users/avatars/disqus_OUz8lgSWvL.jpg",
+                        "cache": "https://c.disquscdn.com/uploads/users/29424/4984/avatar32.jpg?1534888632"
+                    },
+                    "isCustom": true,
+                    "permalink": "https://disqus.com/api/users/avatars/disqus_OUz8lgSWvL.jpg",
+                    "cache": "https://c.disquscdn.com/uploads/users/29424/4984/avatar92.jpg?1534888632",
+                    "large": {
+                        "permalink": "https://disqus.com/api/users/avatars/disqus_OUz8lgSWvL.jpg",
+                        "cache": "https://c.disquscdn.com/uploads/users/29424/4984/avatar92.jpg?1534888632"
+                    }
+                }
+            },
+            "media": [],
+            "isSpam": false,
+            "isDeletedByAuthor": false,
+            "isDeleted": false,
+            "parent": null,
+            "isApproved": true,
+            "isFlagged": false,
+            "raw_message": "This is a second test comment!",
+            "isHighlighted": false,
+            "canVote": false,
+            "thread": "6845448591",
+            "forum": "dcppc-internal",
+            "points": 0,
+            "moderationLabels": [],
+            "isEdited": false,
+            "sb": false
+        }
+    ]
+}
+
 ```
 
