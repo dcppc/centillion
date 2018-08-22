@@ -170,3 +170,80 @@ given its annotation ID:
 }
 ```
 
+## Searching
+
+Here is the output from a call to the endpoint to search annotations
+(we pass a specific URL to the search function):
+
+```
+{
+    "rows": [
+        {
+            "updated": "2018-08-10T02:21:46.898833+00:00",
+            "group": "__world__",
+            "target": [
+                {
+                    "source": "http://pilot.data-commons.us/organize/CopperInternalDeliveryWorkFlow/",
+                    "selector": [
+                        {
+                            "endContainer": "/div[1]/main[1]/div[1]/div[3]/article[1]/h2[1]",
+                            "startContainer": "/div[1]/main[1]/div[1]/div[3]/article[1]/h2[1]",
+                            "type": "RangeSelector",
+                            "startOffset": 0,
+                            "endOffset": 80
+                        },
+                        {
+                            "type": "TextPositionSelector",
+                            "end": 12328,
+                            "start": 12248
+                        },
+                        {
+                            "exact": "Deliverables are due internally on the first of each month, which here is Day 1,",
+                            "prefix": "               \n                ",
+                            "type": "TextQuoteSelector",
+                            "suffix": "\u00b6\nDay -30 through -10\nCopper PM "
+                        }
+                    ]
+                }
+            ],
+            "links": {
+                "json": "https://hypothes.is/api/annotations/IY2W_pxEEeiVuxfD3sehjQ",
+                "html": "https://hypothes.is/a/IY2W_pxEEeiVuxfD3sehjQ",
+                "incontext": "https://hyp.is/IY2W_pxEEeiVuxfD3sehjQ/pilot.data-commons.us/organize/CopperInternalDeliveryWorkFlow/"
+            },
+            "tags": [],
+            "text": "This is a sample annotation",
+            "created": "2018-08-10T02:21:46.898833+00:00",
+            "uri": "http://pilot.data-commons.us/organize/CopperInternalDeliveryWorkFlow/",
+            "flagged": false,
+            "user_info": {
+                "display_name": null
+            },
+            "user": "acct:charlesreid1dib@hypothes.is",
+            "hidden": false,
+            "document": {
+                "title": [
+                    "Copper Internal Delivery Workflow - Data Commons Internal Site"
+                ]
+            },
+            "id": "IY2W_pxEEeiVuxfD3sehjQ",
+            "permissions": {
+                "read": [
+                    "group:__world__"
+                ],
+                "admin": [
+                    "acct:charlesreid1dib@hypothes.is"
+                ],
+                "update": [
+                    "acct:charlesreid1dib@hypothes.is"
+                ],
+                "delete": [
+                    "acct:charlesreid1dib@hypothes.is"
+                ]
+            }
+        }
+    ],
+    "total": 1
+}
+```
+
