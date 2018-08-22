@@ -4138,7 +4138,7 @@ $ curl -0 -L "https://disqus.com/api/3.0/threads/list.json?forum=dcppc-internal&
 
 ```
 
-$ curl -0 -L "https://disqus.com/api/3.0/threads/listPosts.json?forum=dcppc-internal&api_key=<public-key-here>
+$ curl -0 -L "https://disqus.com/api/3.0/threads/listPosts.json?forum=dcppc-internal&api_key=<insert-api-key-here>&thread=6845448591" | python -m json.tool
 {
     "cursor": {
         "prev": null,
