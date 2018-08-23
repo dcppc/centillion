@@ -22,6 +22,8 @@ below is simple example of how we can call all threads. still have to get next.
 
 ### part 1
 
+List all threads in the dcppc-internal forum:
+
 ```
 $ curl -0 -L "https://disqus.com/api/3.0/threads/list.json?forum=dcppc-internal&api_key=<insert-public-api-key-here>
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
