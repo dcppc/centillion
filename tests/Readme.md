@@ -35,11 +35,9 @@ We have three tiers of tests:
 ### Local Tests
 
 Local tests can be run locally without any interaction with APIs.
-While these are of limited usefulness (search index will be empty),
-it does verify the basic mechanisms are working.
-
-The user interface and backend stuff is all still checked,
-but we fully expect the search index to be empty.
+These will still utilize centillion's search schema, but will
+load the search index with fake documents rather than fetching
+them from an API.
 
 Uncle Archie, which runs CI tests, runs local tests only
 (unless you request it to run short test or long test.)
@@ -88,7 +86,7 @@ Let's lay out what is needed:
 * The backend test requires the credentials provided to Flask.
 
 * The frontend test (Selenium) needs two Github username/passwords:
-  one for Florence Python and one for Yamma Snake. These are required
+  one for Florence Python (@fp9695253) and one for Yamma Snake (@yammasnake). These are required
   to simulate the user authenticating with Github through the browser.
     * The frontend test credentials are a special case.
     * The frontend tests expect credentials to come from environment variables.
@@ -121,7 +119,7 @@ Frontend tests run as Florence Python:
 * Can we log in via github and reach centillion
 * Can we reach the control panel
 
-Frontend test run as Yamma Snake (DCPPC member):
+Frontend tests run as Yamma Snake (DCPPC member):
 
 * Can we log in via github and reach centillion
 * Can we reach the control panel

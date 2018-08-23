@@ -20,10 +20,10 @@ Github repository.
 
 We utillize a git branch pattern that has two primary branches: a development branch and a stable branch.
 
-The primary **development branch** is `dcppc` and is actively developed and deployed to
+* The primary **development branch** is `dcppc` and is actively developed and deployed to
 <https://betasearch.nihdatacommons.us>.
 
-The primary **stable branch** is `releases/v1` and is stable and deployed to
+* The primary **stable branch** is `releases/v1` and is stable and deployed to
 <https://search.nihdatacommons.us>.
 
 All tagged versions of Centillion exist on the stable branch. Only tagged versions of centillion are 
@@ -54,15 +54,15 @@ version should be tagged.
 * No mailing list currently exists for centillion.
 
 * Github issues are the primary form of communication about development of centillion.
-  This is the best place for communication requiring detailed information,
-  a proper bug report, etc.
+  This is the best method for communicating bug reports or detailed information.
 
 * The Send Feedback button on the centillion page is the primary way of getting
-  quick feedback from users of the search engine.
+  quick feedback from users about the search engine.
 
-* The [#centillion channel](https://nih-dcppc.slack.com/messages/CCD64QD6G) in
-  the DCPPC slack workspace is the best way to have conversations about
-  centillion (providing feedback, answering quick questions, etc.)
+* The [#centillion](https://nih-dcppc.slack.com/messages/CCD64QD6G) 
+  Slack channel in the DCPPC slack workspace is the
+  best place for conversations about centillion
+  (providing feedback, answering quick questions, etc.)
 
 
 ## Checklists 
@@ -71,12 +71,11 @@ We plan to utilize the Wiki feature of the Github repository to develop checlist
 
 * Checklist for releases
 * Checklist for deployment of https://search.nihdatacommons.us nginx etc.
-* Checklist in issue
 
 
 ## Documentation
 
-While not source-centric, the documentation is simple: a pile of markdown documents,
+The documentation is a pile of markdown documents,
 turned into a static site using mkdocs.
 
 
@@ -143,6 +142,6 @@ Finally, the new version is deployed on <https://search.nihdatacommons.us>.
 
 ## Continual Process Improvement
 
-Utilizing the Github wiki to develop checklists for repeated processes.
+We will utilize the centillion wiki on Github to keep track of repeated processes and opportunities for improvement. Feedback and ideas for process improvement can also be submitted via Github issues.
 
 
