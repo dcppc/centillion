@@ -6,6 +6,8 @@ import base64
 
 from gdrive_util import GDrive
 from groupsio_util import GroupsIOArchivesCrawler, GroupsIOException
+from disqus_util import DisqusCrawler
+
 from apiclient.http import MediaIoBaseDownload
 
 import mistune
@@ -103,10 +105,21 @@ class Search:
     # ------------------------------
     # Update the entire index
 
-    def update_index(self, groupsio_credentials, gh_token, run_which, config):
+    def update_index(self, groupsio_credentials, gh_token, disqus_token, run_which, config):
         """
         Update the entire search index
         """
+        if run_which=='all' or run_which=='disqus':
+            try:
+                self.update_index_disqus(disqus_token, config)
+            except Exception as e:
+                print("ERROR: While re-indexing: failed to update Disqus comment threads")
+                print("-"*40)
+                print(repr(e))
+                print("-"*40)
+                print("Continuing...")
+                pass
+
         if run_which=='all' or run_which=='emailthreads':
             try:
                 self.update_index_emailthreads(groupsio_credentials, config)
@@ -529,8 +542,8 @@ class Search:
 
     def add_emailthread(self, writer, d, config, update=True):
         """
-        Use a Github file API record to add a filename
-        to the search index.
+        Use a Groups.io email thread record to add 
+        an email thread to the search index.
         """
         indexed_time = clean_timestamp(datetime.now())
 
@@ -553,6 +566,41 @@ class Search:
                 issue_url = '',
                 content = d['content']
         )
+
+
+
+    # ------------------------------
+    # Add a single disqus comment thread
+    # to the search index.
+
+    def add_disqusthread(self, writer, d, config, update=True):
+        """
+        Use a disqus comment thread record
+        to add a disqus comment thread to the
+        search index.
+        """
+        indexed_time = clean_timestamp(datetime.now())
+
+        # Now create the actual search index record
+        writer.add_document(
+                id = d['id'],
+                kind = 'disqus',
+                created_time = d['created_time'],
+                modified_time = '',
+                indexed_time = indexed_time,
+                title = d['title'],
+                url = d['link'],
+                mimetype='',
+                owner_email='',
+                owner_name='',
+                repo_name = '',
+                repo_url = '',
+                github_user = '',
+                issue_title = '',
+                issue_url = '',
+                content = d['content']
+        )
+
 
 
 
@@ -580,9 +628,8 @@ class Search:
         # Updated algorithm:
         # - get set of indexed ids
         # - get set of remote ids
-        # - drop indexed ids not in remote ids
+        # - drop all indexed ids
         # - index all remote ids
-        # - add hash check in add_
 
 
         # Get the set of indexed ids:
@@ -686,12 +733,6 @@ class Search:
         Update the search index using a collection of 
         Github repo issues and comments.
         """
-        # Updated algorithm:
-        # - get set of indexed ids
-        # - get set of remote ids
-        # - drop indexed ids not in remote ids
-        # - index all remote ids
-
         # Get the set of indexed ids:
         # ------
         indexed_issues = set()
@@ -772,12 +813,6 @@ class Search:
         files (and, separately, Markdown files) from 
         a Github repo.
         """
-        # Updated algorithm:
-        # - get set of indexed ids
-        # - get set of remote ids
-        # - drop indexed ids not in remote ids
-        # - index all remote ids
-
         # Get the set of indexed ids:
         # ------
         indexed_ids = set()
@@ -896,12 +931,6 @@ class Search:
 
         RELEASE THE SPIDER!!!
         """
-        # Algorithm:
-        # - get set of indexed ids
-        # - get set of remote ids
-        # - drop indexed ids not in remote ids
-        # - index all remote ids
-
         # Get the set of indexed ids:
         # ------
         indexed_ids = set()
@@ -919,16 +948,17 @@ class Search:
         # ask spider to crawl the archives
         spider.crawl_group_archives()
 
-        # now spider.archives is a list of dictionaries
-        # that each represent a thread:
-        #   thread = {
-        #           'permalink' : permalink,
-        #           'subject' : subject,
-        #           'original_sender' : original_sender,
-        #           'content' : full_content
-        #   }
+        # now spider.archives is a dictionary
+        # with one key per thread ID,
+        # and a value set to the payload:
+        #   '<thread-id>'  : {
+        #                       'permalink' : permalink,
+        #                       'subject' : subject,
+        #                       'original_sender' : original_sender,
+        #                       'content' : full_content
+        #                    }
         #
-        # It is hard to reliablly extract more information
+        # It is hard to reliably extract more information
         # than that from the email thread.
 
         writer = self.ix.writer()
@@ -956,6 +986,75 @@ class Search:
 
         writer.commit()
         print("Done, updated %d Groups.io email threads in the index" % count)
+
+
+
+    # ------------------------------
+    # Disqus Comments
+
+
+    def update_index_disqus(self, disqus_token, config):
+        """
+        Update the search index using a collection of 
+        Disqus comment threads from the dcppc-internal 
+        forum.
+        """
+        # Updated algorithm:
+        # - get set of indexed ids
+        # - get set of remote ids
+        # - drop all indexed ids
+        # - index all remote ids
+
+        # Get the set of indexed ids:
+        # --------------------
+        indexed_ids = set()
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("disqus")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_ids.add(result['id'])
+
+        # Get the set of remote ids:
+        # ------
+        spider = DisqusCrawler(disqus_token,'dcppc-internal')
+
+        # ask spider to crawl disqus comments
+        spider.crawl_threads()
+
+        # spider.comments will be a dictionary
+        # with keys as thread IDs and values as
+        # a dictionary item
+
+        writer = self.ix.writer()
+        count = 0
+
+        # archives is a dictionary
+        # keys are IDs (urls)
+        # values are dictionaries
+        threads = spider.get_threads()
+
+        # Start by collecting all the things
+        remote_ids = set()
+        for k in threads.keys():
+            remote_ids.add(k)
+
+        # drop indexed_ids
+        for drop_id in indexed_ids:
+            writer.delete_by_term('id',drop_id)
+
+        # add remote_ids
+        for add_id in remote_ids:
+            item = threads[add_id]
+            self.add_disqusthread(writer, item, config, update=False)
+            count += 1
+
+        writer.commit()
+        print("Done, updated %d Disqus comment threads in the index" % count)
+
+
+
+
 
 
     # ---------------------------------
@@ -1044,6 +1143,7 @@ class Search:
                 "ghfile" : None,
                 "markdown" : None,
                 "emailthread" : None,
+                "disqus" : None,
                 "total" : None
         }
         for key in counts.keys():
@@ -1075,6 +1175,8 @@ class Search:
             item_keys = ['title','repo_name','repo_url','url','created_time','modified_time']
         elif doctype=='emailthread':
             item_keys = ['title','owner_name','url']
+        elif doctype=='disqus':
+            item_keys = ['title','created_time','url']
         elif doctype=='ghfile':
             item_keys = ['title','repo_name','repo_url','url']
         elif doctype=='markdown':
