@@ -65,7 +65,6 @@ version should be tagged.
   centillion (providing feedback, answering quick questions, etc.)
 
 
-
 ## Checklists 
 
 We plan to utilize the Wiki feature of the Github repository to develop checlists:
@@ -90,6 +89,7 @@ Packaging centillion is a future goal that is closely related to the need to imp
 and modularize the internal search schema/document type abstraction. These improvements
 would allow the types of collections being indexed to be separated from "core centillion",
 and core centillion would be packaged.
+
 
 ## Tests
 
