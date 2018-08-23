@@ -50,7 +50,7 @@ $(document).ready(function() {
         var divList = $('div#collapseThreads').addClass('in');
 
     } else if (d==='disqus') {
-        load_emailthreads_table();
+        load_disqusthreads_table();
         var divList = $('div#collapseDisqus').addClass('in');
 
     }
