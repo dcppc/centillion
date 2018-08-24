@@ -1,4 +1,7 @@
-# Table of Contents
+# Centillion Quality Engineering Plan
+
+Table of Contents
+-------
 
 *   [Centillion Quality Engineering Plan](#centillion-quality-engineering-plan)
     *   [Summary](#summary)
@@ -12,9 +15,6 @@
     *   [Code Reviews](#code-reviews)
     *   [Formal Release Process](#formal-release-process)
     *   [Continual Process Improvement](#continual-process-improvement)
-
-Centillion Quality Engineering Plan
-===================================
 
 Summary
 -------
