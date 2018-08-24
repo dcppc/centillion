@@ -267,7 +267,11 @@ def list_docs(doctype):
             if org['login']=='dcppc':
                 # Business as usual
                 search = Search(app.config["INDEX_DIR"])
-                return jsonify(search.get_list(doctype))
+                results_list = search.get_list(doctype)
+                for result in results_list:
+                    ct = result['created_time']
+                    result['created_time'] = datetime.strftime(ct,"%Y-%m-%d %I:%M %p")
+                return jsonify(results_list)
 
     # nope
     return render_template('403.html')

@@ -1247,7 +1247,7 @@ class Search:
         elif doctype=='issue':
             item_keys = ['title','repo_name','repo_url','url','created_time','modified_time']
         elif doctype=='emailthread':
-            item_keys = ['title','owner_name','url','created_time','modified_time']
+            item_keys = ['title','owner_name','url','group','created_time','modified_time']
         elif doctype=='disqus':
             item_keys = ['title','created_time','url']
         elif doctype=='ghfile':
