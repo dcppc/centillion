@@ -57,6 +57,25 @@ $(document).ready(function() {
 });
 
 
+//////////////////////////////////
+// utility functions
+
+// https://stackoverflow.com/a/25275808
+function iso8601(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return date.getYear() + "-" + (date.getMonth()+1) + "-" + date.getDate() + "  " + strTime;
+}
+
+// https://stackoverflow.com/a/7390612
+var toType = function(obj) {
+  return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+}
 
 //////////////////////////////////
 // API-to-Table Functions
@@ -315,8 +334,10 @@ function load_emailthreads_table(){
                 var r = new Array(), j = -1, size=result.length;
                 r[++j] = '<thead>'
                 r[++j] = '<tr class="header-row">';
-                r[++j] = '<th width="70%">Topic</th>';
-                r[++j] = '<th width="30%">Started By</th>';
+                r[++j] = '<th width="60%">Topic</th>';
+                r[++j] = '<th width="15%">Started By</th>';
+                r[++j] = '<th width="15%">Date</th>';
+                r[++j] = '<th width="10%">Mailing List</th>';
                 r[++j] = '</tr>';
                 r[++j] = '</thead>'
                 r[++j] = '<tbody>'
@@ -327,6 +348,10 @@ function load_emailthreads_table(){
                     r[++j] = '</a>'
                     r[++j] = '</td><td>';
                     r[++j] = result[i]['owner_name'];
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['created_time'];
+                    r[++j] = '</td><td>';
+                    r[++j] = result[i]['group'];
                     r[++j] = '</td></tr>';
                 }
                 r[++j] = '</tbody>'
