@@ -845,15 +845,21 @@ class Search:
                 continue
 
             # Iterate over each issue thread
-            issues = repo.get_issues()
-            for issue in issues:
+            open_issues   = repo.get_issues(state='open')
+            closed_issues = repo.get_issues(state='closed')
 
+            for issue in open_issues:
                 # For each issue/comment URL,
                 # grab the key and store the 
                 # corresponding issue object
                 key = issue.html_url
                 value = issue
+                remote_issues.add(key)
+                full_items[key] = value
 
+            for issue in closed_issues:
+                key = issue.html_url
+                value = issue
                 remote_issues.add(key)
                 full_items[key] = value
 
