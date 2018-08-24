@@ -1165,9 +1165,9 @@ class Search:
             sr.id = r['id']
             sr.kind = r['kind']
 
-            sr.created_time = r['created_time']
-            sr.modified_time = r['modified_time']
-            sr.indexed_time = r['indexed_time']
+            sr.created_time =  datetime.strftime(r['created_time'],  "%Y-%m-%d %I:%M %p")
+            sr.modified_time = datetime.strftime(r['modified_time'], "%Y-%m-%d %I:%M %p")
+            sr.indexed_time =  datetime.strftime(r['indexed_time'],  "%Y-%m-%d %I:%M %p")
 
             sr.title = r['title']
             sr.url = r['url']
@@ -1176,6 +1176,8 @@ class Search:
 
             sr.owner_email = r['owner_email']
             sr.owner_name = r['owner_name']
+
+            sr.group = r['group']
 
             sr.repo_name = r['repo_name']
             sr.repo_url = r['repo_url']
