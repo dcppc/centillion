@@ -58,7 +58,7 @@ button#feedback {
 /* search results table */
 td#search-results-score-col,
 td#search-results-type-col {
-    width: 100px;
+    width: 5%;
 }
 
 div.container {
@@ -126,7 +126,7 @@ li.search-group-item {
 }
 
 div.url {
-    background-color: rgba(86,61,124,.15);
+    background-color: rgba(40,40,60,.15);
     padding: 8px;
 }
 
