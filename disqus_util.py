@@ -1,3 +1,4 @@
+import os, re
 import requests
 import json
 
@@ -114,6 +115,9 @@ class DisqusCrawler(object):
                             else:
                                break
 
+                        link = response['link']
+                        clean_link = re.sub('data-commons.us','nihdatacommons.us',link)
+
                         # Finished working on thread.
 
                         # We need to make this value a dictionary
@@ -122,7 +126,7 @@ class DisqusCrawler(object):
                                 created_time = response['createdAt'],
                                 title = response['title'],
                                 forum = response['forum'],
-                                link = response['link'],
+                                link = clean_link,
                                 content = "\n\n-----".join(thread_comments)
                         )
                         threads[thread_id] = thread_info
