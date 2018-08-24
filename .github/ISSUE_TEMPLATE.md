@@ -1,4 +1,4 @@
-Thanks for using Centillion. Your feedabck is important to us. 
+Thanks for using Centillion. Your feedback is important to us. 
 
 ### When reporting a bug, please be sure to include the following:
 - [ ] A descriptive title
