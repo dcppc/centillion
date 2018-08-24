@@ -744,10 +744,10 @@ class Search:
                 full_items[f['id']] = f
             
             ## Shorter:
-            break
+            #break
             ## Longer:
-            #if nextPageToken is None:
-            #    break
+            if nextPageToken is None:
+                break
 
 
         writer = self.ix.writer()

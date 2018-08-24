@@ -66,7 +66,7 @@ class GroupsIOArchivesCrawler(object):
 
             ## Short circuit
             ## for debugging purposes
-            break
+            #break
 
         return subgroups
 
