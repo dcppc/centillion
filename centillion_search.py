@@ -21,6 +21,8 @@ import dateutil.parser
 
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh.analysis import StemmingAnalyzer
+from whoosh.qparser.dateparse import DateParserPlugin
+from whoosh import fields, index
 
 
 """
@@ -180,30 +182,30 @@ class Search:
         # is defined.
 
         schema = Schema(
-                id = ID(stored=True, unique=True),
-                kind = ID(stored=True),
+                id = fields.ID(stored=True, unique=True),
+                kind = fields.ID(stored=True),
 
-                created_time = ID(stored=True),
-                modified_time = ID(stored=True),
-                indexed_time = ID(stored=True),
+                created_time = fields.DATETIME(stored=True),
+                modified_time = fields.DATETIME(stored=True),
+                indexed_time = fields.DATETIME(stored=True),
                 
-                title = TEXT(stored=True, field_boost=100.0),
-                url = ID(stored=True, unique=True),
+                title = fields.TEXT(stored=True, field_boost=100.0),
+                url = fields.ID(stored=True, unique=True),
                 
-                mimetype=ID(stored=True),
-                owner_email=ID(stored=True),
-                owner_name=TEXT(stored=True),
+                mimetype = fields.ID(stored=True),
+                owner_email = fields.ID(stored=True),
+                owner_name = fields.TEXT(stored=True),
                 
-                repo_name=TEXT(stored=True),
-                repo_url=ID(stored=True),
+                repo_name = fields.TEXT(stored=True),
+                repo_url = fields.ID(stored=True),
 
-                github_user=TEXT(stored=True),
+                github_user = fields.TEXT(stored=True),
 
                 # comments only
-                issue_title=TEXT(stored=True, field_boost=100.0),
-                issue_url=ID(stored=True),
+                issue_title = fields.TEXT(stored=True, field_boost=100.0),
+                issue_url = fields.ID(stored=True),
                 
-                content=TEXT(stored=True, analyzer=stemming_analyzer)
+                content = fields.TEXT(stored=True, analyzer=stemming_analyzer)
         )
 
 
@@ -246,8 +248,8 @@ class Search:
             writer.add_document(
                     id = item['id'],
                     kind = 'gdoc',
-                    created_time = item['createdTime'],
-                    modified_time = item['modifiedTime'],
+                    created_time = dateutil.parser.parse(item['createdTime']).isoformat(),
+                    modified_time = dateutil.parser.parse(item['modifiedTime']).isoformat(),
                     indexed_time = datetime.now().replace(microsecond=0).isoformat(),
                     title = item['name'],
                     url = item['webViewLink'],
@@ -345,8 +347,8 @@ class Search:
             writer.add_document(
                     id = item['id'],
                     kind = 'gdoc',
-                    created_time = item['createdTime'],
-                    modified_time = item['modifiedTime'],
+                    created_time = dateutil.parser.parse(item['createdTime']).isoformat(),
+                    modified_time = dateutil.parser.parse(item['modifiedTime']).isoformat(),
                     indexed_time = datetime.now().replace(microsecond=0).isoformat(),
                     title = item['name'],
                     url = item['webViewLink'],
@@ -403,9 +405,9 @@ class Search:
         writer.add_document(
                 id = issue.html_url,
                 kind = 'issue',
-                created_time = created_time,
-                modified_time = modified_time,
-                indexed_time = indexed_time,
+                created_time =  datetimeutil.parser.pasrse(created_time ),
+                modified_time = datetimeutil.parser.pasrse(modified_time),
+                indexed_time =  datetimeutil.parser.pasrse(indexed_time ),
                 title = issue.title,
                 url = issue.html_url,
                 mimetype='',
@@ -1108,7 +1110,9 @@ class Search:
             query_string = " ".join(query_list)
             query = None
             if ":" in query_string:
-                query = QueryParser("content", self.schema).parse(query_string)
+                query = QueryParser("content", self.schema)
+                query.add_plugin(DateParserPlugin(free=True))
+                query = query.parse(query_string)
             elif len(fields) == 1 and fields[0] == "filename":
                 pass
             elif len(fields) == 2:
@@ -1116,9 +1120,12 @@ class Search:
             else:
                 # If the user does not specify a field,
                 # these are the fields that are actually searched
-                fields = ['title', 'content','owner_name','owner_email','url']
+                fields = ['title', 'content','owner_name','owner_email','url','created_date','modified_date']
             if not query:
-                query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string)
+                query = MultifieldParser(fields, schema=self.ix.schema)
+                query.add_plugin(DateParserPlugin(free=True))
+                query = query.parse(query_string)
+                #query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string) 
             parsed_query = "%s" % query
             print("query: %s" % parsed_query)
             results = searcher.search(query, terms=False, scored=True, groupedby="kind")
