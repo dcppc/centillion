@@ -269,8 +269,15 @@ def list_docs(doctype):
                 search = Search(app.config["INDEX_DIR"])
                 results_list = search.get_list(doctype)
                 for result in results_list:
-                    ct = result['created_time']
-                    result['created_time'] = datetime.strftime(ct,"%Y-%m-%d %I:%M %p")
+                    if 'created_time' in result.keys():
+                        ct = result['created_time']
+                        result['created_time'] = datetime.strftime(ct,"%Y-%m-%d %I:%M %p")
+                    if 'modified_time' in result.keys():
+                        mt = result['modified_time']
+                        result['modified_time'] = datetime.strftime(mt,"%Y-%m-%d %I:%M %p")
+                    if 'indexed_time' in result.keys():
+                        it = result['indexed_time']
+                        result['indexed_time'] = datetime.strftime(it,"%Y-%m-%d %I:%M %p")
                 return jsonify(results_list)
 
     # nope
