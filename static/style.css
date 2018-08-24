@@ -58,7 +58,7 @@ button#feedback {
 /* search results table */
 td#search-results-score-col,
 td#search-results-type-col {
-    width: 5%;
+    width: 90px;
 }
 
 div.container {
