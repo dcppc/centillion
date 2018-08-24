@@ -1165,9 +1165,20 @@ class Search:
             sr.id = r['id']
             sr.kind = r['kind']
 
-            sr.created_time =  datetime.strftime(r['created_time'],  "%Y-%m-%d %I:%M %p")
-            sr.modified_time = datetime.strftime(r['modified_time'], "%Y-%m-%d %I:%M %p")
-            sr.indexed_time =  datetime.strftime(r['indexed_time'],  "%Y-%m-%d %I:%M %p")
+            try:
+                sr.created_time =  datetime.strftime(r['created_time'],  "%Y-%m-%d %I:%M %p")
+            except KeyError:
+                sr.created_time = ''
+
+            try:
+                sr.modified_time = datetime.strftime(r['modified_time'], "%Y-%m-%d %I:%M %p")
+            except KeyError:
+                sr.modified_time = ''
+
+            try:
+                sr.indexed_time =  datetime.strftime(r['indexed_time'],  "%Y-%m-%d %I:%M %p")
+            except KeyError:
+                sr.indexed_time = ''
 
             sr.title = r['title']
             sr.url = r['url']
