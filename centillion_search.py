@@ -795,7 +795,7 @@ class Search:
         subprocess.call(['rm','-fr',temp_dir])
 
         writer.commit()
-        print("Done, updated %d documents in the index" % count)
+        print("Done, updated %d Google Drive files in the index" % count)
 
 
     # ------------------------------
@@ -873,7 +873,7 @@ class Search:
 
 
         writer.commit()
-        print("Done, updated %d documents in the index" % count)
+        print("Done, updated %d Github issues in the index" % count)
 
 
 
