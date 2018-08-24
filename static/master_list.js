@@ -379,12 +379,12 @@ function load_emailthreads_table(){
 // Disqus Comment Threads
 
 function load_disqusthreads_table(){
-    if(!initEmailthreadsTable) { 
+    if(!initDisqusTable) { 
         var divList = $('div#collapseDisqus').attr('class');
         if (divList.indexOf('in') !== -1) {
-            //console.log('Closing Disqus comment threads master list');
+            console.log('Closing Disqus comment threads master list');
         } else { 
-            //console.log('Opening Disqus comment threads master list');
+            console.log('Opening Disqus comment threads master list');
     
             $.getJSON("/list/disqus", function(result){
                 var r = new Array(), j = -1, size=result.length;
