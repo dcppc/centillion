@@ -21,8 +21,9 @@ import codecs
 from datetime import datetime
 import dateutil.parser
 
+from whoosh import query
 from whoosh.qparser import MultifieldParser, QueryParser
-from whoosh.analysis import StemmingAnalyzer
+from whoosh.analysis import StemmingAnalyzer, LowercaseFilter, StopFilter
 
 
 """
@@ -185,7 +186,8 @@ class Search:
             os.mkdir(index_folder)
 
         exists = index.exists_in(index_folder)
-        stemming_analyzer = StemmingAnalyzer()
+        #stemming_analyzer = StemmingAnalyzer()
+        stemming_analyzer = StemmingAnalyzer() | LowercaseFilter() | StopFilter()
 
         
         # ------------------------------
@@ -1210,7 +1212,13 @@ class Search:
             query_string = " ".join(query_list)
             query = None
             if ":" in query_string:
-                query = QueryParser("content", self.schema).parse(query_string)
+                #query = QueryParser("content", 
+                #                    self.schema
+                #).parse(query_string)
+                query = QueryParser("content", 
+                                    self.schema,
+                                    termclass=query.Variations
+                ).parse(query_string)
             elif len(fields) == 1 and fields[0] == "filename":
                 pass
             elif len(fields) == 2:
