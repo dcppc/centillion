@@ -118,6 +118,7 @@ class DisqusCrawler(object):
 
                         link = response['link']
                         clean_link = re.sub('data-commons.us','nihdatacommons.us',link)
+                        clean_link += "#disqus_comments"
 
                         # Finished working on thread.
 
