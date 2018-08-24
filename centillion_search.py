@@ -190,16 +190,24 @@ class Search:
                 indexed_time = fields.DATETIME(stored=True),
                 
                 title = fields.TEXT(stored=True, field_boost=100.0),
-                url = fields.ID(stored=True, unique=True),
+
+                url = fields.ID(stored=True),
                 
-                mimetype = fields.ID(stored=True),
+                mimetype = fields.TEXT(stored=True),
+
                 owner_email = fields.ID(stored=True),
                 owner_name = fields.TEXT(stored=True),
-                
+
+                # mainly for email threads, groups.io, hypothesis
+                group = fields.ID(stored=True),
+
                 repo_name = fields.TEXT(stored=True),
                 repo_url = fields.ID(stored=True),
-
                 github_user = fields.TEXT(stored=True),
+
+                tags = fields.KEYWORD(commas=True,
+                                      stored=True,
+                                      lowercase=True),
 
                 # comments only
                 issue_title = fields.TEXT(stored=True, field_boost=100.0),
@@ -245,24 +253,32 @@ class Search:
             writer.delete_by_term('id',item['id'])
 
             # Index a plain google drive file
-            writer.add_document(
-                    id = item['id'],
-                    kind = 'gdoc',
-                    created_time = dateutil.parser.parse(item['createdTime']).isoformat(),
-                    modified_time = dateutil.parser.parse(item['modifiedTime']).isoformat(),
-                    indexed_time = datetime.now().replace(microsecond=0).isoformat(),
-                    title = item['name'],
-                    url = item['webViewLink'],
-                    mimetype = mimetype,
-                    owner_email = item['owners'][0]['emailAddress'],
-                    owner_name = item['owners'][0]['displayName'],
-                    repo_name='',
-                    repo_url='',
-                    github_user='',
-                    issue_title='',
-                    issue_url='',
-                    content = content
-            )
+            created_time = dateutil.parser.parse(item['createdTime'])
+            modified_time = dateutil.parser.parse(item['modifiedTime'])
+            indexed_time = datetime.now().replace(microsecond=0)
+            try:
+                writer.add_document(
+                        id = item['id'],
+                        kind = 'gdoc',
+                        created_time = created_time,
+                        modified_time = modified_time,
+                        indexed_time = indexed_time,
+                        title = item['name'],
+                        url = item['webViewLink'],
+                        mimetype = mimetype,
+                        owner_email = item['owners'][0]['emailAddress'],
+                        owner_name = item['owners'][0]['displayName'],
+                        group='',
+                        repo_name='',
+                        repo_url='',
+                        github_user='',
+                        issue_title='',
+                        issue_url='',
+                        content = content
+                )
+            except ValueError as e:
+                print(repr(e))
+                print(" > XXXXXX Failed to index Google Drive file \"%s\""%(item['name']))
 
 
         else:
@@ -316,7 +332,7 @@ class Search:
                 )
                 assert output == ""
             except RuntimeError:
-                print(" > XXXXXX Failed to index document \"%s\""%(item['name']))
+                print(" > XXXXXX Failed to index Google Drive document \"%s\""%(item['name']))
 
 
             # If export was successful, read contents of markdown
@@ -344,24 +360,33 @@ class Search:
             else:
                 print(" > Creating a new record")
 
-            writer.add_document(
-                    id = item['id'],
-                    kind = 'gdoc',
-                    created_time = dateutil.parser.parse(item['createdTime']).isoformat(),
-                    modified_time = dateutil.parser.parse(item['modifiedTime']).isoformat(),
-                    indexed_time = datetime.now().replace(microsecond=0).isoformat(),
-                    title = item['name'],
-                    url = item['webViewLink'],
-                    mimetype = mimetype,
-                    owner_email = item['owners'][0]['emailAddress'],
-                    owner_name = item['owners'][0]['displayName'],
-                    repo_name='',
-                    repo_url='',
-                    github_user='',
-                    issue_title='',
-                    issue_url='',
-                    content = content
-            )
+            try:
+                created_time = dateutil.parser.parse(item['createdTime'])
+                modified_time = dateutil.parser.parse(item['modifiedTime'])
+                indexed_time = datetime.now()
+                writer.add_document(
+                        id = item['id'],
+                        kind = 'gdoc',
+                        created_time = created_time,
+                        modified_time = modified_time,
+                        indexed_time = indexed_time,
+                        title = item['name'],
+                        url = item['webViewLink'],
+                        mimetype = mimetype,
+                        owner_email = item['owners'][0]['emailAddress'],
+                        owner_name = item['owners'][0]['displayName'],
+                        group='',
+                        repo_name='',
+                        repo_url='',
+                        github_user='',
+                        issue_title='',
+                        issue_url='',
+                        content = content
+                )
+            except ValueError as e:
+                print(repr(e))
+                print(" > XXXXXX Failed to index Google Drive file \"%s\""%(item['name']))
+
 
 
 
@@ -395,31 +420,36 @@ class Search:
                 issue_comment_content += comment.body.rstrip()
                 issue_comment_content += "\n"
 
-        # Now create the actual search index record
-        created_time = clean_timestamp(issue.created_at)
-        modified_time = clean_timestamp(issue.updated_at)
-        indexed_time = clean_timestamp(datetime.now())
-
+        # Now create the actual search index record.
         # Add one document per issue thread,
         # containing entire text of thread.
-        writer.add_document(
-                id = issue.html_url,
-                kind = 'issue',
-                created_time =  datetimeutil.parser.pasrse(created_time ),
-                modified_time = datetimeutil.parser.pasrse(modified_time),
-                indexed_time =  datetimeutil.parser.pasrse(indexed_time ),
-                title = issue.title,
-                url = issue.html_url,
-                mimetype='',
-                owner_email='',
-                owner_name='',
-                repo_name = repo_name,
-                repo_url = repo_url,
-                github_user = issue.user.login,
-                issue_title = issue.title,
-                issue_url = issue.html_url,
-                content = issue_comment_content
-        )
+
+        created_time = issue.created_at
+        modified_time = issue.updated_at
+        indexed_time = datetime.now()
+        try:
+            writer.add_document(
+                    id = issue.html_url,
+                    kind = 'issue',
+                    created_time = created_time,
+                    modified_time = modified_time,
+                    indexed_time = indexed_time,
+                    title = issue.title,
+                    url = issue.html_url,
+                    mimetype='',
+                    owner_email='',
+                    owner_name='',
+                    group='',
+                    repo_name = repo_name,
+                    repo_url = repo_url,
+                    github_user = issue.user.login,
+                    issue_title = issue.title,
+                    issue_url = issue.html_url,
+                    content = issue_comment_content
+            )
+        except ValueError as e:
+            print(repr(e))
+            print(" > XXXXXX Failed to index Github issue \"%s\""%(issue.title))
 
 
 
@@ -449,7 +479,8 @@ class Search:
             print(" > XXXXXXXX Failed to find file info.")
             return
 
-        indexed_time = clean_timestamp(datetime.now())
+
+        indexed_time = datetime.now()
 
         if fext in MARKDOWN_EXTS:
             print("Indexing markdown doc %s from repo %s"%(fname,repo_name))
@@ -478,24 +509,31 @@ class Search:
             usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
 
             # Now create the actual search index record
-            writer.add_document(
-                    id = fsha,
-                    kind = 'markdown',
-                    created_time = '',
-                    modified_time = '',
-                    indexed_time = indexed_time,
-                    title = fname,
-                    url = usable_url,
-                    mimetype='',
-                    owner_email='',
-                    owner_name='',
-                    repo_name = repo_name,
-                    repo_url = repo_url,
-                    github_user = '',
-                    issue_title = '',
-                    issue_url = '',
-                    content = content
-            )
+            try:
+                writer.add_document(
+                        id = fsha,
+                        kind = 'markdown',
+                        created_time = None,
+                        modified_time = None,
+                        indexed_time = indexed_time,
+                        title = fname,
+                        url = usable_url,
+                        mimetype='',
+                        owner_email='',
+                        owner_name='',
+                        group='',
+                        repo_name = repo_name,
+                        repo_url = repo_url,
+                        github_user = '',
+                        issue_title = '',
+                        issue_url = '',
+                        content = content
+                )
+            except ValueError as e:
+                print(repr(e))
+                print(" > XXXXXX Failed to index Github markdown file \"%s\""%(fname))
+
+
 
         else:
             print("Indexing github file %s from repo %s"%(fname,repo_name))
@@ -503,24 +541,29 @@ class Search:
             key = fname+"_"+fsha
 
             # Now create the actual search index record
-            writer.add_document(
-                    id = key,
-                    kind = 'ghfile',
-                    created_time = '',
-                    modified_time = '',
-                    indexed_time = indexed_time,
-                    title = fname,
-                    url = repo_url,
-                    mimetype='',
-                    owner_email='',
-                    owner_name='',
-                    repo_name = repo_name,
-                    repo_url = repo_url,
-                    github_user = '',
-                    issue_title = '',
-                    issue_url = '',
-                    content = ''
-            )
+            try:
+                writer.add_document(
+                        id = key,
+                        kind = 'ghfile',
+                        created_time = None,
+                        modified_time = None,
+                        indexed_time = indexed_time,
+                        title = fname,
+                        url = repo_url,
+                        mimetype='',
+                        owner_email='',
+                        owner_name='',
+                        group='',
+                        repo_name = repo_name,
+                        repo_url = repo_url,
+                        github_user = '',
+                        issue_title = '',
+                        issue_url = '',
+                        content = ''
+                )
+            except ValueError as e:
+                print(repr(e))
+                print(" > XXXXXX Failed to index Github file \"%s\""%(fname))
 
 
 
@@ -534,28 +577,42 @@ class Search:
         Use a Github file API record to add a filename
         to the search index.
         """
-        indexed_time = clean_timestamp(datetime.now())
+        if 'created_time' in d.keys() and d['created_time'] is not None:
+            created_time = d['created_time']
+        else:
+            created_time = None
+
+        if 'modified_time' in d.keys() and d['modified_time'] is not None:
+            modified_time = d['modified_time']
+        else:
+            modified_time = None
+
+        indexed_time = datetime.now()
 
         # Now create the actual search index record
-        writer.add_document(
-                id = d['permalink'],
-                kind = 'emailthread',
-                created_time = '',
-                modified_time = '',
-                indexed_time = indexed_time,
-                title = d['subject'],
-                url = d['permalink'],
-                mimetype='',
-                owner_email='',
-                owner_name=d['original_sender'],
-                repo_name = '',
-                repo_url = '',
-                github_user = '',
-                issue_title = '',
-                issue_url = '',
-                content = d['content']
-        )
-
+        try:
+            writer.add_document(
+                    id = d['permalink'],
+                    kind = 'emailthread',
+                    created_time = created_time,
+                    modified_time = modified_time,
+                    indexed_time = indexed_time,
+                    title = d['subject'],
+                    url = d['permalink'],
+                    mimetype='',
+                    owner_email='',
+                    owner_name=d['original_sender'],
+                    group=d['subgroup'],
+                    repo_name = '',
+                    repo_url = '',
+                    github_user = '',
+                    issue_title = '',
+                    issue_url = '',
+                    content = d['content']
+            )
+        except ValueError as e:
+            print(repr(e))
+            print(" > XXXXXX Failed to index Groups.io thread \"%s\""%(d['subject']))
 
 
 
@@ -633,10 +690,10 @@ class Search:
                 full_items[f['id']] = f
             
             ## Shorter:
-            #break
-            # Longer:
-            if nextPageToken is None:
-                break
+            break
+            ## Longer:
+            #if nextPageToken is None:
+            #    break
 
 
         writer = self.ix.writer()
@@ -644,34 +701,41 @@ class Search:
         temp_dir = tempfile.mkdtemp(dir=os.getcwd())
         print("Temporary directory: %s"%(temp_dir))
 
+        try:
+
+            # Drop any id in indexed_ids
+            # not in remote_ids
+            drop_ids = indexed_ids - remote_ids
+            for drop_id in drop_ids:
+                writer.delete_by_term('id',drop_id)
 
 
-        # Drop any id in indexed_ids
-        # not in remote_ids
-        drop_ids = indexed_ids - remote_ids
-        for drop_id in drop_ids:
-            writer.delete_by_term('id',drop_id)
+            # Update any id in indexed_ids
+            # and in remote_ids
+            update_ids = indexed_ids & remote_ids
+            for update_id in update_ids:
+                # cop out
+                writer.delete_by_term('id',update_id)
+                item = full_items[update_id]
+                self.add_drive_file(writer, item, temp_dir, config, update=True)
+                count += 1
 
 
-        # Update any id in indexed_ids
-        # and in remote_ids
-        update_ids = indexed_ids & remote_ids
-        for update_id in update_ids:
-            # cop out
-            writer.delete_by_term('id',update_id)
-            item = full_items[update_id]
-            self.add_drive_file(writer, item, temp_dir, config, update=True)
-            count += 1
+            # Add any id not in indexed_ids
+            # and in remote_ids
+            add_ids = remote_ids - indexed_ids
+            for add_id in add_ids:
+                item = full_items[add_id]
+                self.add_drive_file(writer, item, temp_dir, config, update=False)
+                count += 1
 
-
-        # Add any id not in indexed_ids
-        # and in remote_ids
-        add_ids = remote_ids - indexed_ids
-        for add_id in add_ids:
-            item = full_items[add_id]
-            self.add_drive_file(writer, item, temp_dir, config, update=False)
-            count += 1
-
+        except Exception as e:
+            print("ERROR: While adding Google Drive files to search index")
+            print("-"*40)
+            print(repr(e))
+            print("-"*40)
+            print("Continuing...")
+            pass
 
         print("Cleaning temporary directory: %s"%(temp_dir))
         subprocess.call(['rm','-fr',temp_dir])
@@ -1076,7 +1140,7 @@ class Search:
         elif doctype=='issue':
             item_keys = ['title','repo_name','repo_url','url','created_time','modified_time']
         elif doctype=='emailthread':
-            item_keys = ['title','owner_name','url']
+            item_keys = ['title','owner_name','url','created_time','modified_time']
         elif doctype=='ghfile':
             item_keys = ['title','repo_name','repo_url','url']
         elif doctype=='markdown':
@@ -1093,11 +1157,7 @@ class Search:
             for r in results:
                 d = {}
                 for k in item_keys:
-                    if k=='created_time' or k=='modified_time':
-                        #d[k] = r[k]
-                        d[k] = dateutil.parser.parse(r[k]).strftime("%Y-%m-%d")
-                    else:
-                        d[k] = r[k]
+                    d[k] = r[k]
                 json_results.append(d)
 
         return json_results

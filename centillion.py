@@ -52,14 +52,10 @@ class UpdateIndexTask(object):
         #from get_centillion_config import get_centillion_config
         config = config_centillion.config
 
-        try:
-            search.update_index(self.groupsio_credentials,
-                                self.gh_token,
-                                self.run_which,
-                                config)
-        except threading.LockError:
-            print("whoops")
-            pass
+        search.update_index(self.groupsio_credentials,
+                            self.gh_token,
+                            self.run_which,
+                            config)
 
 
 app = Flask(__name__)
