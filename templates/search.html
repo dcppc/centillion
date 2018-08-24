@@ -165,10 +165,18 @@
                                                 <a href='{{e.url}}'>{{e.title}}</a>
                                                 (Owner: {{e.owner_name}}, {{e.owner_email}})<br />
                                                 <b>Document Type</b>: {{e.mimetype}}
+                                                {% if e.created_time %} 
+                                                    <br/>
+                                                    <b>Created:</b> {{e.created_time}}
+                                                {% endif %}
                                             {% else %}
                                                 <b>Google Drive File:</b>
                                                 <a href='{{e.url}}'>{{e.title}}</a><br />
                                                 <b>Owner:</b> {{e.owner_name}}, {{e.owner_email}}<br />
+                                                {% if e.created_time %} 
+                                                    <br/>
+                                                    <b>Created:</b> {{e.created_time}}
+                                                {% endif %}
                                             {% endif %}
 
                                         {% elif e.kind=="issue" %}
@@ -179,6 +187,10 @@
                                             {% endif %}
                                             <br/>
                                             <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
+                                            {% if e.created_time %} 
+                                                <br/>
+                                                <b>Date:</b> {{e.created_time}}
+                                            {% endif %}
 
                                         {% elif e.kind=="ghfile" %}
                                             <b>Github File:</b>
@@ -197,6 +209,21 @@
                                             <a href='{{e.url}}'>{{e.title}}</a>
                                             <br/>
                                             <b>Started By:</b> {{e.owner_name}}
+                                            <br/>
+                                            <b>Mailing List:</b> {{e.group}}
+                                            {% if e.created_time %} 
+                                                <br/>
+                                                <b>Date:</b> {{e.created_time}}
+                                            {% endif %}
+
+                                        {% elif e.kind=="disqus" %}
+                                            <b>Disqus Comment Thread:</b>
+                                            <a href='{{e.url}}'>{{e.title}}</a>
+                                            <br/>
+                                            {% if e.created_time %} 
+                                                <br/>
+                                                <b>Date:</b> {{e.created_time}}
+                                            {% endif %}
 
                                         {% else %}
                                             <b>Item:</b> (<a href='{{e.url}}'>link</a>)
