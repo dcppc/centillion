@@ -21,7 +21,7 @@ import codecs
 from datetime import datetime
 import dateutil.parser
 
-from whoosh import query
+from whoosh.query import Variations
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh.analysis import StemmingAnalyzer, LowercaseFilter, StopFilter
 from whoosh.qparser.dateparse import DateParserPlugin
@@ -1293,13 +1293,13 @@ class Search:
             query = None
             if ":" in query_string:
 
-                #query = QueryParser("content", 
-                #                    self.schema
-                #).parse(query_string)
                 query = QueryParser("content", 
-                                    self.schema,
-                                    termclass=query.Variations
+                                    self.schema
                 )
+                #query = QueryParser("content", 
+                #                    self.schema,
+                #                    termclass=Variations
+                #)
                 query.add_plugin(DateParserPlugin(free=True))
                 query = query.parse(query_string)
             elif len(fields) == 1 and fields[0] == "filename":
@@ -1309,7 +1309,7 @@ class Search:
             else:
                 # If the user does not specify a field,
                 # these are the fields that are actually searched
-                fields = ['title', 'content','owner_name','owner_email','url','created_date','modified_date']
+                fields = ['title', 'content','owner_name','owner_email','url']
             if not query:
                 query = MultifieldParser(fields, schema=self.ix.schema)
                 query.add_plugin(DateParserPlugin(free=True))
