@@ -169,7 +169,7 @@ function load_issue_table(){
                 var r = new Array(), j = -1, size=result.length;
                 r[++j] = '<thead>'
                 r[++j] = '<tr class="header-row">';
-                r[++j] = '<th width="50%">Issue Name</th>';
+                r[++j] = '<th width="50%">Issue/PR Name</th>';
                 r[++j] = '<th width="15%">Repository</th>';
                 r[++j] = '<th width="15%">Created</th>';
                 r[++j] = '<th width="15%">Modified</th>';
