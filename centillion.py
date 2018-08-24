@@ -40,6 +40,7 @@ class UpdateIndexTask(object):
                 'groupsio_username' :  app_config['GROUPSIO_USERNAME'],
                 'groupsio_password' :  app_config['GROUPSIO_PASSWORD']
         }
+        self.disqus_token = app_config['DISQUS_TOKEN']
         thread.daemon = True
         thread.start()
 
@@ -54,6 +55,7 @@ class UpdateIndexTask(object):
 
         search.update_index(self.groupsio_credentials,
                             self.gh_token,
+                            self.disqus_token,
                             self.run_which,
                             config)
 
@@ -347,5 +349,5 @@ if __name__ == '__main__':
         port = 5000
     else:
         port = int(port)
-    app.run(host="0.0.0.0",port=port)
+    app.run(host="0.0.0.0", port=port)
 
