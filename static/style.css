@@ -86,6 +86,14 @@ div.container {
 }
 
 /* badges for number of docs indexed */
+span.results-count {
+    background-color: #555;
+}
+
+span.indexing-count {
+    background-color: #337ab7;
+}
+
 span.badge {
     vertical-align: text-bottom;
 }
@@ -192,7 +200,7 @@ table {
 
 .info, .last-searches {
     color: gray;
-    font-size: 12px;
+    /*font-size: 12px;*/
     font-family: Arial, serif;
 }
 
@@ -202,27 +210,27 @@ table {
 
 div.tags a, td.tag-cloud a {
     color: #b56020;
-    font-size: 12px;
+    /*font-size: 12px;*/
 }
 
 td.tag-cloud, td.directories-cloud {
-    font-size: 12px;
+    /*font-size: 12px;*/
     color: #555555;
 }
 
 td.directories-cloud a {
-    font-size: 12px;
+    /*font-size: 12px;*/
     color: #377BA8;
 }
 
 div.path {
-    font-size: 12px;
+    /*font-size: 12px;*/
     color: #666666;
     margin-bottom: 3px;
 }
 
 div.path a {
-    font-size: 12px;
+    /*font-size: 12px;*/
     margin-right: 5px;
 }
 
