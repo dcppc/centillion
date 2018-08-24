@@ -1,6 +1,7 @@
 import os, re
 import requests
 import json
+import dateutil.parser
 
 from pprint import pprint
 
@@ -123,7 +124,7 @@ class DisqusCrawler(object):
                         # We need to make this value a dictionary
                         thread_info = dict(
                                 id = response['id'],
-                                created_time = response['createdAt'],
+                                created_time = dateutil.parser.parse(response['createdAt']),
                                 title = response['title'],
                                 forum = response['forum'],
                                 link = clean_link,
