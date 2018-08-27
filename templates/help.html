@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% set active_page = "search" %}
+{% block body %}
+
+<div id="search-bar-container" class="container">
+    <div class="row">
+        <div class="col-xs-12">
+
+
+
+<h1 id="centillion-help">Centillion Help</h1>
+<p>This page provides some guidance on using centillion, the Data Commons search engine.</p>
+<h3 id="what-does-centillion-index?">What Does Centillion Index?</h3>
+<p>Centillion indexes the following:</p>
+<ul>
+<li>Google Drive files in the Data Commons Google Drive folder (the entire contents of docx files are indexed, while only the metadata is indexed for non-docx files)</li>
+<li>Github issues and pull requests (both open and closed) in all of the <a href="https://github.com/dcppc">DCPPC Github organization's</a> Github repositories</li>
+<li>Github files (the entire contents of Markdown files are indexed, only the metadata is indexed for non-Markdown files)</li>
+<li>Groups.io email threads</li>
+<li>Disqus comment threads on the internal DCPPC site, <a href="https://pilot.nihdatacommons.us">https://pilot.nihdatacommons.us</a></li>
+</ul>
+<h3 id="basic-searching:-single-term-searches">Basic Searching: Single-Term Searches</h3>
+<p>To run a basic search, just type a search term into the text box and click &quot;Search.&quot;</p>
+<p>Try the following search terms:</p>
+<div class="alert alert-info" role="alert">
+onboarding
+</div>
+
+<div class="alert alert-info" role="alert">
+oxygen
+</div>
+
+<div class="alert alert-info" role="alert">
+fullstack
+</div>
+
+<h3 id="basic-searching:-multi-term-searches">Basic Searching: Multi-Term Searches</h3>
+<p>If you use a multi-word phrase, centillion will split the phrase into individual words, and look for occurrences of each word in the search index. If you would rather centillion search for an exact phrase, <strong>enter it in double quotes.</strong></p>
+<p>Try the following search terms - then try them without the double quotes to see what chages:</p>
+<div class="alert alert-info" role="alert">
+"analysis pipeline"
+</div>
+
+<div class="alert alert-info" role="alert">
+"onboarding process"
+</div>
+
+<div class="alert alert-info" role="alert">
+"full stacks"
+</div>
+
+<div class="alert alert-info" role="alert">
+"deliverables due"
+</div>
+
+<p>Note that if you search for a term (for example <code>&quot;onboarding process&quot;</code>) with double quotes, centillion will ignore anything in the search index that contains the word &quot;onboarding&quot; separate from the word &quot;process&quot;.</p>
+<p>The exception is stop words. For example, searching for <code>&quot;onboarding process&quot;</code> will also find the phrase <code>&quot;process of onboarding&quot;</code>.</p>
+<h3 id="and/or-operators">AND/OR Operators</h3>
+<p>The AND and OR operators are available for users in centillion. However, these operators must be CAPITALIZED or they will be interpreted as literal words!</p>
+<p>To include any item in the search index that contains the word &quot;onboarding&quot; and the word &quot;whitelist&quot;, but not necessarily next to each other, use the AND operator:</p>
+<div class="alert alert-info" role="alert">
+onboarding AND whitelist
+</div>
+
+<p>This can also be used with multi-word phrases, using double quotes accordingly: to search for all documents containing the word &quot;onboarding&quot; and the phrase &quot;full stack&quot;, pass these both to AND (quotes and all):</p>
+<div class="alert alert-info" role="alert">
+onboarding AND "full stack"
+</div>
+
+<p>You can also use the OR operator to return any documents containing one or the other or both of the given search term or phrase. For example, to seach for any documents involving Team Oxygen or Team Calcium,</p>
+<div class="alert alert-info" role="alert">
+oygen OR calcium
+</div>
+
+<p>Finally, these operators can be combined by wrapping statements in parentheses. For example, suppose we wanted to look for all information about either onboarding or whitelisting, and only if related to Team Copper or Team Phosphorus. We can combine the two AND searches with an OR:</p>
+<div class="alert alert-info" role="alert">
+(onboarding OR whitelisting) AND (copper OR phosphorus OR phosphorous)
+</div>
+
+<p>Side note: phosphorus is a special case, as its correct spelling (&quot;phosphorus&quot;) is not as common as the incorrect spelling &quot;phosphorous&quot;.</p>
+<h3 id="advanced-search:-list-of-fields">Advanced Search: List of Fields</h3>
+<p>You can also conduct searches on specific fields in the search index. The search index schema contains the following fields:</p>
+<ul>
+<li><code>kind</code> - can be one of &quot;gdoc&quot; (Google Drive file), &quot;issue&quot; (Github issue), &quot;markdown&quot; (Markdown files in Github repositories), &quot;ghfile&quot; (non-Markdown files in Github repositories), &quot;emailthread&quot; (Groups.io email thread), and &quot;disqus&quot; (Disqus comment threads)</li>
+<li><code>title</code> - title of the document</li>
+<li><code>owner_name</code> - the name of the owner of the Google Drive file (permissions/ownership information comes from Google via their API), or the original sender of the Groups.io email thread (this field is <em>not</em> linked to Github items)</li>
+<li><code>owner_email</code> - the email address of the Google Drive file owner (this information is <em>not</em> linked to Github items or Groups.io items)</li>
+<li><code>github_user</code> - for Github files and issues, the Github @user is the only info available</li>
+<li><code>content</code> - the field containing the entire contents of each document</li>
+</ul>
+<p>Fields of limited usefulness for advanced searches:</p>
+<ul>
+<li><code>url</code> - the URL of the document (must be an exact match)</li>
+<li><code>created_time</code> - advanced searches with date/time fields is not currently implemented.</li>
+<li><code>indexed_time</code> - see above</li>
+<li><code>modified_time</code> - see above</li>
+</ul>
+<h3 id="searching-specific-fields">Searching Specific Fields</h3>
+<p>To search only a specific field for a search term, include the field name, a colon, and the search term you wish to search for. Use double quotes for phrases, as usual.</p>
+<p>For example, the following will find all Google Drive files or Groups.io email threads created by Titus Brown:</p>
+<div class="alert alert-info" role="alert">
+owner_name:"Titus Brown"
+</div>
+
+<p>To expand this search to include things on Github, too, we can include a <code>github_user</code> field search as well:</p>
+<div class="alert alert-info" role="alert">
+owner_name:"Titus Brown" OR github_user:"ctb"
+</div>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
