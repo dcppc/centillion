@@ -329,6 +329,32 @@ def parse_request():
     # nope
     return render_template('403.html')
 
+
+
+@app.route('/help')
+def help():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    username = github.get("/user").json()['login']
+    resp = github.get("/user/orgs")
+    if resp.ok:
+
+        # If they are in dcppc, show them help
+        # Otherwise, hit em with a 403
+        all_orgs = resp.json()
+        for org in all_orgs:
+            if org['login']=='dcppc':
+                # Business as usual
+                return render_template("help.html")
+
+        # Not in dcppc 
+        return render_template('403.html')
+
+    # Could not reach Github
+    return render_template('404.html')
+
+
+
 @app.errorhandler(404)
 def oops(e):
     return render_template('404.html')
