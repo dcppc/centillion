@@ -189,7 +189,7 @@ class Search:
 
         exists = index.exists_in(index_folder)
         #stemming_analyzer = StemmingAnalyzer()
-        stemming_analyzer = StemmingAnalyzer() | LowercaseFilter() | StopFilter()
+        stemming_analyzer = StemmingAnalyzer() | StopFilter()
 
         
         # ------------------------------
@@ -227,7 +227,7 @@ class Search:
                 # comments only
                 issue_title = fields.TEXT(stored=True, field_boost=100.0),
                 issue_url = fields.ID(stored=True),
-                
+
                 content = fields.TEXT(stored=True, analyzer=stemming_analyzer)
         )
 
