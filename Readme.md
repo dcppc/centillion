@@ -12,8 +12,13 @@ one centillion is 3.03 log-times better than a googol.
 ## What Is It
 
 Centillion (https://github.com/dcppc/centillion) is a search engine that can index 
-three kinds of collections: Google Documents (.docx files), Github issues, and Markdown files in 
-Github repos.
+different kinds of document collections: Google Documents (.docx files), Google Drive files,
+Github issues, Github files, Github Markdown files, and Groups.io email threads.
+
+
+
+
+## What Is It
 
 We define the types of documents the centillion should index,
 what info and how. The centillion then builds and

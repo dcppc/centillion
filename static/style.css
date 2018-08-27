@@ -1,6 +1,64 @@
+#modal-too-long {
+    visibility: hidden;
+}
+
+/* feedback smileys */
+#modal-feedback-smile-icon,
+#modal-feedback-frown-icon {
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+div.smile-active {
+    background-color: #2b2;
+}
+i.smile-active {
+    color: #fff;
+}
+div.frown-active {
+    background-color: #b22;
+}
+i.frown-active {
+    color: #fff;
+}
+
+/* feedback text area */
+#modal-feedback-textarea {
+    width: 100%;
+}
+
+/* feedback buttons */
+button.close {
+    font-size: 35px;
+}
+button#submit-feedback-btn {
+    width: 250px;
+}
+
+button#feedback:hover {
+    opacity: 1.0;
+    filter: alpha(opacity=100); /* For IE8 and earlier */
+}
+
+button#feedback {
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* For IE8 and earlier */
+
+    width: 180px;
+    height: 50px;
+    position: fixed; 
+    z-index: 999;
+    right: 120px;
+    bottom: 10px;
+}
+
+
+/* search results table */
 td#search-results-score-col,
 td#search-results-type-col {
-    width: 100px;
+    width: 90px;
 }
 
 div.container {
@@ -28,6 +86,14 @@ div.container {
 }
 
 /* badges for number of docs indexed */
+span.results-count {
+    background-color: #555;
+}
+
+span.indexing-count {
+    background-color: #337ab7;
+}
+
 span.badge {
     vertical-align: text-bottom;
 }
@@ -68,7 +134,7 @@ li.search-group-item {
 }
 
 div.url {
-    background-color: rgba(86,61,124,.15);
+    background-color: rgba(40,40,60,.15);
     padding: 8px;
 }
 
@@ -134,7 +200,7 @@ table {
 
 .info, .last-searches {
     color: gray;
-    font-size: 12px;
+    /*font-size: 12px;*/
     font-family: Arial, serif;
 }
 
@@ -144,27 +210,27 @@ table {
 
 div.tags a, td.tag-cloud a {
     color: #b56020;
-    font-size: 12px;
+    /*font-size: 12px;*/
 }
 
 td.tag-cloud, td.directories-cloud {
-    font-size: 12px;
+    /*font-size: 12px;*/
     color: #555555;
 }
 
 td.directories-cloud a {
-    font-size: 12px;
+    /*font-size: 12px;*/
     color: #377BA8;
 }
 
 div.path {
-    font-size: 12px;
+    /*font-size: 12px;*/
     color: #666666;
     margin-bottom: 3px;
 }
 
 div.path a {
-    font-size: 12px;
+    /*font-size: 12px;*/
     margin-right: 5px;
 }
 

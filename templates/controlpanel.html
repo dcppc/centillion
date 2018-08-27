@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% set active_page = "control_panel" %}
 {% block body %}
 
 <hr />
@@ -52,6 +53,8 @@
                             <p><a href="{{ url_for('update_index',run_which='issues') }}"       class="btn btn-large btn-danger btn-reindex-type">Update Github Issues Index</a>
                             </p>  
                             <p><a href="{{ url_for('update_index',run_which='emailthreads') }}" class="btn btn-large btn-danger btn-reindex-type">Update Groups.io Email Threads Index</a>
+                            </p> 
+                            <p><a href="{{ url_for('update_index',run_which='disqus') }}"       class="btn btn-large btn-danger btn-reindex-type">Update Disqus Comment Threads Index</a>
                             </p> 
                         </div>
                     </div>

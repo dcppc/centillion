@@ -3,6 +3,7 @@ import subprocess
 
 import codecs
 import os, json
+from datetime import datetime
 
 from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, request, redirect, url_for, render_template, flash, jsonify
@@ -39,6 +40,7 @@ class UpdateIndexTask(object):
                 'groupsio_username' :  app_config['GROUPSIO_USERNAME'],
                 'groupsio_password' :  app_config['GROUPSIO_PASSWORD']
         }
+        self.disqus_token = app_config['DISQUS_TOKEN']
         thread.daemon = True
         thread.start()
 
@@ -53,6 +55,7 @@ class UpdateIndexTask(object):
 
         search.update_index(self.groupsio_credentials,
                             self.gh_token,
+                            self.disqus_token,
                             self.run_which,
                             config)
 
@@ -264,8 +267,66 @@ def list_docs(doctype):
             if org['login']=='dcppc':
                 # Business as usual
                 search = Search(app.config["INDEX_DIR"])
-                return jsonify(search.get_list(doctype))
+                results_list = search.get_list(doctype)
+                for result in results_list:
+                    if 'created_time' in result.keys():
+                        ct = result['created_time']
+                        result['created_time'] = datetime.strftime(ct,"%Y-%m-%d %I:%M %p")
+                    if 'modified_time' in result.keys():
+                        mt = result['modified_time']
+                        result['modified_time'] = datetime.strftime(mt,"%Y-%m-%d %I:%M %p")
+                    if 'indexed_time' in result.keys():
+                        it = result['indexed_time']
+                        result['indexed_time'] = datetime.strftime(it,"%Y-%m-%d %I:%M %p")
+                return jsonify(results_list)
 
+    # nope
+    return render_template('403.html')
+
+
+@app.route('/feedback', methods=['POST'])
+def parse_request():
+
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    username = github.get("/user").json()['login']
+    resp = github.get("/user/orgs")
+    if resp.ok:
+        all_orgs = resp.json()
+        for org in all_orgs:
+            if org['login']=='dcppc':
+
+
+                try:
+                    # Business as usual
+                    data = request.form.to_dict();
+                    data['github_login'] = username
+                    data['timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                    feedback_database = 'feedback_database.json'
+                    if not os.path.isfile(feedback_database):
+                        with open(feedback_database,'w') as f:
+                            json_data = [data]
+                            json.dump(json_data, f, indent=4)
+
+                    else:
+                        json_data = []
+                        with open(feedback_database,'r') as f:
+                            json_data = json.load(f)
+
+                        json_data.append(data)
+
+                        with open(feedback_database,'w') as f:
+                            json.dump(json_data, f, indent=4)
+
+                    ## Should be done with Javascript
+                    #flash("Thank you for your feedback!")
+                    return jsonify({'status':'ok','message':'Thank you for your feedback!'})
+                except:
+                    return jsonify({'status':'error','message':'An error was encountered while submitting your feedback. Try submitting an issue in the <a href="https://github.com/dcppc/centillion/issues/new">dcppc/centillion</a> repository.'})
+
+
+    # nope
     return render_template('403.html')
 
 @app.errorhandler(404)
@@ -294,5 +355,10 @@ def store_search(query, fields):
 if __name__ == '__main__':
     # if running local instance, set to true
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
-    app.run(host="0.0.0.0",port=5000)
+    port = os.environ.get('CENTILLION_PORT','')
+    if port=='':
+        port = 5000
+    else:
+        port = int(port)
+    app.run(host="0.0.0.0", port=port)
 

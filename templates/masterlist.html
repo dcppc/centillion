@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% set active_page = "master_list" %}
 {% block body %}
 
 <hr />
@@ -8,8 +9,9 @@
     <div class="row">
 
     {#
-     # google drive files panel
-     #}
+    # google drive files panel
+    #}
+    <a name="gdoc"></a>
     <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordionDrive" role="tablist" aria-multiselectable="true">
@@ -45,8 +47,9 @@
 
 
     {#
-     # github issue panel
-     #}
+    # github issue panel
+    #}
+    <a name="issue"></a>
     <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordionIssues" role="tablist" aria-multiselectable="true">
@@ -62,7 +65,7 @@
                                 href="#collapseIssues" 
                                 aria-expanded="true"
                                 aria-controls="collapseIssues">
-                                Github Issues <small>indexed by centillion</small>
+                                Github Issues and Pull Requests <small>indexed by centillion</small>
                             </a>
                         </h2>
 
@@ -84,8 +87,9 @@
 
 
     {#
-     # github file panel
-     #}
+    # github file panel
+    #}
+    <a name="ghfile"></a>
     <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordionFiles" role="tablist" aria-multiselectable="true">
@@ -121,8 +125,9 @@
 
 
     {#
-     # gh markdown file panel
-     #}
+    # gh markdown file panel
+    #}
+    <a name="markdown"></a>
     <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordionMarkdown" role="tablist" aria-multiselectable="true">
@@ -159,8 +164,9 @@
 
 
     {#
-     # groups.io
-     #}
+    # groups.io email threads
+    #}
+    <a name="emailthread"></a>
     <div class="row">
         <div class="panel">
             <div class="panel-group" id="accordionThreads" role="tablist" aria-multiselectable="true">
@@ -194,6 +200,42 @@
         </div>
     </div>
 
+    {#
+    # disqus comment threads
+    #}
+    <a name="disqus"></a>
+    <div class="row">
+        <div class="panel">
+            <div class="panel-group" id="accordionDisqus" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="disqus">
+
+                        <h2 class="masterlist-header">
+                            <a class="collapsed" 
+                                role="button"
+                                onClick="load_disqusthreads_table()"
+                                data-toggle="collapse" 
+                                data-parent="#accordionDisqus"
+                                href="#collapseDisqus" 
+                                aria-expanded="true"
+                                aria-controls="collapseDisqus">
+                                Disqus Comment Threads <small>indexed by centillion</small>
+                            </a>
+                        </h2>
+
+                    </div>
+                    <div id="collapseDisqus" class="panel-collapse collapse" role="tabpanel" 
+                        aria-labelledby="disqus">
+                        <div class="panel-body">
+                            <table class="table table-striped" id="disqus-master-list">
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </div>

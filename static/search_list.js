@@ -31,7 +31,7 @@ $(document).ready(function() {
               aTargets : [2]
             }
         ],
-        lengthMenu: [50,100,250,500]
+        lengthMenu: [10,20,50,100]
     });
 
     console.log('Finished loading search results list');
