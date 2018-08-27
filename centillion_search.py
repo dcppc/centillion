@@ -123,7 +123,9 @@ class Search:
                 print("Continuing...")
                 pass
 
-        if run_which=='all' or run_which=='emailthreads':
+        # Remove emailthreads from the index all action
+        # until we've fixed the rate limit problem with groups.io.
+        if run_which=='emailthreads':
             try:
                 self.update_index_emailthreads(groupsio_credentials, config)
             except GroupsIOException as e:
@@ -188,8 +190,10 @@ class Search:
             os.mkdir(index_folder)
 
         exists = index.exists_in(index_folder)
+
         #stemming_analyzer = StemmingAnalyzer()
-        stemming_analyzer = StemmingAnalyzer() | StopFilter()
+        stemming_analyzer = StemmingAnalyzer() | LowercaseFilter()
+        #stemming_analyzer = StemmingAnalyzer() | LowercaseFilter() | StopFilter()
 
         
         # ------------------------------
@@ -1295,7 +1299,15 @@ class Search:
     def search(self, query_list, fields=None):
 
         with self.ix.searcher() as searcher:
-            query_string = " ".join(query_list)
+
+            query_list2 = []
+            for qq in query_list:
+                if qq=='AND' or qq=='OR':
+                    query_list2.append(qq)
+                else:
+                    query_list2.append(qq.lower())
+            query_string = " ".join(query_list2)
+
             query = None
             if ":" in query_string:
 
