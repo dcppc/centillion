@@ -559,6 +559,15 @@ class Search:
 
             key = fname+"_"+fsha
 
+            if d['type'] == 'blob':
+                usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
+
+            elif d['type'] == 'tree':
+                usable_url = "https://github.com/%s/tree/master/%s"%(repo_name, fpath)
+
+            else:
+                usable_url = repo_url
+
             # Now create the actual search index record
             try:
                 writer.add_document(
@@ -568,7 +577,7 @@ class Search:
                         modified_time = None,
                         indexed_time = indexed_time,
                         title = fname,
-                        url = repo_url,
+                        url = usable_url,
                         mimetype='',
                         owner_email='',
                         owner_name='',
