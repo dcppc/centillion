@@ -1,5 +1,7 @@
 import requests, os, re
 from bs4 import BeautifulSoup
+import dateutil.parser
+import datetime
 
 class GroupsIOException(Exception):
     pass
@@ -251,7 +253,7 @@ class GroupsIOArchivesCrawler(object):
             subject = soup.find('title').text
 
             # Extract information for the schema:
-            # - permalink for thread (done)
+            # - permalink for thread (done above)
             # - subject/title (done)
             # - original sender email/name (done)
             # - content (done)
@@ -266,11 +268,35 @@ class GroupsIOArchivesCrawler(object):
                     pass
                 else:
                     # found an email!
-                    # this is a maze, thanks groups.io
+                    # this is a maze, not amazing.
+                    # thanks groups.io!
                     td = tr.find('td')
-                    divrow = td.find('div',{'class':'row'}).find('div',{'class':'pull-left'})
+
+                    sender_divrow = td.find('div',{'class':'row'})
+                    sender_divrow = sender_divrow.find('div',{'class':'pull-left'})
                     if (i+1)==1:
-                        original_sender = divrow.text.strip()
+                        original_sender = sender_divrow.text.strip()
+
+                    date_divrow = td.find('div',{'class':'row'})
+                    date_divrow = date_divrow.find('div',{'class':'pull-right'})
+                    date_divrow = date_divrow.find('font',{'class':'text-muted'})
+                    date_divrow = date_divrow.find('script').text
+                    try:
+                        time_seconds = re.search(' [0-9]{1,} ',date_divrow).group(0)
+                        time_seconds = time_seconds.strip()
+                        # Thanks groups.io for the weird date formatting
+                        time_seconds = time_seconds[:10]
+                        mmicro_seconds = time_seconds[10:]
+                        if (i+1)==1:
+                            created_time  = datetime.datetime.utcfromtimestamp(int(time_seconds))
+                            modified_time = datetime.datetime.utcfromtimestamp(int(time_seconds))
+                        else:
+                            modified_time = datetime.datetime.utcfromtimestamp(int(time_seconds))
+
+                    except AttributeError:
+                        created_time = None
+                        modified_time = None
+
                     for div in td.find_all('div'):
                         if div.has_attr('id'):
 
@@ -299,7 +325,10 @@ class GroupsIOArchivesCrawler(object):
 
             thread = {
                     'permalink' : permalink,
+                    'created_time' : created_time,
+                    'modified_time' : modified_time,
                     'subject' : subject,
+                    'subgroup' : subgroup_name,
                     'original_sender' : original_sender,
                     'content' : full_content
             }
@@ -324,11 +353,13 @@ class GroupsIOArchivesCrawler(object):
 
         results = []
         for row in rows:
-            # We don't care about anything except title and ugly link
+            # This is where we extract
+            # a list of thread titles 
+            # and corresponding links.
             subject = row.find('span',{'class':'subject'})
             title = subject.get_text()
             link = row.find('a')['href']
-            #print(title)
+
             results.append((title,link))
 
         return results

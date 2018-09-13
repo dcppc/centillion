@@ -18,7 +18,7 @@ Github issues, Github files, Github Markdown files, and Groups.io email threads.
 
 
 
-## What Is It
+## How It Works
 
 We define the types of documents the centillion should index,
 what info and how. The centillion then builds and

@@ -40,6 +40,7 @@ class UpdateIndexTask(object):
                 'groupsio_username' :  app_config['GROUPSIO_USERNAME'],
                 'groupsio_password' :  app_config['GROUPSIO_PASSWORD']
         }
+        self.disqus_token = app_config['DISQUS_TOKEN']
         thread.daemon = True
         thread.start()
 
@@ -54,6 +55,7 @@ class UpdateIndexTask(object):
 
         search.update_index(self.groupsio_credentials,
                             self.gh_token,
+                            self.disqus_token,
                             self.run_which,
                             config)
 
@@ -265,7 +267,18 @@ def list_docs(doctype):
             if org['login']=='dcppc':
                 # Business as usual
                 search = Search(app.config["INDEX_DIR"])
-                return jsonify(search.get_list(doctype))
+                results_list = search.get_list(doctype)
+                for result in results_list:
+                    if 'created_time' in result.keys():
+                        ct = result['created_time']
+                        result['created_time'] = datetime.strftime(ct,"%Y-%m-%d %I:%M %p")
+                    if 'modified_time' in result.keys():
+                        mt = result['modified_time']
+                        result['modified_time'] = datetime.strftime(mt,"%Y-%m-%d %I:%M %p")
+                    if 'indexed_time' in result.keys():
+                        it = result['indexed_time']
+                        result['indexed_time'] = datetime.strftime(it,"%Y-%m-%d %I:%M %p")
+                return jsonify(results_list)
 
     # nope
     return render_template('403.html')
@@ -316,6 +329,32 @@ def parse_request():
     # nope
     return render_template('403.html')
 
+
+
+@app.route('/help')
+def help():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    username = github.get("/user").json()['login']
+    resp = github.get("/user/orgs")
+    if resp.ok:
+
+        # If they are in dcppc, show them help
+        # Otherwise, hit em with a 403
+        all_orgs = resp.json()
+        for org in all_orgs:
+            if org['login']=='dcppc':
+                # Business as usual
+                return render_template("help.html")
+
+        # Not in dcppc 
+        return render_template('403.html')
+
+    # Could not reach Github
+    return render_template('404.html')
+
+
+
 @app.errorhandler(404)
 def oops(e):
     return render_template('404.html')
@@ -347,5 +386,5 @@ if __name__ == '__main__':
         port = 5000
     else:
         port = int(port)
-    app.run(host="0.0.0.0",port=port)
+    app.run(host="0.0.0.0", port=port)
 
