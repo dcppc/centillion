@@ -44,6 +44,11 @@ separately.
 We need also need different tiers of tests, so we don't max out API
 calls by making lots of commits to multiple PRs.
 
+We have two types of tests:
+
+* Backend tests - check the core functionality of centillion and its functions
+* Frontend tests - check the functionality of the user interface
+
 We have three tiers of tests: 
 
 * Local tests - quick tests for CI, no API calls 
