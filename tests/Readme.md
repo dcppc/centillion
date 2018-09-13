@@ -22,8 +22,6 @@ Table of Contents
 Test Plan
 ---------
 
-Related: <https://github.com/dcppc/centillion/issues/82>
-
 The test suite for centillion needs to check each of the major
 components of centillion, as well as check the authentication mechanism
 using multiple login credentials.
@@ -46,9 +44,11 @@ separately.
 We need also need different tiers of tests, so we don't max out API
 calls by making lots of commits to multiple PRs.
 
-We have three tiers of tests: \* Local tests - quick tests for CI, no
-API calls \* Short tests - tests using dummy API accounts \* Long tests
-- tests using DCPPC API accounts
+We have three tiers of tests: 
+
+* Local tests - quick tests for CI, no API calls 
+* Short tests - tests using dummy API accounts 
+* Long tests - tests using DCPPC API accounts
 
 ### Local Tests
 
@@ -108,8 +108,7 @@ lay out what is needed:
     -   The frontend tests expect credentials to come from environment
         variables.
     -   These environment variables get passed in at test time.
-    -   Tests are all run on [Uncle
-        Archie](https://github.com/dcppc/uncle-archie).
+    -   Tests are all run on [Uncle Archie](https://github.com/dcppc/uncle-archie).
     -   Uncle Archie already has to protect a confidential config file
         containing Github credentials, so add additional credentials for
         frontend tests there.
@@ -178,19 +177,17 @@ Backend tests:
 
 -   Trigger a re-index of the search index from the backend.
 
-### Continuous Integration Plan
 
-Tests are automatically run using Uncle Archie for continuous
-integration and deployment.
+Test Automation and Infrastructure
+---------------------------------------
 
-Procedure/Checklist
--------------------
+The [Quality Engineering plan](../quality/Readme.md) contains
+additional information about the infrastructure that will be
+put into place to ensure code quality, but one important part
+of that is automation of testing.
 
-Pre-release procedure:
+[Uncle Archie](https://github.com/dcppc/uncle-archie) is the 
+continuous integration service that will run tests on every 
+pull request to the centillion repo.
 
--   prepare to run all test
 
--   run short tests
--   deploy to beta
--   run long tests
--   test out
