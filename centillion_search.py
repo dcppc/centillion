@@ -1219,6 +1219,8 @@ class Search:
 
             sr.content = r['content']
 
+            # This is where we need to fix the markdown rendering problems
+
             highlights = r.highlights('content')
             if not highlights:
                 # just use the first 1,000 words of the document
