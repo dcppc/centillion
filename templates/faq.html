@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% set active_page = "search" %}
+{% block body %}
+
+<div id="search-bar-container" class="container">
+    <div class="row">
+        <div class="col-xs-12">
+
+
+
+<h1 id="centillion-faq">The centillion FAQ</h1>
+<p>This page answers some common questions about centillion, the Data Commons search engine.</p>
+<p>&nbsp;</p>
+<h3 id="what-does-centillion-index?">What does centillion index?</h3>
+<p>centillion indexes the following:</p>
+<ul>
+<li>Google Drive files in the Data Commons Google Drive folder (the entire contents of docx files are indexed, while only the metadata is indexed for non-docx files)</li>
+<li>Github issues and pull requests (both open and closed) in all of the <a href="https://github.com/dcppc">DCPPC Github organization's</a> Github repositories</li>
+<li>Github files (the entire contents of Markdown files are indexed, only the metadata is indexed for non-Markdown files)</li>
+<li>Groups.io email threads</li>
+<li>Disqus comment threads on the internal DCPPC site, <a href="https://pilot.nihdatacommons.us">https://pilot.nihdatacommons.us</a></li>
+</ul>
+<p>&nbsp;</p>
+<h3 id="what-doesnt-centillion-index?">What doesn't centillion index?</h3>
+<p>centillion utilizes a special DCPPC bot account to access Google Drive files and Github content.
+</p>
+<p>centillion <i>does not</i> utilize the Github or Google Drive credentials of <i>any</i> Data Commons users.
+</p>
+<p>centillion <i>does not</i> index <i>any</i> content in your personal Github account or your personal Google Drive.
+</p>
+<p>We respect your privacy!
+</p>
+<h3 id="how-often-does-centillion-reindex?">How often does centillion re-index?</h3>
+<p>We currently re-index centillion on a weekly basis. (We cannot increase the frequency due to API rate limits.)
+Re-indexing can also be triggered manually as needed.
+</p>
+<p>Groups.io email threads are indexed less freqently, since they require a manual step to re-index.
+</p>
+<p>&nbsp;</p>
+<h3 id="why-does-centillion-need-my-github-login?">Why does centillion need my Github login?</h3>
+<p>Due to the fact that centillion indexes internal and potentailly non-public documents, access to centillion
+is limited to members of the Data Commons. To verify a centillion user is a member of the Data Commons, we require
+users to log in via Github.com and have Github check if a user is a member of the <a href="https://github.com/dcppc">@dcppc</a>
+organization.
+</p>
+<p><i>At no point</i> does centillion ever handle your Github password.
+</p>
+<p>&nbsp;</p>
+<h3 id="how-does-licensing-work?">How does licensing work? Does centillion claim ownership of any content?</h3>
+<p>No - centillion does not claim ownership of any content it indexes.
+<p>
+<ul>
+<li>
+Because the search engine is protected behind a Github authentication layer,
+there is no risk of internal, non-public documents being made public (or 
+licensed information being released into the wild).
+</li>
+<li>
+Because bot accounts are used to access Google Drive documents and Github
+resources, there is no way for centillion to modify the ownership of content.
+</li>
+<li>
+centillion is a search index, and not a content management system. Documents
+are not transferred to centillion or stored as a part of the search index process.
+Search results from centillion will link to all original content and make ownership
+information clear whenever possible.
+</li>
+</ul>
+</p>
+<p>&nbsp;</p>
+<h3 id="what-information-does-centillion-collect-about-me?">What information does centillion collect about me?</h3>
+<p>centillion logs all queries that users run; these queries are anonymized before they are logged.
+Tracking what queries users run helps us improve the quality of centillion and identify trending topics. 
+</p>
+<p>centillion will log your IP address as part of the analytics information it collects, but no IP addresses
+will be tied to search terms.
+<p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

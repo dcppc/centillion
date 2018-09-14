@@ -354,6 +354,30 @@ def help():
     return render_template('404.html')
 
 
+@app.route('/faq')
+def faq():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    username = github.get("/user").json()['login']
+    resp = github.get("/user/orgs")
+    if resp.ok:
+
+        # If they are in dcppc, show them faq
+        # Otherwise, hit em with a 403
+        all_orgs = resp.json()
+        for org in all_orgs:
+            if org['login']=='dcppc':
+                # Business as usual
+                return render_template("faq.html")
+
+        # Not in dcppc 
+        return render_template('403.html')
+
+    # Could not reach Github
+    return render_template('404.html')
+
+
+
 
 @app.errorhandler(404)
 def oops(e):
