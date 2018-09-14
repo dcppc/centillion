@@ -1,3 +1,4 @@
+import bs4
 import shutil
 import html.parser
 
@@ -1227,6 +1228,11 @@ class Search:
                 highlights = self.cap(r['content'], 1000)
 
             highlights = self.html_parser.unescape(highlights)
+            
+            if '<table>' in highlights:
+                soup = bs4.BeautifulSoup(highlights,features="html.parser")
+                highlights = soup.text
+
             html = self.markdown(highlights)
             html = re.sub(r'\n','<br />',html)
             sr.content_highlight = html
