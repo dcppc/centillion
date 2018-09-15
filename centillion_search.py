@@ -1,6 +1,7 @@
 import bs4
 import shutil
 import html.parser
+import pytz
 
 from github import Github, GithubException
 import base64
@@ -1379,7 +1380,8 @@ class Search:
                 # are searched with the free terms (no field)
                 fields = ['title', 'content','owner_name','owner_email','github_user']
                 query = MultifieldParser(fields, schema=self.ix.schema)
-                query.add_plugin(DateParserPlugin(free=True))
+                est = pytz.timezone('America/New_York')
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
                 query.add_plugin(GtLtPlugin())
                 try:
                     query = query.parse(query_string)
@@ -1398,7 +1400,8 @@ class Search:
                 # these are the fields that are actually searched
                 fields = ['url','title', 'content','owner_name','owner_email','github_user']
                 query = MultifieldParser(fields, schema=self.ix.schema)
-                query.add_plugin(DateParserPlugin(free=True))
+                est = pytz.timezone('America/New_York')
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
                 query.add_plugin(GtLtPlugin())
                 try:
                     query = query.parse(query_string)
