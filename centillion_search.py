@@ -1373,28 +1373,24 @@ class Search:
             query_string = " ".join(query_list2)
 
             query = None
-            if ":" not in query_string:
-
-                query = QueryParser("content", 
-                                    self.schema
-                )
-                #query = QueryParser("content", 
-                #                    self.schema,
-                #                    termclass=Variations
-                #)
-                query.add_plugin(DateParserPlugin(free=True))
-                query.add_plugin(GtLtPlugin())
-                query = query.parse(query_string)
-            else:
-                # If the user does not specify a field,
-                # these are the fields that are actually searched
-                fields = ['title', 'content','owner_name','owner_email','url']
-            if not query:
+            if ":" in query_string:
+                # If the user DOES specify a field,
+                # setting the fields determines what fields
+                # are searched with the free terms (no field)
+                fields = ['title', 'content','owner_name','owner_email','github_user']
                 query = MultifieldParser(fields, schema=self.ix.schema)
                 query.add_plugin(DateParserPlugin(free=True))
                 query.add_plugin(GtLtPlugin())
                 query = query.parse(query_string)
-                #query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string) 
+
+            else:
+                # If the user does not specify a field,
+                # these are the fields that are actually searched
+                fields = ['url','title', 'content','owner_name','owner_email','github_user']
+                query = MultifieldParser(fields, schema=self.ix.schema)
+                query.add_plugin(DateParserPlugin(free=True))
+                query.add_plugin(GtLtPlugin())
+                query = query.parse(query_string)
             parsed_query = "%s" % query
             print("query: %s" % parsed_query)
             results = searcher.search(query, terms=False, scored=True, groupedby="kind")
