@@ -26,6 +26,7 @@ from whoosh.query import Variations
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh.analysis import StemmingAnalyzer, LowercaseFilter, StopFilter
 from whoosh.qparser.dateparse import DateParserPlugin
+from whoosh.qparser import GtLtPlugin
 from whoosh import fields, index
 
 
@@ -1372,7 +1373,7 @@ class Search:
             query_string = " ".join(query_list2)
 
             query = None
-            if ":" in query_string:
+            if ":" not in query_string:
 
                 query = QueryParser("content", 
                                     self.schema
@@ -1382,11 +1383,8 @@ class Search:
                 #                    termclass=Variations
                 #)
                 query.add_plugin(DateParserPlugin(free=True))
+                query.add_plugin(GtLtPlugin())
                 query = query.parse(query_string)
-            elif len(fields) == 1 and fields[0] == "filename":
-                pass
-            elif len(fields) == 2:
-                pass
             else:
                 # If the user does not specify a field,
                 # these are the fields that are actually searched
@@ -1394,6 +1392,7 @@ class Search:
             if not query:
                 query = MultifieldParser(fields, schema=self.ix.schema)
                 query.add_plugin(DateParserPlugin(free=True))
+                query.add_plugin(GtLtPlugin())
                 query = query.parse(query_string)
                 #query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string) 
             parsed_query = "%s" % query
