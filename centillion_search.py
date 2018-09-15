@@ -1,3 +1,4 @@
+import bs4
 import shutil
 import html.parser
 
@@ -71,6 +72,19 @@ Schema:
 def clean_timestamp(dt):
     return dt.replace(microsecond=0).isoformat()
 
+def is_url(u):
+    if '...' in u:
+        # special case of whoosh messing up urls
+        return False
+    if '<b' in u or '&lt;' in u:
+        # special case of whoosh highlighting a word in a link
+        return False
+    if u[-1] is '-':
+        # parsing error
+        return False
+    if u[0:2]=='ht' or u[0:2]=='ft' or u[0:2]=='//':
+        return True
+    return False
 
 class SearchResult:
     score = 1.0
@@ -1219,15 +1233,55 @@ class Search:
 
             sr.content = r['content']
 
+            # This is where we need to fix the markdown rendering problems
+
             highlights = r.highlights('content')
             if not highlights:
                 # just use the first 1,000 words of the document
                 highlights = self.cap(r['content'], 1000)
 
             highlights = self.html_parser.unescape(highlights)
+
+            # ----------------------------------------------
+            # Before continuing, we need to process some of the
+            # search results to address problems.
+
+            # Look for markdown links following the pattern [link text](link url)
+            resrch = re.search('\[(.*)\]\((.*)\)',highlights)
+            if resrch is not None:
+                # Extract the link url and check if it looks like a URL
+                u = resrch.groups()[1]
+                if not is_url(u):
+                    # This is a relative Markdown link, so we need to break it
+                    # by putting a space between [link text] and (link url)
+                    new_highlights = re.sub('\[(.*)\]\((.*)\)','[\g<1>] (\g<2>)',highlights)
+                    highlights = new_highlights
+
+            # If we have any <table> tags in our search results,
+            # we make a BeautifulSoup from the results, which will
+            # fill in all missing/unpaired tags, then extract the 
+            # text from the soup.
+            if '<table>' in highlights:
+                soup = bs4.BeautifulSoup(highlights,features="html.parser")
+                highlights = soup.text
+                del soup
+
+            # Okay, back to the show.
+            # ----------------------------------------------
+
             html = self.markdown(highlights)
             html = re.sub(r'\n','<br />',html)
-            sr.content_highlight = html
+
+            # Scrub broken links
+            soup = bs4.BeautifulSoup(html,features="html.parser")
+            for tag in soup.find_all('a'):
+                u = tag.get('href')
+                if not is_url(u):
+                    tag.replaceWith(tag.text)
+
+            result = str(soup)
+            result = re.sub('\] \(','](',result)
+            sr.content_highlight = result
 
             search_results.append(sr)
 
