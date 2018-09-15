@@ -1381,7 +1381,17 @@ class Search:
                 query = MultifieldParser(fields, schema=self.ix.schema)
                 query.add_plugin(DateParserPlugin(free=True))
                 query.add_plugin(GtLtPlugin())
-                query = query.parse(query_string)
+                try:
+                    query = query.parse(query_string)
+                except:
+                    # Because the DateParser plugin is an idiot
+                    query_string2 = re.sub(r':(\w+)',':\'\g<1>\'',query_string)
+                    try:
+                        query = query.parse(query_string2)
+                    except:
+                        print("parsing query %s failed"%(query_string))
+                        print("parsing query %s also failed"%(query_string2))
+                        query = query.parse('')
 
             else:
                 # If the user does not specify a field,
@@ -1390,7 +1400,11 @@ class Search:
                 query = MultifieldParser(fields, schema=self.ix.schema)
                 query.add_plugin(DateParserPlugin(free=True))
                 query.add_plugin(GtLtPlugin())
-                query = query.parse(query_string)
+                try:
+                    query = query.parse(query_string)
+                except:
+                    print("parsing query %s failed"%(query_string))
+                    query = query.parse('')
             parsed_query = "%s" % query
             print("query: %s" % parsed_query)
             results = searcher.search(query, terms=False, scored=True, groupedby="kind")
