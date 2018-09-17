@@ -56,7 +56,23 @@ class GroupsIOArchivesCrawler(object):
                                  data=data,
                                  auth=(key,''))
         response = response.json()
-        data = response['data']
+
+        # Check for errors
+        if 'object' in response.keys():
+            if response['object']=='error':
+                err = "ERROR: groupsio_util.py: get_subgroups_list(): "
+                err += "Problem calling the API, returned error:\n"
+                err += str(response)
+                raise Exception(err)
+
+        # Check for data
+        if 'data' in response.keys():
+            data = response['data']
+        else:
+            err = "ERROR: groupsio_util.py: get_subgroups_list(): "
+            err += "No 'data' key found in JSON response from API:\n"
+            err += str(response)
+            raise Exception(err)
 
         subgroups = {}
         for group in data:
