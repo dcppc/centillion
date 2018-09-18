@@ -1,4 +1,4 @@
-# centillion: Help Page
+# Help Page: centillion
 
 This page provides some guidance on using centillion,
 the Data Commons search engine.
@@ -90,8 +90,9 @@ centillion. However, _these operators must be CAPITALIZED_
 or they will be interpreted as literal words!
 
 To include any item in the search index that contains
-the word `"onboarding"`` and the word `"whitelist"`, but 
-not necessarily next to each other, use the `AND` operator:
+the word `"onboarding"` and contains the word `"whitelist"`, 
+but where the two words are not necessarily next to each other,
+use the `AND` operator:
 
 <div class="alert alert-info" role="alert">
 onboarding AND whitelist
@@ -209,8 +210,17 @@ will be returned.
 
 <div class="alert alert-info" role="alert">
 created_time:20180912
+</div>
+
+<div class="alert alert-info" role="alert">
 created_time:2018 aug 4th
+</div>
+
+<div class="alert alert-info" role="alert">
 created_time:august 5 2018
+</div>
+
+<div class="alert alert-info" role="alert">
 created_time:28 july 2018
 </div>
 
@@ -219,6 +229,9 @@ as can entire months:
 
 <div class="alert alert-info" role="alert">
 modified_time:august 5
+</div>
+
+<div class="alert alert-info" role="alert">
 modified_time:july 2018
 </div>
 
@@ -227,6 +240,9 @@ to connect two dates:
 
 <div class="alert alert-info" role="alert">
 modified_time:august 28 to september 2
+</div>
+
+<div class="alert alert-info" role="alert">
 modified_time:july 2018 to august 2018
 </div>
 
