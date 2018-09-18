@@ -1,6 +1,6 @@
 # Centillion
 
-<https://search.nihdatacommmons.us>
+<https://search.nihdatacommons.us/>
 
 **centillion**: a pan-github-markdown-issues-google-docs search engine.
 
