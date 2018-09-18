@@ -348,8 +348,8 @@ def help():
             if org['login']=='dcppc':
                 # Business as usual
                 with open('pages/help.md','r') as f:
-                    content = Markup(markdown.markdown(content))
-                return render_template("help.html",**locals)
+                    content = Markup(markdown.markdown(f.read()))
+                return render_template("help.html",**locals())
 
         # Not in dcppc 
         return render_template('403.html')
