@@ -372,7 +372,9 @@ def faq():
         for org in all_orgs:
             if org['login']=='dcppc':
                 # Business as usual
-                return render_template("faq.html")
+                with open('pages/faq.md','r') as f:
+                    content = Markup(markdown.markdown(f.read()))
+                return render_template("faq.html",**locals())
 
         # Not in dcppc 
         return render_template('403.html')
