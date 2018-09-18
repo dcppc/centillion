@@ -1,6 +1,7 @@
 import bs4
 import shutil
 import html.parser
+import pytz
 
 from github import Github, GithubException
 import base64
@@ -26,6 +27,7 @@ from whoosh.query import Variations
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh.analysis import StemmingAnalyzer, LowercaseFilter, StopFilter
 from whoosh.qparser.dateparse import DateParserPlugin
+from whoosh.qparser import GtLtPlugin
 from whoosh import fields, index
 
 
@@ -1373,29 +1375,39 @@ class Search:
 
             query = None
             if ":" in query_string:
+                # If the user DOES specify a field,
+                # setting the fields determines what fields
+                # are searched with the free terms (no field)
+                fields = ['title', 'content','owner_name','owner_email','github_user']
+                query = MultifieldParser(fields, schema=self.ix.schema)
+                est = pytz.timezone('America/New_York')
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
+                query.add_plugin(GtLtPlugin())
+                try:
+                    query = query.parse(query_string)
+                except:
+                    # Because the DateParser plugin is an idiot
+                    query_string2 = re.sub(r':(\w+)',':\'\g<1>\'',query_string)
+                    try:
+                        query = query.parse(query_string2)
+                    except:
+                        print("parsing query %s failed"%(query_string))
+                        print("parsing query %s also failed"%(query_string2))
+                        query = query.parse('')
 
-                query = QueryParser("content", 
-                                    self.schema
-                )
-                #query = QueryParser("content", 
-                #                    self.schema,
-                #                    termclass=Variations
-                #)
-                query.add_plugin(DateParserPlugin(free=True))
-                query = query.parse(query_string)
-            elif len(fields) == 1 and fields[0] == "filename":
-                pass
-            elif len(fields) == 2:
-                pass
             else:
                 # If the user does not specify a field,
                 # these are the fields that are actually searched
-                fields = ['title', 'content','owner_name','owner_email','url']
-            if not query:
+                fields = ['url','title', 'content','owner_name','owner_email','github_user']
                 query = MultifieldParser(fields, schema=self.ix.schema)
-                query.add_plugin(DateParserPlugin(free=True))
-                query = query.parse(query_string)
-                #query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string) 
+                est = pytz.timezone('America/New_York')
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
+                query.add_plugin(GtLtPlugin())
+                try:
+                    query = query.parse(query_string)
+                except:
+                    print("parsing query %s failed"%(query_string))
+                    query = query.parse('')
             parsed_query = "%s" % query
             print("query: %s" % parsed_query)
             results = searcher.search(query, terms=False, scored=True, groupedby="kind")
