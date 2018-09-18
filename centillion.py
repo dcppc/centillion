@@ -1,5 +1,6 @@
 import threading
 import subprocess
+import markdown
 
 import codecs
 import os, json
@@ -7,6 +8,7 @@ from datetime import datetime
 
 from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, request, redirect, url_for, render_template, flash, jsonify
+from flask import Markup
 from flask_dance.contrib.github import make_github_blueprint, github
 
 # create our application
@@ -345,7 +347,9 @@ def help():
         for org in all_orgs:
             if org['login']=='dcppc':
                 # Business as usual
-                return render_template("help.html")
+                with open('pages/help.md','r') as f:
+                    content = Markup(markdown.markdown(content))
+                return render_template("help.html",**locals)
 
         # Not in dcppc 
         return render_template('403.html')
