@@ -1,4 +1,4 @@
-# Centillion
+# centillion
 
 <https://search.nihdatacommons.us/>
 
@@ -13,7 +13,7 @@ one centillion is 3.03 log-times better than a googol.
 
 ## What Is It
 
-Centillion (https://github.com/dcppc/centillion) is a search engine that can index 
+centillion (https://github.com/dcppc/centillion) is a search engine that can index 
 different kinds of document collections: Google Documents (.docx files), Google Drive files,
 Github issues, Github files, Github Markdown files, and Groups.io email threads.
 
@@ -23,18 +23,18 @@ Github issues, Github files, Github Markdown files, and Groups.io email threads.
 ## How It Works
 
 We define the types of documents the centillion should index,
-what info and how. The centillion then builds and
+what info and how. centillion then builds and
 updates a search index. That's all done in `centillion_search.py`.
 
-The centillion also provides a simple web frontend for running
+centillion also provides a simple web frontend for running
 queries against the search index. That's done using a Flask server
 defined in `centillion.py`.
 
-The centillion keeps it simple.
+centillion keeps it simple.
 
 ## Authentication Layer
 
-Centillion lives behind a Github authentication layer, implemented with 
+centillion lives behind a Github authentication layer, implemented with 
 [flask-dance](https://github.com/singingwolfboy/flask-dance). When you first
 visit the site it will ask you to authenticate with Github so that it can 
 verify you have permission to access the site.
@@ -70,10 +70,10 @@ You can also update only specific types of documents in the search index.
 
 ## Technologies
 
-Centillion is a Python program built using whoosh (search engine library). It
+centillion is a Python program built using whoosh (search engine library). It
 indexes the full text of docx files in Google Documents, just the filenames for
 non-docx files. The full text of issues and their comments are indexed, and
-results are grouped by issue. Centillion requires Google Drive and Github OAuth
+results are grouped by issue. centillion requires Google Drive and Github OAuth
 apps. Once you provide credentials to Flask you're all set to go. 
 
 
