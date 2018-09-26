@@ -1223,7 +1223,10 @@ class Search:
             sr.owner_email = r['owner_email']
             sr.owner_name = r['owner_name']
 
-            sr.group = r['group']
+            try:
+                sr.group = r['group']
+            except KeyError:
+                sr.group = ''
 
             sr.repo_name = r['repo_name']
             sr.repo_url = r['repo_url']
