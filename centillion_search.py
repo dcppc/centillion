@@ -1,5 +1,7 @@
+import bs4
 import shutil
 import html.parser
+import pytz
 
 from github import Github, GithubException
 import base64
@@ -25,6 +27,7 @@ from whoosh.query import Variations
 from whoosh.qparser import MultifieldParser, QueryParser
 from whoosh.analysis import StemmingAnalyzer, LowercaseFilter, StopFilter
 from whoosh.qparser.dateparse import DateParserPlugin
+from whoosh.qparser import GtLtPlugin
 from whoosh import fields, index
 
 
@@ -71,6 +74,19 @@ Schema:
 def clean_timestamp(dt):
     return dt.replace(microsecond=0).isoformat()
 
+def is_url(u):
+    if '...' in u:
+        # special case of whoosh messing up urls
+        return False
+    if '<b' in u or '&lt;' in u:
+        # special case of whoosh highlighting a word in a link
+        return False
+    if u[-1] is '-':
+        # parsing error
+        return False
+    if u[0:2]=='ht' or u[0:2]=='ft' or u[0:2]=='//':
+        return True
+    return False
 
 class SearchResult:
     score = 1.0
@@ -559,6 +575,15 @@ class Search:
 
             key = fname+"_"+fsha
 
+            if d['type'] == 'blob':
+                usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
+
+            elif d['type'] == 'tree':
+                usable_url = "https://github.com/%s/tree/master/%s"%(repo_name, fpath)
+
+            else:
+                usable_url = repo_url
+
             # Now create the actual search index record
             try:
                 writer.add_document(
@@ -568,7 +593,7 @@ class Search:
                         modified_time = None,
                         indexed_time = indexed_time,
                         title = fname,
-                        url = repo_url,
+                        url = usable_url,
                         mimetype='',
                         owner_email='',
                         owner_name='',
@@ -1210,15 +1235,55 @@ class Search:
 
             sr.content = r['content']
 
+            # This is where we need to fix the markdown rendering problems
+
             highlights = r.highlights('content')
             if not highlights:
                 # just use the first 1,000 words of the document
                 highlights = self.cap(r['content'], 1000)
 
             highlights = self.html_parser.unescape(highlights)
+
+            # ----------------------------------------------
+            # Before continuing, we need to process some of the
+            # search results to address problems.
+
+            # Look for markdown links following the pattern [link text](link url)
+            resrch = re.search('\[(.*)\]\((.*)\)',highlights)
+            if resrch is not None:
+                # Extract the link url and check if it looks like a URL
+                u = resrch.groups()[1]
+                if not is_url(u):
+                    # This is a relative Markdown link, so we need to break it
+                    # by putting a space between [link text] and (link url)
+                    new_highlights = re.sub('\[(.*)\]\((.*)\)','[\g<1>] (\g<2>)',highlights)
+                    highlights = new_highlights
+
+            # If we have any <table> tags in our search results,
+            # we make a BeautifulSoup from the results, which will
+            # fill in all missing/unpaired tags, then extract the 
+            # text from the soup.
+            if '<table>' in highlights:
+                soup = bs4.BeautifulSoup(highlights,features="html.parser")
+                highlights = soup.text
+                del soup
+
+            # Okay, back to the show.
+            # ----------------------------------------------
+
             html = self.markdown(highlights)
             html = re.sub(r'\n','<br />',html)
-            sr.content_highlight = html
+
+            # Scrub broken links
+            soup = bs4.BeautifulSoup(html,features="html.parser")
+            for tag in soup.find_all('a'):
+                u = tag.get('href')
+                if not is_url(u):
+                    tag.replaceWith(tag.text)
+
+            result = str(soup)
+            result = re.sub('\] \(','](',result)
+            sr.content_highlight = result
 
             search_results.append(sr)
 
@@ -1310,29 +1375,39 @@ class Search:
 
             query = None
             if ":" in query_string:
+                # If the user DOES specify a field,
+                # setting the fields determines what fields
+                # are searched with the free terms (no field)
+                fields = ['title', 'content','owner_name','owner_email','github_user']
+                query = MultifieldParser(fields, schema=self.ix.schema)
+                est = pytz.timezone('America/New_York')
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
+                query.add_plugin(GtLtPlugin())
+                try:
+                    query = query.parse(query_string)
+                except:
+                    # Because the DateParser plugin is an idiot
+                    query_string2 = re.sub(r':(\w+)',':\'\g<1>\'',query_string)
+                    try:
+                        query = query.parse(query_string2)
+                    except:
+                        print("parsing query %s failed"%(query_string))
+                        print("parsing query %s also failed"%(query_string2))
+                        query = query.parse('')
 
-                query = QueryParser("content", 
-                                    self.schema
-                )
-                #query = QueryParser("content", 
-                #                    self.schema,
-                #                    termclass=Variations
-                #)
-                query.add_plugin(DateParserPlugin(free=True))
-                query = query.parse(query_string)
-            elif len(fields) == 1 and fields[0] == "filename":
-                pass
-            elif len(fields) == 2:
-                pass
             else:
                 # If the user does not specify a field,
                 # these are the fields that are actually searched
-                fields = ['title', 'content','owner_name','owner_email','url']
-            if not query:
+                fields = ['url','title', 'content','owner_name','owner_email','github_user']
                 query = MultifieldParser(fields, schema=self.ix.schema)
-                query.add_plugin(DateParserPlugin(free=True))
-                query = query.parse(query_string)
-                #query = MultifieldParser(fields, schema=self.ix.schema).parse(query_string) 
+                est = pytz.timezone('America/New_York')
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
+                query.add_plugin(GtLtPlugin())
+                try:
+                    query = query.parse(query_string)
+                except:
+                    print("parsing query %s failed"%(query_string))
+                    query = query.parse('')
             parsed_query = "%s" % query
             print("query: %s" % parsed_query)
             results = searcher.search(query, terms=False, scored=True, groupedby="kind")
