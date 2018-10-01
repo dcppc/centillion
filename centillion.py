@@ -87,8 +87,8 @@ def index():
         return render_template("landing.html")
     else:
         json_username = github.get("/user").json()
-        if 'message' in jusername.keys():
-            if 'API rate limit exceeded' in jusername['message']:
+        if 'message' in json_username.keys():
+            if 'API rate limit exceeded' in json_username['message']:
                 return '<h2>Error connecting to Github!</h2> <p>Please file an issue in <a href="https://github.com/dcppc/centillion">dcppc/centillion</a></p>'
 
         username = github.get("/user").json()['login']
