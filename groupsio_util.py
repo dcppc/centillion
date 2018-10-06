@@ -6,6 +6,140 @@ import datetime
 class GroupsIOException(Exception):
     pass
 
+
+
+###############################
+# Functions for extracting 
+# email information from
+# mailing list archives
+
+def get_mbox_archives():
+    """
+    Use the Groups.io API to obtain an mbox file
+    for every subgroup. For each subgroup mbox file,
+    parse it and add the email threads to a big
+    final archive (dictionary).
+
+    Returns the final archive.
+
+    {
+        <permalink> : {
+                        'permalink': <permalink>,
+                        'date': <date>,
+                        'sender name': <name>,
+                        'sender email': <email>,
+                        'subject': <subject>,
+                        'subgroup': <subgroup>
+                        'content': <content>
+                    }
+    }
+    """
+    final_archive = {}
+
+    subgroup_ids = get_all_subgroups()
+    for subgroup_id in subgroup_ids.keys():
+
+        subgroup_name = subgroup_ids[subgroup_id]
+
+        # This function call below will call
+        # get_archive_zip for each subgroup,
+        # and extract the mbox contents from
+        # the zip file.
+        html = extract_mbox_from_zip(subgroup_name, subgroup_id)
+
+        # Now extract each email thread and 
+        # add to final_archive dictionary
+        extract_threads_from_mbox(html, subgroup_name, final_archive)
+
+    return final_archive
+
+
+def extract_threads_from_mbox(html, subgroup_name, final_archive):
+
+
+
+def extract_mbox_from_zip(subgroup_name, subgroup_id):
+    """
+    Extract an mbox file from the zip file for this subgroup
+    """
+    z = get_archive_zip(subgroup_name, subgroup_id)
+    if z is not None:
+        file_contents = {name:z.read(name) for name in z.namelist()}
+        html = file_contents['messages.mbox']
+        return html
+
+
+def get_all_subgroups():
+    """
+    Returns a dictionary where keys are subgroup ids
+    and values are subgroup names
+    """
+    MAX_GROUPS=100
+    url = 'https://api.groups.io/v1/getsubgroups'
+
+    try:
+        key = os.environ['GROUPSIO_SECRET_TOKEN']
+    except KeyError:
+        err = "ERROR: You must set the GROUPSIO_SECRET_TOKEN environment variable. See README.md"
+        raise Exception(err)
+
+    data = [ ('group_name','dcppc'),
+             ('limit',MAX_GROUPS)]
+
+    response = requests.post(url,data=data,auth=(key,''))
+    response = response.json()
+    dat = response['data']
+
+    all_subgroups = {}
+    for group in dat:
+        all_subgroups[group['id']] = group['name']
+    return all_subgroups
+
+
+def get_archive_zip(group_name,group_id): 
+    """
+    Use the API to extract a zipped .mbox email archive
+    for one subgroup, and return the contents as z.
+    """
+    url = "https://api.groups.io/v1/downloadarchives"
+    
+    try:
+        key = os.environ['GROUPSIO_SECRET_TOKEN']
+    except KeyError:
+        err = "ERROR: You must set the GROUPSIO_SECRET_TOKEN environment variable. See README.md"
+        raise Exception(err)
+    
+    data = [('group_id',group_id)]
+
+    print("get_archive_zip(): getting .mbox archive for subgroup %s (%s)"%(group_name,group_id))
+    r = requests.post(url,data=data,auth=(key,''),stream=True)
+    
+    try:
+        z = ZipFile(io.BytesIO(r.content))
+        z.extractall()
+        print("SUCCESS: subgroup %s worked"%(group_name))
+        print("")
+        return z
+    except BadZipFile:
+        print("ABORTING: subgroup %s failed"%(group_name))
+        print(r.content.decode('utf-8'))
+        print("")
+        return None
+
+
+
+
+
+
+# --------------------------------------------------
+#
+#             yuck
+#
+# --------------------------------------------------
+
+
+
+
 class GroupsIOArchivesCrawler(object):
     """
     This is a Groups.io spider

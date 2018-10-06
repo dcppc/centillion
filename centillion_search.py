@@ -7,8 +7,10 @@ from github import Github, GithubException
 import base64
 
 from gdrive_util import GDrive
-from groupsio_util import GroupsIOArchivesCrawler, GroupsIOException
 from disqus_util import DisqusCrawler
+
+from groupsio_util import get_mbox_archives
+from groupsio_util import GroupsIOArchivesCrawler, GroupsIOException
 
 from apiclient.http import MediaIoBaseDownload
 
@@ -613,7 +615,7 @@ class Search:
 
 
     # ------------------------------
-    # Add a single github file 
+    # Add a single groups.io email thread
     # to a search index.
 
     def add_emailthread(self, writer, d, config, update=True):
@@ -1030,7 +1032,31 @@ class Search:
     # Groups.io Emails
 
 
+
     def update_index_emailthreads(self, groupsio_token, config):
+        """
+        Update the search index using the email archives
+        of groups.io subgroups. This method uses the Groups.io
+        API via methods defined in groupsio_util.py
+        """
+
+        # Get the set of indexed ids:
+        # ------
+        indexed_ids = set()
+        p = QueryParser("kind", schema=self.ix.schema)
+        q = p.parse("emailthread")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            for result in results:
+                indexed_ids.add(result['id'])
+
+
+        # Get the set of remote ids:
+        # ------
+
+
+
+    def update_index_emailthreads2(self, groupsio_token, config):
         """
         Update the search index using the email archives
         of groups.io groups. This method looks deceptively
@@ -1051,23 +1077,7 @@ class Search:
 
         # Get the set of remote ids:
         # ------
-        spider = GroupsIOArchivesCrawler(groupsio_token,'dcppc')
-
-        # ask spider to crawl the archives
-        spider.crawl_group_archives()
-
-        # now spider.archives is a dictionary
-        # with one key per thread ID,
-        # and a value set to the payload:
-        #   '<thread-id>'  : {
-        #                       'permalink' : permalink,
-        #                       'subject' : subject,
-        #                       'original_sender' : original_sender,
-        #                       'content' : full_content
-        #                    }
-        #
-        # It is hard to reliably extract more information
-        # than that from the email thread.
+        archives = get_mbox_archives()
 
         writer = self.ix.writer()
         count = 0
@@ -1223,7 +1233,10 @@ class Search:
             sr.owner_email = r['owner_email']
             sr.owner_name = r['owner_name']
 
-            sr.group = r['group']
+            try:
+                sr.group = r['group']
+            except KeyError:
+                sr.group = ''
 
             sr.repo_name = r['repo_name']
             sr.repo_url = r['repo_url']
