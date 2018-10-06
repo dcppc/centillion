@@ -618,7 +618,55 @@ class Search:
     # Add a single groups.io email thread
     # to a search index.
 
+
     def add_emailthread(self, writer, d, config, update=True):
+        """
+        Use a Groups.io email thread record to add 
+        an email thread to the search index.
+        """
+        if 'url' not in d.keys():
+            err = "Error: attempted to add email thread with no 'url' field."
+            raise Exception(err)
+
+        if 'created_time' in d.keys() and d['created_time'] is not None:
+            created_time = d['created_time']
+        else:
+            created_time = None
+
+        indexed_time = datetime.now()
+
+        # Now create the actual search index record
+        try:
+            writer.add_document(
+                    id = d['permalink'],
+                    kind = 'emailthread',
+                    created_time = created_time,
+                    modified_time = modified_time,
+                    indexed_time = indexed_time,
+                    title = d['subject'],
+                    url = d['permalink'],
+                    mimetype='',
+                    owner_email=d['sender_email'],
+                    owner_name=d['sender_name'],
+                    group=d['subgroup'],
+                    repo_name = '',
+                    repo_url = '',
+                    github_user = '',
+                    issue_title = '',
+                    issue_url = '',
+                    content = d['content']
+            )
+        except ValueError as e:
+            print(repr(e))
+            print(" > XXXXXX Failed to index Groups.io thread \"%s\""%(d['subject']))
+
+
+
+
+
+
+
+    def add_emailthread2(self, writer, d, config, update=True):
         """
         Use a Groups.io email thread record to add 
         an email thread to the search index.
@@ -1053,6 +1101,37 @@ class Search:
 
         # Get the set of remote ids:
         # ------
+
+        archive = get_mbox_archives(groupsio_token)
+
+        writer = self.ix.writer()
+        count = 0
+
+        # archives is a dictionary
+        # keys are IDs (urls)
+        # values are dictionaries
+
+        # Start by collecting all the things
+        remote_ids = set()
+        for k in archives.keys():
+            remote_ids.add(k)
+
+        # drop indexed_ids
+        for drop_id in indexed_ids:
+            writer.delete_by_term('id',drop_id)
+
+        # add remote_ids
+        for add_id in remote_ids:
+            item = archives[add_id]
+            self.add_emailthread(writer, item, config, update=False)
+            count += 1
+
+        writer.commit()
+        print("Done, updated %d Groups.io email threads in the index" % count)
+
+
+
+
 
 
 
