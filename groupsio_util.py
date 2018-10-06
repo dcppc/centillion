@@ -7,13 +7,14 @@ class GroupsIOException(Exception):
     pass
 
 
-
 ###############################
 # Functions for extracting 
 # email information from
 # mailing list archives
+#
+# 
 
-def get_mbox_archives():
+def get_mbox_archives(groupsio_token):
     """
     Use the Groups.io API to obtain an mbox file
     for every subgroup. For each subgroup mbox file,
@@ -25,11 +26,11 @@ def get_mbox_archives():
     {
         <permalink> : {
                         'permalink': <permalink>,
-                        'date': <date>,
-                        'sender name': <name>,
-                        'sender email': <email>,
+                        'created_time': <date>,
                         'subject': <subject>,
                         'subgroup': <subgroup>
+                        'sender_name': <name>,
+                        'sender_email': <email>,
                         'content': <content>
                     }
     }
@@ -49,13 +50,105 @@ def get_mbox_archives():
 
         # Now extract each email thread and 
         # add to final_archive dictionary
-        extract_threads_from_mbox(html, subgroup_name, final_archive)
+        subgroup_archive = extract_threads_from_mbox(html, subgroup_name)
+
+        # keys = permalinks
+        # values = dictionary of thread info
+
+        # Merge subgroup archive into final archive
+        merge_dicts(
+                merge_from = subgroup_archive,
+                merge_into = final_archive
+        )
 
     return final_archive
 
 
-def extract_threads_from_mbox(html, subgroup_name, final_archive):
+def merge_dicts(merge_from,merge_into):
+    """
+    Utility function to merge two dictionaries.
+    Strategy: don't overwrite any values in merge_into.
+    """
+    for k in merge_from.keys():
+        if k not in merge_into.keys():
+            merge_into[k] = merge_from[k]
 
+
+def extract_threads_from_mbox(mbox_file, subgroup_name):
+    """
+    Extract threads from an mbox file (HTML format).
+    This comes after you've already downloaded the 
+    zip file from the Groups.io API, extracted the
+    HTML contents of the mbox file, and passed it 
+    here (mbox_file).
+    """
+    subgroup_archive = {}
+
+    m = mbox(mbox_file)
+    msgs = m.items()
+    n_msgs = len(msgs)
+
+    logging.info("=============================")
+    logging.info("Processing mbox %s with %s messages"%(mbox_file,n_msgs))
+
+    findall_email_pattern  = re.compile('.*<.*>')
+    finditer_email_pattern = re.compile('"(.*)" <(.*)>')
+
+    for i,msg in msgs:
+
+        logging.info("Processing message %02d of %02d"%(i+1, n_msgs))
+
+        #{
+        #    <permalink> : {
+        #                    'permalink': <permalink>,
+        #                    'date': <date>,
+        #                    'subject': <subject>,
+        #                    '(sender)name': <name>,
+        #                    '(sender)email': <email>,
+        #                    'subgroup': <subgroup>
+        #                    'content': <content>
+        #                }
+        #}
+
+        archive_item = {}
+
+        archive_item['permalink']   = permalink
+        archive_item['date']        = msg['Date']
+        archive_item['subject']     = msg['Subject']
+        archive_item['subgroup']    = subgroup_name
+
+        # process the from field
+        try:
+            if len(re.findall(findall_email_pattern,msg['From']))>0:
+                # We have a From field in format
+                # "Name" <email>
+                for result in re.finditer(finditer_email_pattern,msg['From']):
+                    (from_name, from_email) = result.groups()
+                    archive_item['sender_name'] = from_name
+                    archive_item['sender_email'] = from_email
+            else:
+                archive_item['sender_name'] = ''
+                archive_item['sender_email'] = msg['From']
+        except:
+            raise Exception("Crashed on From extraction regular expressions")
+
+        # process the email content
+        if msg.is_multipart():
+            for part in msg.walk():
+                if part.is_multipart():
+                    for subpart in part.walk():
+                        if subpart.get_content_type() == 'text/plain':
+                            body = subpart.get_payload(decode=True)
+                elif part.get_content_type() == 'text/plain':
+                    body = part.get_payload(decode=True)
+        elif msg.get_content_type() == 'text/plain':
+            body = msg.get_payload(decode=True)
+
+        archive_item['content'] = body
+
+        subgroup_archive[permalink] = archive_item
+
+    return subgroup_archive
 
 
 def extract_mbox_from_zip(subgroup_name, subgroup_id):
