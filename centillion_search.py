@@ -9,8 +9,7 @@ import base64
 from gdrive_util import GDrive
 from disqus_util import DisqusCrawler
 
-from groupsio_util import get_mbox_archives
-from groupsio_util import GroupsIOArchivesCrawler, GroupsIOException
+from groupsio_util import get_mbox_archives, GroupsIOException
 
 from apiclient.http import MediaIoBaseDownload
 
@@ -126,7 +125,7 @@ class Search:
     # ------------------------------
     # Update the entire index
 
-    def update_index(self, groupsio_credentials, gh_token, disqus_token, run_which, config):
+    def update_index(self, groupsio_token, gh_token, disqus_token, run_which, config):
         """
         Update the entire search index
         """
@@ -145,7 +144,7 @@ class Search:
         # Groups.io email threads
         if run_which=='all' or run_which=='emailthreads':
             try:
-                self.update_index_emailthreads(groupsio_credentials, config)
+                self.update_index_emailthreads(groupsio_token, config)
             except GroupsIOException as e:
                 print("ERROR: While re-indexing: failed to update Groups.io email threads")
                 print("-"*40)
