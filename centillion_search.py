@@ -130,6 +130,7 @@ class Search:
         """
         Update the entire search index
         """
+        # Disqus
         if run_which=='all' or run_which=='disqus':
             try:
                 self.update_index_disqus(disqus_token, config)
@@ -141,19 +142,19 @@ class Search:
                 print("Continuing...")
                 pass
 
-        # Remove emailthreads from the index all action
-        # until we've fixed the rate limit problem with groups.io.
-        if run_which=='emailthreads':
+        # Groups.io email threads
+        if run_which=='all' or run_which=='emailthreads':
             try:
                 self.update_index_emailthreads(groupsio_credentials, config)
             except GroupsIOException as e:
-                print("ERROR: While re-indexing: failed to update Groups.io email threads, hit API rate limit")
+                print("ERROR: While re-indexing: failed to update Groups.io email threads")
                 print("-"*40)
                 print(repr(e))
                 print("-"*40)
                 print("Continuing...")
                 pass
 
+        # Github files
         if run_which=='all' or run_which=='ghfiles':
             try:
                 self.update_index_ghfiles(gh_token,config)
@@ -165,6 +166,7 @@ class Search:
                 print("Continuing...")
                 pass
 
+        # Github issues
         if run_which=='all' or run_which=='issues':
             try:
                 self.update_index_issues(gh_token,config)
@@ -176,6 +178,7 @@ class Search:
                 print("Continuing...")
                 pass
 
+        # Google Drive Files
         if run_which=='all' or run_which=='gdocs':
             try:
                 self.update_index_gdocs(config)
@@ -662,53 +665,6 @@ class Search:
 
 
 
-
-
-
-
-    def add_emailthread2(self, writer, d, config, update=True):
-        """
-        Use a Groups.io email thread record to add 
-        an email thread to the search index.
-        """
-        if 'created_time' in d.keys() and d['created_time'] is not None:
-            created_time = d['created_time']
-        else:
-            created_time = None
-
-        if 'modified_time' in d.keys() and d['modified_time'] is not None:
-            modified_time = d['modified_time']
-        else:
-            modified_time = None
-
-        indexed_time = datetime.now()
-
-        # Now create the actual search index record
-        try:
-            writer.add_document(
-                    id = d['permalink'],
-                    kind = 'emailthread',
-                    created_time = created_time,
-                    modified_time = modified_time,
-                    indexed_time = indexed_time,
-                    title = d['subject'],
-                    url = d['permalink'],
-                    mimetype='',
-                    owner_email='',
-                    owner_name=d['original_sender'],
-                    group=d['subgroup'],
-                    repo_name = '',
-                    repo_url = '',
-                    github_user = '',
-                    issue_title = '',
-                    issue_url = '',
-                    content = d['content']
-            )
-        except ValueError as e:
-            print(repr(e))
-            print(" > XXXXXX Failed to index Groups.io thread \"%s\""%(d['subject']))
-
-
     # ------------------------------
     # Add a single disqus comment thread
     # to the search index.
@@ -1129,60 +1085,6 @@ class Search:
         writer.commit()
         print("Done, updated %d Groups.io email threads in the index" % count)
 
-
-
-
-
-
-
-    def update_index_emailthreads2(self, groupsio_token, config):
-        """
-        Update the search index using the email archives
-        of groups.io groups. This method looks deceptively
-        simple, all the logic is hidden in the spider
-        (groupsio_util.py).
-
-        RELEASE THE SPIDER!!!
-        """
-        # Get the set of indexed ids:
-        # ------
-        indexed_ids = set()
-        p = QueryParser("kind", schema=self.ix.schema)
-        q = p.parse("emailthread")
-        with self.ix.searcher() as s:
-            results = s.search(q,limit=None)
-            for result in results:
-                indexed_ids.add(result['id'])
-
-        # Get the set of remote ids:
-        # ------
-        archives = get_mbox_archives()
-
-        writer = self.ix.writer()
-        count = 0
-
-        # archives is a dictionary
-        # keys are IDs (urls)
-        # values are dictionaries
-        archives = spider.get_archives()
-
-        # Start by collecting all the things
-        remote_ids = set()
-        for k in archives.keys():
-            remote_ids.add(k)
-
-        # drop indexed_ids
-        for drop_id in indexed_ids:
-            writer.delete_by_term('id',drop_id)
-
-        # add remote_ids
-        for add_id in remote_ids:
-            item = archives[add_id]
-            self.add_emailthread(writer, item, config, update=False)
-            count += 1
-
-        writer.commit()
-        print("Done, updated %d Groups.io email threads in the index" % count)
 
 
 
