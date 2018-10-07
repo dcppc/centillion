@@ -1,8 +1,9 @@
-feedback_database.json
+config*.py
 config_flask.py
-vp
 credentials.json
 drive*.json
+feedback_database.json
+vp
 *.pyc
 out/
 search_index/
