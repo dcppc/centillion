@@ -17,9 +17,9 @@ from centillion_search import Search
 import config_centillion
 
 """
-The Centillion
+centillion
 
-The centillion is a search engine that indexes the following:
+centillion is a search engine that indexes the following:
     - Folder of Markdown documents
     - Github issues
     - Google Drive folder
