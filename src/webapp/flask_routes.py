@@ -306,7 +306,8 @@ def setup_routes(app):
             for org in all_orgs:
                 if org['login']=='dcppc':
                     # Business as usual
-                    with open('pages/help.md','r') as f:
+                    help_md = os.path.join(base,'pages','help.md')
+                    with open(help_md,'r') as f:
                         content = Markup(markdown.markdown(f.read()))
                     return render_template("help.html",**locals())
     
@@ -332,7 +333,8 @@ def setup_routes(app):
             for org in all_orgs:
                 if org['login']=='dcppc':
                     # Business as usual
-                    with open('pages/faq.md','r') as f:
+                    faq_md = os.path.join(base,'pages','faq.md')
+                    with open(faq_md,'r') as f:
                         content = Markup(markdown.markdown(f.read()))
                     return render_template("faq.html",**locals())
     
