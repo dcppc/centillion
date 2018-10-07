@@ -158,7 +158,8 @@ def extract_threads_from_mbox(mbox_file, subgroup_name):
 
 def extract_mbox_from_zip(subgroup_name, subgroup_id, groupsio_token):
     """
-    Extract an mbox file from the zip file for this subgroup
+    Extract an mbox file from the zip file for this subgroup.
+    The zip file stays in memory, and is not written to disk.
     """
     z = get_archive_zip(subgroup_name, subgroup_id, groupsio_token)
     if z is not None:
