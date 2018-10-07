@@ -1,5 +1,6 @@
 import threading
 import subprocess
+import markdown
 
 import codecs
 import os, json
@@ -7,6 +8,7 @@ from datetime import datetime
 
 from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, request, redirect, url_for, render_template, flash, jsonify
+from flask import Markup
 from flask_dance.contrib.github import make_github_blueprint, github
 
 # create our application
@@ -35,11 +37,7 @@ class UpdateIndexTask(object):
         thread = threading.Thread(target=self.run, args=())
 
         self.gh_token = app_config['GITHUB_TOKEN']
-        self.groupsio_credentials = {
-                'groupsio_token' :     app_config['GROUPSIO_TOKEN'],
-                'groupsio_username' :  app_config['GROUPSIO_USERNAME'],
-                'groupsio_password' :  app_config['GROUPSIO_PASSWORD']
-        }
+        self.groupsio_token = app_config['GROUPSIO_TOKEN']
         self.disqus_token = app_config['DISQUS_TOKEN']
         thread.daemon = True
         thread.start()
@@ -53,7 +51,7 @@ class UpdateIndexTask(object):
         #from get_centillion_config import get_centillion_config
         config = config_centillion.config
 
-        search.update_index(self.groupsio_credentials,
+        search.update_index(self.groupsio_token,
                             self.gh_token,
                             self.disqus_token,
                             self.run_which,
@@ -345,7 +343,9 @@ def help():
         for org in all_orgs:
             if org['login']=='dcppc':
                 # Business as usual
-                return render_template("help.html")
+                with open('pages/help.md','r') as f:
+                    content = Markup(markdown.markdown(f.read()))
+                return render_template("help.html",**locals())
 
         # Not in dcppc 
         return render_template('403.html')
@@ -368,7 +368,9 @@ def faq():
         for org in all_orgs:
             if org['login']=='dcppc':
                 # Business as usual
-                return render_template("faq.html")
+                with open('pages/faq.md','r') as f:
+                    content = Markup(markdown.markdown(f.read()))
+                return render_template("faq.html",**locals())
 
         # Not in dcppc 
         return render_template('403.html')

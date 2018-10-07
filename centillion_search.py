@@ -7,8 +7,9 @@ from github import Github, GithubException
 import base64
 
 from gdrive_util import GDrive
-from groupsio_util import GroupsIOArchivesCrawler, GroupsIOException
 from disqus_util import DisqusCrawler
+
+from groupsio_util import get_mbox_archives, GroupsIOException
 
 from apiclient.http import MediaIoBaseDownload
 
@@ -124,10 +125,11 @@ class Search:
     # ------------------------------
     # Update the entire index
 
-    def update_index(self, groupsio_credentials, gh_token, disqus_token, run_which, config):
+    def update_index(self, groupsio_token, gh_token, disqus_token, run_which, config):
         """
         Update the entire search index
         """
+        # Disqus
         if run_which=='all' or run_which=='disqus':
             try:
                 self.update_index_disqus(disqus_token, config)
@@ -139,19 +141,19 @@ class Search:
                 print("Continuing...")
                 pass
 
-        # Remove emailthreads from the index all action
-        # until we've fixed the rate limit problem with groups.io.
-        if run_which=='emailthreads':
+        # Groups.io email threads
+        if run_which=='all' or run_which=='emailthreads':
             try:
-                self.update_index_emailthreads(groupsio_credentials, config)
+                self.update_index_emailthreads(groupsio_token, config)
             except GroupsIOException as e:
-                print("ERROR: While re-indexing: failed to update Groups.io email threads, hit API rate limit")
+                print("ERROR: While re-indexing: failed to update Groups.io email threads")
                 print("-"*40)
                 print(repr(e))
                 print("-"*40)
                 print("Continuing...")
                 pass
 
+        # Github files
         if run_which=='all' or run_which=='ghfiles':
             try:
                 self.update_index_ghfiles(gh_token,config)
@@ -163,6 +165,7 @@ class Search:
                 print("Continuing...")
                 pass
 
+        # Github issues
         if run_which=='all' or run_which=='issues':
             try:
                 self.update_index_issues(gh_token,config)
@@ -174,6 +177,7 @@ class Search:
                 print("Continuing...")
                 pass
 
+        # Google Drive Files
         if run_which=='all' or run_which=='gdocs':
             try:
                 self.update_index_gdocs(config)
@@ -613,23 +617,23 @@ class Search:
 
 
     # ------------------------------
-    # Add a single github file 
+    # Add a single groups.io email thread
     # to a search index.
+
 
     def add_emailthread(self, writer, d, config, update=True):
         """
         Use a Groups.io email thread record to add 
         an email thread to the search index.
         """
+        if 'url' not in d.keys():
+            err = "Error: attempted to add email thread with no 'url' field."
+            raise Exception(err)
+
         if 'created_time' in d.keys() and d['created_time'] is not None:
             created_time = d['created_time']
         else:
             created_time = None
-
-        if 'modified_time' in d.keys() and d['modified_time'] is not None:
-            modified_time = d['modified_time']
-        else:
-            modified_time = None
 
         indexed_time = datetime.now()
 
@@ -644,8 +648,8 @@ class Search:
                     title = d['subject'],
                     url = d['permalink'],
                     mimetype='',
-                    owner_email='',
-                    owner_name=d['original_sender'],
+                    owner_email=d['sender_email'],
+                    owner_name=d['sender_name'],
                     group=d['subgroup'],
                     repo_name = '',
                     repo_url = '',
@@ -657,6 +661,7 @@ class Search:
         except ValueError as e:
             print(repr(e))
             print(" > XXXXXX Failed to index Groups.io thread \"%s\""%(d['subject']))
+
 
 
     # ------------------------------
@@ -1030,15 +1035,14 @@ class Search:
     # Groups.io Emails
 
 
+
     def update_index_emailthreads(self, groupsio_token, config):
         """
         Update the search index using the email archives
-        of groups.io groups. This method looks deceptively
-        simple, all the logic is hidden in the spider
-        (groupsio_util.py).
-
-        RELEASE THE SPIDER!!!
+        of groups.io subgroups. This method uses the Groups.io
+        API via methods defined in groupsio_util.py
         """
+
         # Get the set of indexed ids:
         # ------
         indexed_ids = set()
@@ -1049,25 +1053,11 @@ class Search:
             for result in results:
                 indexed_ids.add(result['id'])
 
+
         # Get the set of remote ids:
         # ------
-        spider = GroupsIOArchivesCrawler(groupsio_token,'dcppc')
 
-        # ask spider to crawl the archives
-        spider.crawl_group_archives()
-
-        # now spider.archives is a dictionary
-        # with one key per thread ID,
-        # and a value set to the payload:
-        #   '<thread-id>'  : {
-        #                       'permalink' : permalink,
-        #                       'subject' : subject,
-        #                       'original_sender' : original_sender,
-        #                       'content' : full_content
-        #                    }
-        #
-        # It is hard to reliably extract more information
-        # than that from the email thread.
+        archive = get_mbox_archives(groupsio_token)
 
         writer = self.ix.writer()
         count = 0
@@ -1075,7 +1065,6 @@ class Search:
         # archives is a dictionary
         # keys are IDs (urls)
         # values are dictionaries
-        archives = spider.get_archives()
 
         # Start by collecting all the things
         remote_ids = set()
@@ -1094,6 +1083,7 @@ class Search:
 
         writer.commit()
         print("Done, updated %d Groups.io email threads in the index" % count)
+
 
 
 
@@ -1223,7 +1213,10 @@ class Search:
             sr.owner_email = r['owner_email']
             sr.owner_name = r['owner_name']
 
-            sr.group = r['group']
+            try:
+                sr.group = r['group']
+            except KeyError:
+                sr.group = ''
 
             sr.repo_name = r['repo_name']
             sr.repo_url = r['repo_url']

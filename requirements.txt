@@ -13,3 +13,4 @@ flask-dance>=1.0.0
 beautifulsoup4>=4.6
 python-dateutil>=2.6
 pytz
+markdown
