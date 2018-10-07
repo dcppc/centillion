@@ -5,7 +5,27 @@ import os, sys
 import json
 import logging
 
-class Centillion(Flask):
+
+"""
+Centillion Flask App
+
+This class defines a Flask app that will
+load a custom config file, as specified
+by the FLASK_CONFIG environment variable.
+
+
+
+TODO:
+    FIX CONFIG ENV VAR
+    FLASK VERSUS CENTILLION
+    HOW TO LOAD PYTHON FILE
+
+# Load default config and override config from an environment variable
+app.config.from_pyfile("config_flask.py")
+"""
+
+
+class CentillionFlask(Flask):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
 
