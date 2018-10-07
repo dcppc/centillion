@@ -738,8 +738,7 @@ class Search:
     # ------------------------------
     # Google Drive Files/Documents
 
-    def update_index_gdocs(self, 
-                           config):
+    def update_index_gdocs(self, config):
         """
         Update the search index using a collection of 
         Google Drive documents and files.
@@ -888,7 +887,7 @@ class Search:
         full_items = {}
 
         # Iterate over each repo 
-        list_of_repos = config['repositories']
+        list_of_repos = config['REPOSITORIES']
         for r in list_of_repos:
 
             if '/' not in r:
