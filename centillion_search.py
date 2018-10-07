@@ -1415,13 +1415,3 @@ if __name__ == "__main__":
 
     raise Exception("Error: main method not implemented (fix groupsio credentials first)")
 
-    search = Search("search_index")
-
-    from get_centillion_config import get_centillion_config
-    config = get_centillion_config('config_centillion.json')
-
-    gh_token = os.environ['GITHUB_TOKEN']
-
-    search.update_index_issues(gh_token,config)
-    search.update_index_gdocs(config)
-
