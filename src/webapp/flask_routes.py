@@ -1,10 +1,11 @@
 from .const import base, call
+from .flask_index_task import UpdateIndexTask
 
 from ..search import Search
 
 from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, request, redirect, url_for, abort, render_template
-from flask import Markup
+from flask import Markup, flash
 from flask_dance.contrib.github import make_github_blueprint, github
 
 import os
@@ -151,9 +152,10 @@ def setup_routes(app):
                     mresp = github.get('/teams/%s/members/%s'%(copper_team_id,username))
                     if mresp.status_code==204:
                         # Business as usual
-                        UpdateIndexTask(app.config,
-                                        diff_index=False,
-                                        run_which = run_which)
+                        UpdateIndexTask(
+                                app.config,
+                                run_which = run_which
+                        )
                         flash("Rebuilding index, check console output")
                         # This redirects user to /control_panel route
                         # to prevent accidental re-indexing
