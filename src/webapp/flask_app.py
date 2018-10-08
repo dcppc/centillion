@@ -9,24 +9,32 @@ import logging
 """
 Centillion Flask App
 
-This class defines a Flask app that will
-load a custom config file, as specified
-by the FLASK_CONFIG environment variable.
+Extend the Flask class for centillion.
 
+This Flask class gets a config file name
+from an environment varible, and attempts
+to load it and set it as the Flask config.
 
-
-TODO:
-    FIX CONFIG ENV VAR
-    FLASK VERSUS CENTILLION
-    HOW TO LOAD PYTHON FILE
-
-# Load default config and override config from an environment variable
-app.config.from_pyfile("config_flask.py")
+NOTE: to load a Python file as a Flask 
+config file, use:
+>>> app.config.from_pyfile("config_flask.py")
 """
 
 
 class CentillionFlask(Flask):
+    """
+    Extend the Flask class to load a config file
+    on initialization.
+
+    The CENTILLION_CONFIG environment variable
+    specifies the file location. This is then
+    loaded as a Flask config file.
+    """
     def __init__(self,*args,**kwargs):
+        """
+        Do everything the parent does.
+        Then load the config file.
+        """
         super().__init__(*args,**kwargs)
 
         # ----------------------------
@@ -48,7 +56,7 @@ class CentillionFlask(Flask):
                 # relative path
                 self.config.from_pyfile(os.path.join(call,os.environ[cf]))
                 loaded_config = True
-                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file from CENTILLION_CONFIG variable.\n"
+                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file from %s variable.\n"%(cf)
                 msg += "Loaded config file at %s"%(os.path.join(call,os.environ[cf]))
                 logging.info(msg)
         
@@ -56,14 +64,14 @@ class CentillionFlask(Flask):
             # an absolute path:
             elif os.path.isfile(os.environ[cf]):
                 # absolute path
-                self.config.from_pyfile(os.environ['UNCLE_ARCHIE_CONFIG'])
+                self.config.from_pyfile(os.environ[cf])
                 loaded_config = True
-                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file from UNCLE_ARCHIE_CONFIG variable.\n"
-                msg += "Loaded config file at %s"%(os.environ['UNCLE_ARCHIE_CONFIG'])
+                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file from %s variable.\n"%(cf)
+                msg += "Loaded config file at %s"%(os.environ[cf])
                 logging.info(msg)
         
         else:
-            err = "CentillionFlask: __init__(): Warning: No UNCLE_ARCHIE_CONFIG environment variable defined. "
+            err = "CentillionFlask: __init__(): Warning: No %s environment variable defined. "%(cf)
             err += "Looking for 'config.py' in current directory."
             logging.info(err)
 
@@ -73,7 +81,7 @@ class CentillionFlask(Flask):
                 self.config.from_pyfile(os.path.join(call,default_name))
                 loaded_config = True
                 msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file with a hail mary.\n"
-                msg += "Loaded config file at %s"%(os.path.join(call,'config.py'))
+                msg += "Loaded config file at %s"%(os.path.join(call,default_name))
                 logging.info(msg)
 
         if not loaded_config:
