@@ -475,8 +475,8 @@ class Search:
                     content = issue_comment_content
             )
         except ValueError as e:
-            print(repr(e))
-            print(" > XXXXXX Failed to index Github issue \"%s\""%(issue.title))
+            msg = "ERROR: Failed to index Github issue \"%s\""%(issue.title))
+            logging.exception(msg)
 
 
 
@@ -503,7 +503,7 @@ class Search:
             _, fname = os.path.split(fpath)
             _, fext = os.path.splitext(fpath)
         except:
-            print(" > XXXXXXXX Failed to find file info.")
+            logging.exception("ERROR: Failed to find file info.")
             return
 
 
@@ -527,10 +527,16 @@ class Search:
                     binary_content = re.sub('\n','',jresponse['content'])
                     content = base64.b64decode(binary_content).decode('utf-8')
                 except KeyError:
-                    print(" > XXXXXXXX Failed to extract 'content' field. You probably hit the rate limit.")
+                    logging.exception("ERROR: Failed to extract 'content' field. You probably hit the rate limit.")
+                    return 
 
             else:
-                print(" > XXXXXXXX Failed to reach file URL. There may be a problem with authentication/headers.")
+                logging.error("ERROR: Failed to reach file URL. There may be a problem with authentication/headers.")
+                return 
+
+            except ValueError as e:
+                err = "ERROR: Failed to index Github file \"%s\""%(fname)
+                logging.exception(err)
                 return 
 
             usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
@@ -557,8 +563,8 @@ class Search:
                         content = content
                 )
             except ValueError as e:
-                print(repr(e))
-                print(" > XXXXXX Failed to index Github markdown file \"%s\""%(fname))
+                err = "ERROR: Failed to index Github markdown file \"%s\""%(fname)
+                logging.exception(err)
 
 
 
@@ -598,9 +604,8 @@ class Search:
                         content = ''
                 )
             except ValueError as e:
-                print(repr(e))
-                print(" > XXXXXX Failed to index Github file \"%s\""%(fname))
-
+                err = "ERROR: Failed to index Github file \"%s\""%(fname)
+                logging.exception(err)
 
 
 
@@ -647,8 +652,8 @@ class Search:
                     content = d['content']
             )
         except ValueError as e:
-            print(repr(e))
-            print(" > XXXXXX Failed to index Groups.io thread \"%s\""%(d['subject']))
+            err = "ERROR: Failed to index Groups.io thread \"%s\""%(d['subject'])
+            logging.exception(err)
 
 
 
@@ -687,8 +692,8 @@ class Search:
                     content = d['content']
             )
         except ValueError as e:
-            print(repr(e))
-            print(" > XXXXXX Failed to index Disqus comment thread \"%s\""%(d['title']))
+            err = "ERROR: Failed to index Disqus comment thread \"%s\""%(d['title'])
+            logging.exception(err)
 
 
 
@@ -764,10 +769,9 @@ class Search:
                 # Also store the doc
                 full_items[f['id']] = f
             
-            ## Shorter:
-            #break
-            ## Longer:
-            if nextPageToken is None:
+            if nextPageToken is None or config['TESTING'] is True:
+                # stop if done,
+                # stop early if testing
                 break
 
 
@@ -805,11 +809,8 @@ class Search:
                 count += 1
 
         except Exception as e:
-            print("ERROR: While adding Google Drive files to search index")
-            print("-"*40)
-            print(repr(e))
-            print("-"*40)
-            print("Continuing...")
+            err = "ERROR: Could not add Google Drive files to search index. Continuing..."
+            logging.exception(err)
             pass
 
         print("Cleaning temporary directory: %s"%(temp_dir))
