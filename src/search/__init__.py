@@ -41,19 +41,37 @@ centillion_search.py
 
 Define a Search object for use by the centillion search engine.
 
-Auth:
-- google drive/google oauth requires credentials.json
-- github oauth requires api token passed via GITHUB_TOKEN
+Auth notes:
+    - Google drive/Google oauth requires credentials.json
+    - Github oauth requires api token passed in via Flask config
 
-Search object functions:
-- open_index - creates the schema
-- add_issue
-- add_document - 2 methods with diff sigs
-- update_index_issues
-- update_index_gdocs - 2 methods to update respective collections
-- update_main_index - update entire search index (calls update_index_*)
-- create_search_results - package things up for jinja
-- search - run the query, pass results to jinja-packager
+Utility functions:
+    - clean_timestamp (for cleanup of timestamps)
+    - is_url (for cleanup of results)
+    - SearchResult (simple class representing results)
+    - DontEscapeHtmlInCodeRenderer (used to render markdown as html)
+
+Search class:
+    - update_index (update entire search index)
+    - open_index (create new schema, open index on disk)
+
+    - add_drive_file (add an individual google drive file item)
+    - add_issue (add an individual github issue item)
+    - add_ghfile (add an individual github file item)
+    - add_emailthread (add groups.io email thread item)
+    - add_disqusthread (add disqus comments thread)
+
+    - update_index_gdocs (iterate over all Google Drive documents and add them)
+    - update_index_issues (iterate over all Github issues and add them)
+    - update_index_ghfiles (iterate over all github files and add them)
+    - update_index_emailthreads (iterate over all groups.io subgroup email threads and add them)
+    - update_index_disqus (iterate over all disqus comment threads and add them)
+
+    - create_search_results (package search results for the Flask template)
+    - get_document_total_count (ask centillion for count of documents of each type)
+    - get_list (get a listing of all files of a particular type)
+
+    - search (perform a search on the search index with the user's query)
 
 Schema:
     - id
@@ -625,14 +643,32 @@ class Search:
         Use a Groups.io email thread record to add 
         an email thread to the search index.
         """
-        if 'url' not in d.keys():
-            err = "Error: attempted to add email thread with no 'url' field."
+        if 'permalink' not in d.keys():
+            err = "Error: attempted to add email thread with no 'permalink' field."
             raise Exception(err)
 
-        if 'created_time' in d.keys() and d['created_time'] is not None:
-            created_time = d['created_time']
+        if 'content' not in d.keys():
+            err = "Error: attempted to add email thread with no 'content' field."
+            raise Exception(err)
+
+        if 'subject' not in d.keys():
+            err = "Error: attempted to add email thread with no 'subject' field."
+            raise Exception(err)
+
+        if 'date' in d.keys() and d['date'] is not None:
+            created_time = dateutil.parser.parse(d['date'])
         else:
             created_time = None
+
+        if 'sender_name' in d.keys():
+            sender_name = d['sender_name']
+        else:
+            sender_name = None
+
+        if 'sender_email' in d.keys():
+            sender_email = d['sender_email']
+        else:
+            sender_email = None
 
         indexed_time = datetime.datetime.now()
 
@@ -642,7 +678,6 @@ class Search:
                     id = d['permalink'],
                     kind = 'emailthread',
                     created_time = created_time,
-                    modified_time = modified_time,
                     indexed_time = indexed_time,
                     title = d['subject'],
                     url = d['permalink'],
@@ -1059,8 +1094,7 @@ class Search:
         # Get the set of remote ids:
         # ------
 
-        import pdb; pdb.set_trace()
-        archive = get_mbox_archives(groupsio_token,config)
+        archives = get_mbox_archives(groupsio_token,config)
 
         writer = self.ix.writer()
         count = 0
