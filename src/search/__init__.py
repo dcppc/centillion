@@ -651,6 +651,10 @@ class Search:
             err = "Error: attempted to add email thread with no 'content' field."
             raise Exception(err)
 
+        if 'subgroup' not in d.keys():
+            err = "Error: attempted to add email thread with no 'subgroup' field."
+            raise Exception(err)
+
         if 'subject' not in d.keys():
             err = "Error: attempted to add email thread with no 'subject' field."
             raise Exception(err)
@@ -682,8 +686,8 @@ class Search:
                     title = d['subject'],
                     url = d['permalink'],
                     mimetype='',
-                    owner_email=d['sender_email'],
-                    owner_name=d['sender_name'],
+                    owner_email=sender_email,
+                    owner_name=sender_name,
                     group=d['subgroup'],
                     repo_name = '',
                     repo_url = '',
