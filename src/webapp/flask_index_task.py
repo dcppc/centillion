@@ -1,3 +1,5 @@
+from ..search import Search
+
 import threading
 import subprocess
 import markdown
@@ -11,16 +13,6 @@ from flask import Flask, request, redirect, url_for, render_template, flash, jso
 from flask import Markup
 from flask_dance.contrib.github import make_github_blueprint, github
 
-# create our application
-from centillion_search import Search
-
-
-
-########################
-# HOW TO LOAD CENTILLION CONFIG
-# FROM A PY FILE???
-import config_centillion
-
 
 """
 Centillion Flask: Index Task
@@ -33,9 +25,9 @@ the search submodule.
 
 
 class UpdateIndexTask(object):
-    def __init__(self, app_config, diff_index=False,run_which='all'):
-        self.diff_index = diff_index
+    def __init__(self, app_config, run_which='all'):
         self.run_which = run_which
+        self.app_config = app_config
         thread = threading.Thread(target=self.run, args=())
 
         self.gh_token = app_config['GITHUB_TOKEN']
@@ -45,17 +37,12 @@ class UpdateIndexTask(object):
         thread.start()
 
     def run(self):
-        search = Search(app.config["INDEX_DIR"])
-
-        if(self.diff_index):
-            raise Exception("diff index not implemented")
-
-        config = config_centillion.config
+        search = Search(self.app_config["INDEX_DIR"])
 
         search.update_index(self.groupsio_token,
                             self.gh_token,
                             self.disqus_token,
                             self.run_which,
-                            config)
+                            self.app_config)
 
 
