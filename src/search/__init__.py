@@ -6,6 +6,7 @@ from .groupsio_util import get_mbox_archives, GroupsIOException
 
 import os, re, io, requests
 import os.path
+import logging
 
 import dateutil.parser
 import datetime
@@ -432,6 +433,14 @@ class Search:
         repo_url = repo.html_url
 
         print("Indexing issue %s"%(issue.html_url))
+        
+        if issue is None:
+            err = "ERROR: Github issue passed to add_issue() was None!"
+            raise Exception(err)
+
+        if issue.body is None:
+            err = "ERROR: Github issue passed to add_issue() has no body!"
+            raise Exception(err)
 
         # Combine comments with their respective issues.
         # Otherwise just too noisy.
@@ -475,7 +484,7 @@ class Search:
                     content = issue_comment_content
             )
         except ValueError as e:
-            msg = "ERROR: Failed to index Github issue \"%s\""%(issue.title))
+            msg = "ERROR: Failed to index Github issue \"%s\""%(issue.title)
             logging.exception(msg)
 
 
@@ -527,16 +536,13 @@ class Search:
                     binary_content = re.sub('\n','',jresponse['content'])
                     content = base64.b64decode(binary_content).decode('utf-8')
                 except KeyError:
-                    logging.exception("ERROR: Failed to extract 'content' field. You probably hit the rate limit.")
+                    err = "ERROR: Failed to extract 'content' field. You probably hit the rate limit."
+                    logging.exception(err)
                     return 
 
             else:
-                logging.error("ERROR: Failed to reach file URL. There may be a problem with authentication/headers.")
-                return 
-
-            except ValueError as e:
-                err = "ERROR: Failed to index Github file \"%s\""%(fname)
-                logging.exception(err)
+                err = "ERROR: Failed to reach file URL. There may be a problem with authentication/headers."
+                logging.error(err)
                 return 
 
             usable_url = "https://github.com/%s/blob/master/%s"%(repo_name, fpath)
@@ -565,7 +571,7 @@ class Search:
             except ValueError as e:
                 err = "ERROR: Failed to index Github markdown file \"%s\""%(fname)
                 logging.exception(err)
-
+                return 
 
 
         else:
@@ -769,6 +775,7 @@ class Search:
                 # Also store the doc
                 full_items[f['id']] = f
             
+            # if TESTING, we should end early
             if nextPageToken is None or config['TESTING'] is True:
                 # stop if done,
                 # stop early if testing
@@ -852,7 +859,7 @@ class Search:
 
         # Iterate over each repo 
         list_of_repos = config['REPOSITORIES']
-        for r in list_of_repos:
+        for k, r in enumerate(list_of_repos):
 
             if '/' not in r:
                 err = "Error: specify org/reponame or user/reponame in list of repos"
@@ -870,7 +877,7 @@ class Search:
             open_issues   = repo.get_issues(state='open')
             closed_issues = repo.get_issues(state='closed')
 
-            for issue in open_issues:
+            for j, issue in enumerate(open_issues):
                 # For each issue/comment URL,
                 # grab the key and store the 
                 # corresponding issue object
@@ -879,11 +886,16 @@ class Search:
                 remote_issues.add(key)
                 full_items[key] = value
 
-            for issue in closed_issues:
+            for j, issue in enumerate(closed_issues):
                 key = issue.html_url
                 value = issue
                 remote_issues.add(key)
                 full_items[key] = value
+
+            # Stop early if testing
+            if config['TESTING'] is True and k>=1:
+                break
+
 
         writer = self.ix.writer()
         count = 0
@@ -942,8 +954,8 @@ class Search:
         full_items = {}
 
         # Iterate over each repo 
-        list_of_repos = config['repositories']
-        for r in list_of_repos:
+        list_of_repos = config['REPOSITORIES']
+        for j, r in enumerate(list_of_repos):
 
             if '/' not in r:
                 err = "Error: specify org/reponame or user/reponame in list of repos"
@@ -998,6 +1010,10 @@ class Search:
                     remote_ids.add(key)
                     full_items[key] = value
 
+            # TESTING should end early (after 3 repos)
+            if config['TESTING'] is True and j>3:
+                break
+
         writer = self.ix.writer()
         count = 0
 
@@ -1005,14 +1021,12 @@ class Search:
         for drop_id in indexed_ids:
             writer.delete_by_term('id',drop_id)
 
-
         # Add any issue in remote_ids
         # and in remote_ids
         for add_id in remote_ids:
             item = full_items[add_id]
             self.add_ghfile(writer, item, gh_token, config, update=False)
             count += 1
-
 
         writer.commit()
         print("Done, updated %d Github files in the index" % count)
@@ -1045,7 +1059,8 @@ class Search:
         # Get the set of remote ids:
         # ------
 
-        archive = get_mbox_archives(groupsio_token)
+        import pdb; pdb.set_trace()
+        archive = get_mbox_archives(groupsio_token,config)
 
         writer = self.ix.writer()
         count = 0
