@@ -7,8 +7,8 @@ from .groupsio_util import get_mbox_archives, GroupsIOException
 import os, re, io, requests
 import os.path
 
-from datetime import datetime
 import dateutil.parser
+import datetime
 
 import bs4
 import shutil
@@ -33,28 +33,6 @@ from whoosh.analysis import StemmingAnalyzer, LowercaseFilter, StopFilter
 from whoosh.qparser.dateparse import DateParserPlugin
 from whoosh.qparser import GtLtPlugin
 from whoosh import fields, index
-
-
-"""
-Ideally this submodule would
-consist entirely of classes.
-
-These classes can be imported by
-the user from this submodule, or 
-used by other classes in this 
-submodule to build up functionality.
-
-However, we are keeping things simple
-and plopping down the whole set of 
-core search functionality, without
-any object oriented programming.
-
-OOP will come later.
-"""
-
-
-# Config file for this submodule
-CONFIG_FILE = 'config_centillion.py'
 
 
 """
@@ -159,11 +137,8 @@ class Search:
             try:
                 self.update_index_disqus(disqus_token, config)
             except Exception as e:
-                print("ERROR: While re-indexing: failed to update Disqus comment threads")
-                print("-"*40)
-                print(repr(e))
-                print("-"*40)
-                print("Continuing...")
+                msg = "ERROR: While re-indexing: failed to update Disqus comment threads. Continuing..."
+                logging.exception(msg)
                 pass
 
         # Groups.io email threads
@@ -171,11 +146,8 @@ class Search:
             try:
                 self.update_index_emailthreads(groupsio_token, config)
             except GroupsIOException as e:
-                print("ERROR: While re-indexing: failed to update Groups.io email threads")
-                print("-"*40)
-                print(repr(e))
-                print("-"*40)
-                print("Continuing...")
+                msg = "ERROR: While re-indexing: failed to update Groups.io email threads. Continuing..."
+                logging.exception(msg)
                 pass
 
         # Github files
@@ -183,11 +155,8 @@ class Search:
             try:
                 self.update_index_ghfiles(gh_token,config)
             except Exception as e:
-                print("ERROR: While re-indexing: failed to update Github files")
-                print("-"*40)
-                print(repr(e))
-                print("-"*40)
-                print("Continuing...")
+                msg = "ERROR: While re-indexing: failed to update Github files. Continuing..."
+                logging.exception(msg)
                 pass
 
         # Github issues
@@ -195,11 +164,8 @@ class Search:
             try:
                 self.update_index_issues(gh_token,config)
             except Exception as e:
-                print("ERROR: While re-indexing: failed to update Github issues")
-                print("-"*40)
-                print(repr(e))
-                print("-"*40)
-                print("Continuing...")
+                msg = "ERROR: While re-indexing: failed to update Github issues. Continuing..."
+                logging.exception(msg)
                 pass
 
         # Google Drive Files
@@ -207,11 +173,8 @@ class Search:
             try:
                 self.update_index_gdocs(config)
             except Exception as e:
-                print("ERROR: While re-indexing: failed to update Google Drive files")
-                print("-"*40)
-                print(repr(e))
-                print("-"*40)
-                print("Continuing...")
+                msg = "ERROR: While re-indexing: failed to update Google Drive. Continuing..."
+                logging.exception(msg)
                 pass
 
 
@@ -229,7 +192,7 @@ class Search:
         if create_new:
             if os.path.exists(index_folder):
                 shutil.rmtree(index_folder)
-                print("deleted index folder: " + index_folder)
+                print("Deleted index folder: " + index_folder)
 
         if not os.path.exists(index_folder):
             os.mkdir(index_folder)
@@ -319,7 +282,7 @@ class Search:
             # Index a plain google drive file
             created_time = dateutil.parser.parse(item['createdTime'])
             modified_time = dateutil.parser.parse(item['modifiedTime'])
-            indexed_time = datetime.now().replace(microsecond=0)
+            indexed_time = datetime.datetime.now().replace(microsecond=0)
             try:
                 writer.add_document(
                         id = item['id'],
@@ -427,7 +390,7 @@ class Search:
             try:
                 created_time = dateutil.parser.parse(item['createdTime'])
                 modified_time = dateutil.parser.parse(item['modifiedTime'])
-                indexed_time = datetime.now()
+                indexed_time = datetime.datetime.now()
                 writer.add_document(
                         id = item['id'],
                         kind = 'gdoc',
@@ -490,7 +453,7 @@ class Search:
 
         created_time = issue.created_at
         modified_time = issue.updated_at
-        indexed_time = datetime.now()
+        indexed_time = datetime.datetime.now()
         try:
             writer.add_document(
                     id = issue.html_url,
@@ -544,7 +507,7 @@ class Search:
             return
 
 
-        indexed_time = datetime.now()
+        indexed_time = datetime.datetime.now()
 
         if fext in MARKDOWN_EXTS:
             print("Indexing markdown doc %s from repo %s"%(fname,repo_name))
@@ -660,7 +623,7 @@ class Search:
         else:
             created_time = None
 
-        indexed_time = datetime.now()
+        indexed_time = datetime.datetime.now()
 
         # Now create the actual search index record
         try:
@@ -699,7 +662,7 @@ class Search:
         to add a disqus comment thread to the
         search index.
         """
-        indexed_time = datetime.now()
+        indexed_time = datetime.datetime.now()
 
         # created_time is already a timestamp
 
@@ -1215,17 +1178,17 @@ class Search:
             sr.kind = r['kind']
 
             try:
-                sr.created_time =  datetime.strftime(r['created_time'],  "%Y-%m-%d %I:%M %p")
+                sr.created_time =  datetime.datetime.strftime(r['created_time'],  "%Y-%m-%d %I:%M %p")
             except KeyError:
                 sr.created_time = ''
 
             try:
-                sr.modified_time = datetime.strftime(r['modified_time'], "%Y-%m-%d %I:%M %p")
+                sr.modified_time = datetime.datetime.strftime(r['modified_time'], "%Y-%m-%d %I:%M %p")
             except KeyError:
                 sr.modified_time = ''
 
             try:
-                sr.indexed_time =  datetime.strftime(r['indexed_time'],  "%Y-%m-%d %I:%M %p")
+                sr.indexed_time =  datetime.datetime.strftime(r['indexed_time'],  "%Y-%m-%d %I:%M %p")
             except KeyError:
                 sr.indexed_time = ''
 
@@ -1398,7 +1361,7 @@ class Search:
                 fields = ['title', 'content','owner_name','owner_email','github_user']
                 query = MultifieldParser(fields, schema=self.ix.schema)
                 est = pytz.timezone('America/New_York')
-                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.datetime.utcnow())))
                 query.add_plugin(GtLtPlugin())
                 try:
                     query = query.parse(query_string)
@@ -1418,7 +1381,7 @@ class Search:
                 fields = ['url','title', 'content','owner_name','owner_email','github_user']
                 query = MultifieldParser(fields, schema=self.ix.schema)
                 est = pytz.timezone('America/New_York')
-                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.utcnow())))
+                query.add_plugin(DateParserPlugin(free=True, basedate=est.localize(datetime.datetime.utcnow())))
                 query.add_plugin(GtLtPlugin())
                 try:
                     query = query.parse(query_string)
