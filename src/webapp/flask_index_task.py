@@ -17,10 +17,14 @@ from flask_dance.contrib.github import make_github_blueprint, github
 """
 Centillion Flask: Index Task
 
-This class represents the task that updates
-the search index. This essentially provides
-the glue between the webapp submodule and 
-the search submodule. 
+Define a class to handle updating the search index.
+
+This class spawns a new thread to collect 
+information from the respective API and use 
+it to update the search index in the background.
+
+IMPORTANT: This class is the glue between the 
+webapp and search submodules.
 """
 
 
