@@ -1,5 +1,6 @@
 import requests, os, io, re
 import json
+import logging
 
 import dateutil.parser
 import datetime
@@ -18,7 +19,7 @@ class GroupsIOException(Exception):
 # email information from
 # mailing list archives
 
-def get_mbox_archives(groupsio_token):
+def get_mbox_archives(groupsio_token,config):
     """
     Use the Groups.io API to obtain an mbox file
     for every subgroup. For each subgroup mbox file,
@@ -43,7 +44,7 @@ def get_mbox_archives(groupsio_token):
 
     subgroup_ids = get_all_subgroups(groupsio_token)
 
-    for subgroup_id in subgroup_ids.keys():
+    for j, subgroup_id in enumerate(subgroup_ids.keys()):
 
         subgroup_name = subgroup_ids[subgroup_id]
 
@@ -65,6 +66,9 @@ def get_mbox_archives(groupsio_token):
                 merge_from = subgroup_archive,
                 merge_into = final_archive
         )
+
+        if config['TESTING'] is True and j>=1:
+            break
 
     return final_archive
 
@@ -89,7 +93,21 @@ def extract_threads_from_mbox(mbox_file, subgroup_name):
     """
     subgroup_archive = {}
 
-    m = mbox(mbox_file)
+    # Clean up temporary mbox file
+    tempf = '.delete_me'
+    if os.path.exists(tempf):
+        os.remove(tempf)
+
+    # Dump temporary mbox file
+    with open(tempf,'wb') as f:
+        f.write(mbox_file)
+
+    # Read temporary mbox file
+    m = mbox(tempf)
+
+    # Delete temporary mbox file
+    os.remove(tempf)
+
     msgs = m.items()
     n_msgs = len(msgs)
 
@@ -115,12 +133,16 @@ def extract_threads_from_mbox(mbox_file, subgroup_name):
         #                }
         #}
 
+        short_subgroup_name = re.findall('\+(.*)$',subgroup_name)[0]
+
+        permalink = "https://dcppc.groups.io/g/%s/message/%d"%(short_subgroup_name,i+1)
+
         archive_item = {}
 
         archive_item['permalink']   = permalink
         archive_item['date']        = msg['Date']
         archive_item['subject']     = msg['Subject']
-        archive_item['subgroup']    = subgroup_name
+        archive_item['subgroup']    = short_subgroup_name
 
         # process the from field
         try:
@@ -149,7 +171,7 @@ def extract_threads_from_mbox(mbox_file, subgroup_name):
         elif msg.get_content_type() == 'text/plain':
             body = msg.get_payload(decode=True)
 
-        archive_item['content'] = body
+        archive_item['content'] = str(body)
 
         subgroup_archive[permalink] = archive_item
 
