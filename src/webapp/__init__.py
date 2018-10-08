@@ -3,10 +3,7 @@ from .flask_routes import setup_routes
 from .const import base
 
 from flask import Flask, request, abort, render_template
-
-
-# Config file for this submodule
-CONFIG_FILE = 'config_flask.py'
+import os
 
 
 def get_flask_app():

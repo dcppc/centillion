@@ -3,7 +3,7 @@ from .const import base, call
 from ..search import Search
 
 from werkzeug.contrib.fixers import ProxyFix
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, redirect, url_for, abort, render_template
 from flask import Markup
 from flask_dance.contrib.github import make_github_blueprint, github
 
