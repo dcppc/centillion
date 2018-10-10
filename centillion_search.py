@@ -78,14 +78,20 @@ def is_url(u):
     if '...' in u:
         # special case of whoosh messing up urls
         return False
+
     if '<b' in u or '&lt;' in u:
         # special case of whoosh highlighting a word in a link
         return False
-    if u[-1] is '-':
-        # parsing error
+
+    try:
+        if u[-1] is '-':
+            # parsing error
+            return False
+        if u[0:2]=='ht' or u[0:2]=='ft' or u[0:2]=='//':
+            return True
+    except IndexError:
         return False
-    if u[0:2]=='ht' or u[0:2]=='ft' or u[0:2]=='//':
-        return True
+
     return False
 
 class SearchResult:
