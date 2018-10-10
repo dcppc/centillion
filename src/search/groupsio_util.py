@@ -186,8 +186,10 @@ def extract_mbox_from_zip(subgroup_name, subgroup_id, groupsio_token):
     z = get_archive_zip(subgroup_name, subgroup_id, groupsio_token)
     if z is not None:
         file_contents = {name:z.read(name) for name in z.namelist()}
-        html = file_contents['messages.mbox']
-        os.remove('messages.mbox')
+        mbox_filename = 'messages.mbox'
+        html = file_contents[mbox_filename]
+        if os.path.exists(mbox_filename):
+            os.remove(mbox_filename)
         return html
 
 
