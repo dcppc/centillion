@@ -38,8 +38,8 @@ class GDrive(object):
         if os.path.exists(credentials_file) is False:
             if os.path.exists(client_secret_file) is False:
                 err = "ERROR: Could not find Google Drive credentials files: "
-                err += "missing credentials file %s"%(self.credentials_file)
-                err += "or a client secret file %s"%(client_secret_file)
+                err += "missing credentials file %s "%(self.credentials_file)
+                err += "or a client secret file %s "%(client_secret_file)
                 raise Exception(err)
 
         # Setup the Drive v3 API
