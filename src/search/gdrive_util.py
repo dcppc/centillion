@@ -1,6 +1,7 @@
 from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
+import os
 
 
 """
@@ -29,10 +30,17 @@ class GDrive(object):
     ):
         """
         Set up the Google Drive API instance.
-        Factory method: create it here, hand it over in get_service().
+        Create the API instance here, hand it over in get_service().
         """
         self.credentials_file = credentials_file
         self.client_secret_file = client_secret_file
+
+        if os.path.exists(credentials_file) is False:
+            if os.path.exists(client_secret_file) is False:
+                err = "ERROR: Could not find Google Drive credentials files: "
+                err += "missing credentials file %s"%(self.credentials_file)
+                err += "or a client secret file %s"%(client_secret_file)
+                raise Exception(err)
 
         # Setup the Drive v3 API
         self.SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly'
