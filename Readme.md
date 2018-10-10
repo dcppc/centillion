@@ -1,5 +1,7 @@
 # centillion
 
+![version number](https://img.shields.io/badge/version-1.7-blue.svg)
+
 <https://search.nihdatacommons.us/>
 
 **centillion**: a pan-github-markdown-issues-google-docs search engine.
