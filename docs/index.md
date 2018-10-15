@@ -1,84 +1,68 @@
-# Centillion
+# centillion
 
-**centillion**: a pan-github-markdown-issues-google-docs search engine.
+![version number](https://img.shields.io/badge/version-1.7-blue.svg)
+
+<https://search.nihdatacommons.us/>
+
+**centillion**: a search engine that searches across Github issues, Github pull requests, Github files, 
+Google Drive documents, Groups.io email threads, and Disqus comment threads.
 
 **a centillion**: a very large number consisting of a 1 with 303 zeros after it.
 
-centillion is 3.03 log-times better than the googol.
+one centillion is 3.03 log-times better than a googol.
+
+![Screen shot: centillion search](docs/images/search.png)
+
 
 ## What is centillion
 
-Centillion is a search engine built using [whoosh](https://whoosh.readthedocs.io/en/latest/intro.html),
-a Python library for building search engines.
+centillion (<https://search.nihdatacommons.us> is a search engine that can index 
+different kinds of document collections: Google Documents (.docx files), Google Drive files,
+Github issues, Github files, Github Markdown files, and Groups.io email threads.
 
 
-We define the types of documents centillion should index,
-what info and how. Centillion then builds and
+## How centillion works
+
+We define the types of documents the centillion should index,
+what info and how. centillion then builds and
 updates a search index. That's all done in `centillion_search.py`.
 
-Centillion also provides a simple web frontend for running
+centillion also provides a simple web frontend for running
 queries against the search index. That's done using a Flask server
 defined in `centillion.py`.
 
-Centillion keeps it simple.
+centillion keeps it simple.
 
 
-## Quickstart
+## Quick start: using centillion
 
-Run centillion with a github access token API key set via
-environment variable:
+Also see [Quick Start](quickstart.md).
 
+To use centillion, start with a Python script that will import
+centillion, create an instance of the webapp, set any custom
+configuration variables, and run the webapp. For example,
+the following script is in `examples/run_centillion.py`:
+
+```python
+import centillion
+
+app = centillion.webapp.get_flask_app()
+
+app.config['foo'] = 'bar'
+
+app.run()
 ```
-GITHUB_TOKEN="XXXXXXXX" python centillion.py
+
+When this script is run, centillion will also look for a configuration
+file containing all of the keys and settings that centillion needs to run.
+This can be provided using the `CENTILLION_CONFIG` variable:
+
+```bash
+CENTILLION_CONFIG="conf/config_flask.py" python examples/run_centillion.py
 ```
 
-This will start a Flask server, and you can view the minimal search engine
-interface in your browser at <http://localhost:5000>.
+## Submodules 
 
-## Configuration
-
-### Centillion configuration
-
-`config_centillion.json` defines configuration variables
-for centillion - namely, what to index, and how, and where.
-
-### Flask configuration
-
-`config_flask.py` defines configuration variables
-used by flask, which controls the web frontend 
-for centillion.
-
-## Control Panel/Rebuilding Search Index
-
-To rebuild the search engine, visit the control panel route (`/control_panel`),
-for example at <http://localhost:5000/control_panel>.
-
-This allows you to rebuild the search engine index. The search index
-is stored in the `search_index/` directory, and that directory
-can be configured with centillion's configuration file.
-
-The diff search index is faster to build, as it only
-indexes documents that have been added since the last
-new document was added to the search index.
-
-The main search index is slower to build, as it will
-re-index everything.
-
-(Cron scripts? Threaded task that runs hourly?)
-
-## Details
-
-More on the details of how centillion works.
-
-Under the hood, centillion uses flask and whoosh.
-Flask builds and runs the web server.
-Whoosh handles search requests and management
-of the search index.
-
-[Centillion Components](centillion_components.md)
-
-[Centillion Flask](centillion_flask.md)
-
-[Centillion Whoosh](centillion_whoosh.md)
-
+See [Submodules of centillion](submodules.md) page for details
+about how centillion is organized into submodules.
 
