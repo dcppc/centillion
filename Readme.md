@@ -4,7 +4,8 @@
 
 <https://search.nihdatacommons.us/>
 
-**centillion**: a pan-github-markdown-issues-google-docs search engine.
+**centillion**: a search engine that searches across Github issues, Github pull requests, Github files, 
+Google Drive documents, Groups.io email threads, and Disqus comment threads.
 
 **a centillion**: a very large number consisting of a 1 with 303 zeros after it.
 
@@ -13,16 +14,14 @@ one centillion is 3.03 log-times better than a googol.
 ![Screen shot: centillion search](docs/images/search.png)
 
 
-## What Is It
+## What is centillion
 
-centillion (https://github.com/dcppc/centillion) is a search engine that can index 
+centillion (<https://search.nihdatacommons.us> is a search engine that can index 
 different kinds of document collections: Google Documents (.docx files), Google Drive files,
 Github issues, Github files, Github Markdown files, and Groups.io email threads.
 
 
-
-
-## How It Works
+## How centillion works
 
 We define the types of documents the centillion should index,
 what info and how. centillion then builds and
@@ -34,16 +33,78 @@ defined in `centillion.py`.
 
 centillion keeps it simple.
 
-## Authentication Layer
 
-centillion lives behind a Github authentication layer, implemented with 
-[flask-dance](https://github.com/singingwolfboy/flask-dance). When you first
-visit the site it will ask you to authenticate with Github so that it can 
-verify you have permission to access the site.
+## Quick start: using centillion
+
+To use centillion, start with a Python script that will import
+centillion, create an instance of the webapp, set any custom
+configuration variables, and run the webapp. For example,
+the following script is in `examples/run_centillion.py`:
+
+```
+import centillion
+
+app = centillion.webapp.get_flask_app()
+
+app.config['TESTING'] = True
+
+app.run()
+```
+
+When this script is run, centillion will also look for a configuration
+file containing all of the keys and settings that centillion needs to run.
+This can be provided using the `CENTILLION_CONFIG` variable:
+
+```
+CENTILLION_CONFIG="conf/config_flask.py" python examples/run_centillion.py
+```
+
+
+## Resources for centillion
+
+centillion repo on Github: 
+
+centillion documentation:
+
+
+## Submodules of centillion
+
+centillion is implemented as a Python package that can be installed using
+`setup.py` and imported using `import centillion`.
+
+The package is structured as two submodules - a backend `search` submodule,
+and a frontend `webapp` submodule.
+
+### `search` submodule
+
+The search submodule implements objects and functions to create or update
+the search index on disk, load an existing search index, and performing
+searches with user-provided queries.
+
+### `webapp` submodule
+
+The webapp submodule implements the Flask frontend, sets up the 
+Flask routes, implements the Github authentication layer, and 
+serves up static content and Jinja templates.
+
+
+## centillion frontend: routes
+
+### User access control for centillion 
+
+Because centillion indexes internal and private documents for the Data Commons
+project, centillion implements a Github authentication layer on top of the Flask
+server. This authentication layer asks users to log in with their Github accounts,
+and if the user is a member of the DCPPC organization, they are granted access to the
+centillion website.
+
+We use [flask-dance](https://github.com/singingwolfboy/flask-dance) to implement
+the Github authentication layer.
 
 ![Screen shot: centillion authentication](docs/images/auth.png)
 
-## Master List
+
+### Master list
 
 There is a master list of all content indexed by centilion at the master list page,
 <https://search.nihdatacommons.us/master_list>.
@@ -57,7 +118,8 @@ The metadata shown in these tables can be filtered and sorted:
 
 ![Screen shot: centillion master list with sorting](docs/images/master_list2.png)
 
-## Control Panel
+
+### Control panel
 
 There's also a control panel at <https://search.nihdatacommons.us/control_panel> 
 that allows you to rebuild the search index from scratch.  The search index
@@ -70,50 +132,64 @@ You can also update only specific types of documents in the search index.
 
 
 
-## Technologies
+## centillion backend: searching
 
-centillion is a Python program built using whoosh (search engine library). It
-indexes the full text of docx files in Google Documents, just the filenames for
-non-docx files. The full text of issues and their comments are indexed, and
-results are grouped by issue. centillion requires Google Drive and Github OAuth
-apps. Once you provide credentials to Flask you're all set to go. 
+### Technologies
+
+centillion is a Python program built using
+[whoosh](https://bitbucket.org/mchaput/whoosh) (search
+engine library).  It indexes the full text of docx files
+in Google Documents, just the filenames for non-docx
+files. The full text of issues and their comments are
+indexed, and results are grouped by issue. centillion
+requires Google Drive and Github OAuth apps. The
+credentials to access these services via their respective
+APIs can be accomplished by providing the API credentials
+via the centillion configuration file.
+
+### Configuration files for centillion 
+
+To configure centillion, you should provide a single configuration file that 
+specifies configuration details for both the webapp frontend and the serach 
+backend. There is an example configuration file in the repo at:
+
+```
+conf/config_flask.example.py
+```
+
+The location of this configuration file should be passed in to the program
+running centillion via the `CENTILLION_CONFIG` environment variable. For 
+example, if the program `examples/run_centillion.py` contains a script that
+imports centillion and runs the webapp, you can pass the config file using the
+`CENTILLION_CONFIG` environment variable like this:
+
+```
+CENTILLION_CONFIG="conf/config_flask.py" python examples/run_centillion.py
+```
 
 
-## Configuration
+### APIs used
 
-You will need to configure both the centillion search index and the flask app.
+The centillion configuration file must contain API keys for each of the following
+third-party services:
 
-The centillion search index is configured with `config_centillion.py`; this file
-sets the names of repositories to crawl when indxing issues and files.
-
-The flask app is configured with `config_flask.py`. This file contains sensitive
-information and is in the `.gitignore` file. This file contains API credentials 
-for Github and Groups.io.
-
-Exampls are provided in `config_centillion.example.py` and `config_flask.example.py`.
-
-
-## Authentication
-
-The search engine will need to connect to several APIs when it re-indexes the
-search index:
-
-* Github
+* Github 
 * Groups.io
 * Google Drive
+* Disqus
 
-### Github
+#### Github
 
 Github API credentials (both an OAuth token for the centillion app's Github
 authentication mechanism, and a personal access token for accessing repositories
 during the re-indexing process) are provided in `config_flask.py`.
 
-### Groups.io
+#### Groups.io
 
 The Groups.io API token is used to index email threads. This token is provided in
 `config_flask.py`.
 
-### Google Drive
+#### Google Drive
 
 The Google Drive API credentials are provided in a file, `credentials.json`. This is
 the file that is generated when the OAuth process is complete.
@@ -123,7 +199,7 @@ with a file `client_secrets.json`. To authenticate centillion with Google Drive,
 download this file, and run the Google Drive utility directly:
 
 ```
-python gdrive_util.py
+python scripts/gdrive_auth.py
 ```
 
 This will initiate the authentication procedure. Sign in as a user that has access to
@@ -132,6 +208,9 @@ to set up a bot account for this purpose).
 
 Once you log in as that user, it will create `credentials.json`, and the Google Drive
 re-indexing procedure should not have any problems autheticating using that file.
+
+`credentials.json` must be present in the same directory as the program being run.
+
 
 ## Quickstart (With Github Auth)
 
