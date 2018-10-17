@@ -1,0 +1,11 @@
+[Unit]
+Description=Centillion
+After=multi-user.target
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/sudo -H -u ubuntu /bin/bash /home/ubuntu/centillion/scripts/start_centillion.sh
+ExecStop=/usr/bin/sudo -H -u ubuntu /bin/bash /home/ubuntu/centillion/scripts/stop_centillion.sh
+
+[Install]
+WantedBy=multi-user.target
