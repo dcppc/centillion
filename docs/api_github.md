@@ -25,7 +25,7 @@ An API access token can be created in the Github
 account settings page. The access token is provided
 in the centillion configuration file.
 
-See [backend#Configuration](backend.md#Configuration)
+See [Backend Configuration](backend.md#Configuration)
 for info about the configuration file.
 
 ## How is the Github authentication layer set up?

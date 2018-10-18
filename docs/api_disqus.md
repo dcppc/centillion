@@ -14,11 +14,9 @@ of the comments forum that is embedded on the site:
 dcppc-internal
 ```
 
-documentation for [all endpoints](https://disqus.com/api/docs/)
+Documentation for all endpoints is [here](https://disqus.com/api/docs/).
 
-bBlow is simple example of how we can call all threads.
-
-List all threads in the dcppc-internal forum:
+Below is a simple example of how we can list all threads in a forum:
 
 ```
 $ curl -0 -L "https://disqus.com/api/3.0/threads/list.json?forum=dcppc-internal&api_key=<insert-public-api-key-here>

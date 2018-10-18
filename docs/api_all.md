@@ -37,7 +37,7 @@ the documents you want to index, and _only_ the documents you want to index (it 
 to set up a bot account for this purpose).
 
 Once you log in as that user, it will create `credentials.json`, and the Google Drive
-re-indexing procedure should not have any problems autheticating using that file.
+re-indexing procedure should not have any problems authenticating using that file.
 
 `credentials.json` must be present in the same directory as the program being run.
 

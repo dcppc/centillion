@@ -7,9 +7,9 @@ Google Drive documents, Groups.io email threads, and Disqus comment threads.
 
 **a centillion**: a very large number consisting of a 1 with 303 zeros after it.
 
-one centillion is 3.03 log-times better than a googol.
+One centillion is 3.03 log-times better than a googol.
 
-![Screen shot: centillion search](images/search.png)
+![Screenshot: centillion search](images/search.png)
 
 
 ## What is centillion

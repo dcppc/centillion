@@ -70,4 +70,3 @@ The callback URL specified for the OAuth app is where users are
 redirected once they have logged in. For flask-dance this is
 automatically set up to be `/login/github/authorized`.
 
-

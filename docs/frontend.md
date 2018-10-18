@@ -14,9 +14,9 @@ See the [Github Authentication Layer](auth.md) page for details.
 
 ### Route: `/search`
 
-By default, the user is redirected to the `/search` route, which provdes a
+By default, the user is redirected to the `/search` route, which provides a
 text box in which the user can type their queries. Clicking on the centillion
-logo at the top will alwyas bring the user back to the search route.
+logo at the top will always bring the user back to the search route.
 
 ![Screen shot: centillion search](images/search.png)
 
@@ -49,7 +49,7 @@ information about how we protect the privacy of users.
 
 ### Route: `/master_list`
 
-There is a master list of all content indexed by centilion at the master list page,
+There is a master list of all content indexed by centillion at the master list page,
 <https://search.nihdatacommons.us/master_list>.
 
 A master list for each type of document indexed by the search engine is displayed
@@ -72,5 +72,4 @@ of every document.  You can also update only specific types of documents in the
 search index.
 
 ![Screen shot: centillion control panel](images/control_panel.png)
-
 
