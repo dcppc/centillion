@@ -1,0 +1,11 @@
+[Unit]
+Description=BetaSearch Centillion
+After=multi-user.target
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/sudo -H -u ubuntu /bin/bash /home/ubuntu/betasearch/scripts/start_betasearch.sh
+ExecStop=/usr/bin/sudo -H -u ubuntu /bin/bash /home/ubuntu/betasearch/scripts/stop_betasearch.sh
+
+[Install]
+WantedBy=multi-user.target
