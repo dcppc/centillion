@@ -1,7 +1,5 @@
 ## Quick start: using centillion
 
-Also see [Quick Start](quickstart.md).
-
 To use centillion, start with a Python script that will import
 centillion, create an instance of the webapp, set any custom
 configuration variables, and run the webapp. For example,

@@ -1,9 +1,7 @@
-## Configuring centillion
-
 centillion is configured using a single configuration file that contains
 configuration details for both the flask frontend and the whoosh backend.
 
-### Just one configuration file (frontend+backend)
+## Just one configuration file (frontend+backend)
 
 To configure centillion, provide a single configuration file that 
 specifies configuration details for both the Flask webapp frontend
@@ -50,7 +48,7 @@ REPOSITORIES = [
 ]
 ```
 
-### Pass location with environment variable
+## Pass location with environment variable
 
 The location of this configuration file should be passed in to the program
 running centillion via the `CENTILLION_CONFIG` environment variable. For 
@@ -59,9 +57,8 @@ imports centillion and runs the webapp, you can pass the config file using the
 `CENTILLION_CONFIG` environment variable like this:
 
 ```
-CENTILLION_CONFIG="conf/config_flask.py" python examples/run_centillion.py
+CENTILLION_CONFIG="config/config_flask.py" python examples/run_centillion.py
 ```
-
 
 ## Configuring API access
 
