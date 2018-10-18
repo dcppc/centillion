@@ -2,8 +2,6 @@
 
 ![version number](https://img.shields.io/badge/version-1.7-blue.svg)
 
-<https://search.nihdatacommons.us/>
-
 **centillion**: a search engine that searches across Github issues, Github pull requests, Github files, 
 Google Drive documents, Groups.io email threads, and Disqus comment threads.
 
@@ -11,27 +9,25 @@ Google Drive documents, Groups.io email threads, and Disqus comment threads.
 
 one centillion is 3.03 log-times better than a googol.
 
-![Screen shot: centillion search](docs/images/search.png)
+![Screen shot: centillion search](images/search.png)
 
 
 ## What is centillion
 
-centillion (<https://search.nihdatacommons.us> is a search engine that can index 
-different kinds of document collections: Google Documents (.docx files), Google Drive files,
-Github issues, Github files, Github Markdown files, and Groups.io email threads.
+centillion is a search engine that can index different kinds of document
+collections: Google Documents (.docx files), Google Drive files, Github issues,
+Github files, Github Markdown files, and Groups.io email threads.
 
 
 ## How centillion works
 
-We define the types of documents the centillion should index,
-what info and how. centillion then builds and
-updates a search index. That's all done in `centillion_search.py`.
+The backend of centillion defines how documents are obtained and how
+the search index is constructed. centillion builds and updates the
+search index by using APIs to get the latest versions of documents,
+and updates its search index accordingly. ([More information](backend.md))
 
-centillion also provides a simple web frontend for running
-queries against the search index. That's done using a Flask server
-defined in `centillion.py`.
-
-centillion keeps it simple.
+The centillion frontend provides a web interface for running queries
+and interfacing with the search index. ([More information](frontend.md))
 
 
 ## Quick start: using centillion
@@ -61,8 +57,36 @@ This can be provided using the `CENTILLION_CONFIG` variable:
 CENTILLION_CONFIG="conf/config_flask.py" python examples/run_centillion.py
 ```
 
+
+## Configuring centillion
+
+See the [Configuring centillion](config.md) page for more information
+about the centillion configuration file, what information is provided,
+and how to point centillion to the configuration file.
+
+
 ## Submodules 
 
-See [Submodules of centillion](submodules.md) page for details
+See the [Submodules of centillion](submodules.md) page for details
 about how centillion is organized into submodules.
+
+The search functionality is implemented in centillion's 
+[backend `search` submodule](backend.md). This uses the
+Whoosh library in Python.
+
+The web interface is implemented in centillion's
+[frontend `webapp` submodule](frontend.md). This implements
+a web interface for centillion using the Flask library in 
+Python.
+
+To restrict access to centillion, we implement an OAuth
+application that verifies users are members of a particular 
+Github organization. See [Github authentication layer](auth.md)
+for details.
+
+
+## APIs
+
+See the [APIs](api_all.md) page for an overview of the third-party
+APIs that centillion interfaces with to populate the search index.
 

@@ -14,3 +14,4 @@ beautifulsoup4>=4.6
 python-dateutil>=2.6
 pytz
 markdown
+mkdocs>=1.0

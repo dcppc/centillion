@@ -8,22 +8,37 @@ Github repositories are indexed. The content of
 the file is only indexed if the file is a Markdown
 file.
 
-centillion needs to index private documents in 
-private Github repositories, so it needs to use
-an API key associated with an account with the
-necessary permissions. To access issues, pull
-requests, and repository contents, centillion
-requires **an API access token**. This is provided
+## What kind of Github API keys are used?
+
+to be able to index issues, pull requests, and 
+files, centillion uses the Github API to access
+these resources and index their content automatically.
+This requires the use of an **API access token**.
+
+To access issues, pull requests, and files in private
+repositories, the API access token must be created 
+by an account with access to the appropriate resources.
+
+## How is the API key provided?
+
+An API access token can be created in the Github
+account settings page. The access token is provided
 in the centillion configuration file.
 
-There is also a Github authentication layer 
-that prevents unauthorized access to the search
-engine and its contents (because of private
-documents, as mentioned above). This requires
-**a Github OAuth application API token and secret.** 
-The OAuth application needs to verify a Github
-user is a member of a particular Github 
-organization. The OAuth token and secret are
-provided via the centillion configuration file.
+See [backend#Configuration](backend.md#Configuration)
+for info about the configuration file.
 
+## How is the Github authentication layer set up?
+
+The Github authentication layer uses an OAuth application
+(which must be created and set up with a callback URL
+ahead of time) to ask users to log in, and check if they
+are part of the appropriate organization.
+
+To use the application to request organization membership
+information from users logging in through centillion,
+API keys must be provided for the OAuth application to
+verify ownership of the application.
+
+See [Github authentication layer](auth.md) page for details.
 

@@ -3,19 +3,65 @@
 centillion is configured using a single configuration file that contains
 configuration details for both the flask frontend and the whoosh backend.
 
-To pass a configuration file to centillion, use the `CENTILLION_CONFIG`
-environment variable to specify the location of the configuration file 
-when running the Python script that imports centillion and runs the 
-webapp.
+### Just one configuration file (frontend+backend)
 
-For example, an example Python script that runs centillion is provided
-in `examples/run_centillion.py`. This script should be run as follows:
+To configure centillion, provide a single configuration file that 
+specifies configuration details for both the Flask webapp frontend
+and the search backend.
 
-```bash
+There is an example configuration file in 
+the repository at:
+
+```
+config/config_flask.example.py
+```
+
+The contents of this file are given below:
+
+```
+# github oauth (access control)
+GITHUB_OAUTH_CLIENT_ID = "XXX"
+GITHUB_OAUTH_CLIENT_SECRET = "YYY"
+
+# github acces token (issues/PRs/files)
+GITHUB_TOKEN = "XXX"
+
+# groups.io
+GROUPSIO_TOKEN = "XXXXX"
+
+# disqus 
+DISQUS_TOKEN = "XXXXX"
+
+# location of search index on disk
+INDEX_DIR = "search_index"
+
+# labels for repo footer
+FOOTER_REPO_ORG = "dcppc"
+FOOTER_REPO_NAME = "centillion"
+
+# Flask secret key
+SECRET_KEY = 'XXXXX'
+
+REPOSITORIES = [
+        "dcppc/organize",
+        "dcppc/apis",
+        "dcppc/data-stewards",
+        ...
+]
+```
+
+### Pass location with environment variable
+
+The location of this configuration file should be passed in to the program
+running centillion via the `CENTILLION_CONFIG` environment variable. For 
+example, if the program `examples/run_centillion.py` contains a script that
+imports centillion and runs the webapp, you can pass the config file using the
+`CENTILLION_CONFIG` environment variable like this:
+
+```
 CENTILLION_CONFIG="conf/config_flask.py" python examples/run_centillion.py
 ```
 
-An example centillion configuration file 
 
 ## Configuring API access
 
@@ -27,32 +73,6 @@ third-party services:
 * Google Drive
 * Disqus
 
-#### Github
-
-Two sets of Github API credentials are required.
-
-**Access control layer:** The first set of Github API credentials 
-are the credentials required to create the authentication layer
-and verify that members trying to access centillion are members of
-the correct Github organization. This takes the form of a client token
-and a client secret.
-
-**Search index layer:** The second set of Github API credentials are
-the credentials used by centillion to access issues, pull requests,
-and files in Github repositories. This takes the form of a single API
-access token.
-
-Github API credentials are provided in the configuration file.
-
-See the example config file in the repo at `conf/config_flask.example.py`
-for details.
-
-#### Groups.io
-
-The Groups.io API token is used to index email threads. This token must be
-obtained using the Groups.io API.
-
-
-
-
+See [APIs](api_all.md) page for details about the types of API keys
+required and how each API is used by centillion.
 

@@ -14,7 +14,7 @@ GROUPSIO_USERNAME = "XXXXX"
 GROUPSIO_PASSWORD = "XXXXX"
 
 ######################################
-# Disqus API public key
+# disqus 
 DISQUS_TOKEN = "XXXXX"
 
 ######################################
