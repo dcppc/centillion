@@ -1,0 +1,11 @@
+[Unit]
+Description=Centillion
+After=multi-user.target
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/sudo -H -u ubuntu /bin/bash /home/ubuntu/betasearch/scripts/run_centillion.py
+ExecStop=/usr/bin/sudo -H -u ubuntu /bin/bash pkill run_centillion.py
+
+[Install]
+WantedBy=multi-user.target

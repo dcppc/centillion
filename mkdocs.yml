@@ -1,0 +1,47 @@
+site_name: centillion search engine
+site_url: http://charlesreid1.github.io/centillion
+repo_name: charlesreid1/centillion
+repo_url: https://github.com/charlesreid1/centillion
+edit_uri: ''
+copyright: '<span style="font-size: 16px;">Report problems and typos: <a href="https://github.com/charlesreid1/centillion/issues/new">file
+  an issue</a> in the <a href="https://github.com/charlesreid1/centillion">charlesreid1/centillion</a>
+  repository</span>
+  <br />'
+docs_dir: docs
+site_dir: site
+strict: true
+nav:
+- Index: index.md
+- Quick Start: quickstart.md
+- Configuring Centillion: config.md
+- Submodules: submodules.md
+- Backend Search: backend.md
+- Frontend Web Interface: frontend.md
+- Github Authentication: auth.md
+- APIs: 
+  - All APIs Used: api_all.md
+  - Github API: api_github.md
+  - Groups.io API: api_groupsio.md
+  - Google Drive API: api_gdrive.md
+  - Disqus API: api_disqus.md
+
+extra_css:
+- css/custom.css
+
+theme:
+  name: null
+  custom_dir: mkdocs-material-dib/material
+  palette:
+    primary: blue
+    accent: blue
+  logo:
+    icon: search
+  font:
+    text: Roboto Slab
+    code: Roboto Mono
+markdown_extensions:
+- admonition
+- codehilite:
+    guess_lang: false
+- toc:
+    permalink: true

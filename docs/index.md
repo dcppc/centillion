@@ -1,84 +1,92 @@
-# Centillion
+# centillion
 
-**centillion**: a pan-github-markdown-issues-google-docs search engine.
+![version number](https://img.shields.io/badge/version-1.7-blue.svg)
+
+**centillion**: a search engine that searches across Github issues, Github pull requests, Github files, 
+Google Drive documents, Groups.io email threads, and Disqus comment threads.
 
 **a centillion**: a very large number consisting of a 1 with 303 zeros after it.
 
-centillion is 3.03 log-times better than the googol.
+One centillion is 3.03 log-times better than a googol.
+
+![Screenshot: centillion search](images/search.png)
+
 
 ## What is centillion
 
-Centillion is a search engine built using [whoosh](https://whoosh.readthedocs.io/en/latest/intro.html),
-a Python library for building search engines.
+centillion is a search engine that can index different kinds of document
+collections: Google Documents (.docx files), Google Drive files, Github issues,
+Github files, Github Markdown files, and Groups.io email threads.
 
 
-We define the types of documents centillion should index,
-what info and how. Centillion then builds and
-updates a search index. That's all done in `centillion_search.py`.
+## How centillion works
 
-Centillion also provides a simple web frontend for running
-queries against the search index. That's done using a Flask server
-defined in `centillion.py`.
+The backend of centillion defines how documents are obtained and how
+the search index is constructed. centillion builds and updates the
+search index by using APIs to get the latest versions of documents,
+and updates its search index accordingly. ([More information](backend.md))
 
-Centillion keeps it simple.
+The centillion frontend provides a web interface for running queries
+and interfacing with the search index. ([More information](frontend.md))
 
 
-## Quickstart
+## Quick start: using centillion
 
-Run centillion with a github access token API key set via
-environment variable:
+Also see [Quick Start](quickstart.md).
 
+To use centillion, start with a Python script that will import
+centillion, create an instance of the webapp, set any custom
+configuration variables, and run the webapp. For example,
+the following script is in `examples/run_centillion.py`:
+
+```python
+import centillion
+
+app = centillion.webapp.get_flask_app()
+
+app.config['foo'] = 'bar'
+
+app.run()
 ```
-GITHUB_TOKEN="XXXXXXXX" python centillion.py
+
+When this script is run, centillion will also look for a configuration
+file containing all of the keys and settings that centillion needs to run.
+This can be provided using the `CENTILLION_CONFIG` variable:
+
+```bash
+CENTILLION_CONFIG="conf/config_flask.py" python examples/run_centillion.py
 ```
 
-This will start a Flask server, and you can view the minimal search engine
-interface in your browser at <http://localhost:5000>.
 
-## Configuration
+## Configuring centillion
 
-### Centillion configuration
+See the [Configuring centillion](config.md) page for more information
+about the centillion configuration file, what information is provided,
+and how to point centillion to the configuration file.
 
-`config_centillion.json` defines configuration variables
-for centillion - namely, what to index, and how, and where.
 
-### Flask configuration
+## Submodules 
 
-`config_flask.py` defines configuration variables
-used by flask, which controls the web frontend 
-for centillion.
+See the [Submodules of centillion](submodules.md) page for details
+about how centillion is organized into submodules.
 
-## Control Panel/Rebuilding Search Index
+The search functionality is implemented in centillion's 
+[backend `search` submodule](backend.md). This uses the
+Whoosh library in Python.
 
-To rebuild the search engine, visit the control panel route (`/control_panel`),
-for example at <http://localhost:5000/control_panel>.
+The web interface is implemented in centillion's
+[frontend `webapp` submodule](frontend.md). This implements
+a web interface for centillion using the Flask library in 
+Python.
 
-This allows you to rebuild the search engine index. The search index
-is stored in the `search_index/` directory, and that directory
-can be configured with centillion's configuration file.
+To restrict access to centillion, we implement an OAuth
+application that verifies users are members of a particular 
+Github organization. See [Github authentication layer](auth.md)
+for details.
 
-The diff search index is faster to build, as it only
-indexes documents that have been added since the last
-new document was added to the search index.
 
-The main search index is slower to build, as it will
-re-index everything.
+## APIs
 
-(Cron scripts? Threaded task that runs hourly?)
-
-## Details
-
-More on the details of how centillion works.
-
-Under the hood, centillion uses flask and whoosh.
-Flask builds and runs the web server.
-Whoosh handles search requests and management
-of the search index.
-
-[Centillion Components](centillion_components.md)
-
-[Centillion Flask](centillion_flask.md)
-
-[Centillion Whoosh](centillion_whoosh.md)
-
+See the [APIs](api_all.md) page for an overview of the third-party
+APIs that centillion interfaces with to populate the search index.
 
