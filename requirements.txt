@@ -1,6 +1,6 @@
 Flask>=0.12.1
 apiclient>=1.0.3
-oauth2client>=3.0.0
+oauth2client==3.0
 httplib2>=0.10.3
 google-api-python-client
 mistune>=0.8
@@ -14,3 +14,4 @@ beautifulsoup4>=4.6
 python-dateutil>=2.6
 pytz
 markdown
+mkdocs>=1.0

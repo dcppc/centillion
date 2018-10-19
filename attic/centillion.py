@@ -17,9 +17,9 @@ from centillion_search import Search
 import config_centillion
 
 """
-The Centillion
+centillion
 
-The centillion is a search engine that indexes the following:
+centillion is a search engine that indexes the following:
     - Folder of Markdown documents
     - Github issues
     - Google Drive folder
@@ -37,11 +37,7 @@ class UpdateIndexTask(object):
         thread = threading.Thread(target=self.run, args=())
 
         self.gh_token = app_config['GITHUB_TOKEN']
-        self.groupsio_credentials = {
-                'groupsio_token' :     app_config['GROUPSIO_TOKEN'],
-                'groupsio_username' :  app_config['GROUPSIO_USERNAME'],
-                'groupsio_password' :  app_config['GROUPSIO_PASSWORD']
-        }
+        self.groupsio_token = app_config['GROUPSIO_TOKEN']
         self.disqus_token = app_config['DISQUS_TOKEN']
         thread.daemon = True
         thread.start()
@@ -55,7 +51,7 @@ class UpdateIndexTask(object):
         #from get_centillion_config import get_centillion_config
         config = config_centillion.config
 
-        search.update_index(self.groupsio_credentials,
+        search.update_index(self.groupsio_token,
                             self.gh_token,
                             self.disqus_token,
                             self.run_which,
