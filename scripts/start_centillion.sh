@@ -27,7 +27,9 @@ cd ${CENTIL_DIR}
 echo "Installing virtualenv"
 virtualenv vp
 source vp/bin/activate
+vp/bin/pip install -r requirements.txt
+python setup.py build install
 
 echo "Running centillion"
-python ${CENTIL_DIR}/centillion.py && tail -f /nev/null
 
+CENTILLION_CONFIG="${CENTIL_DIR}/config/config_flask.py" python ${CENTIL_DIR}/scripts/run_centillion.py && tail -f /nev/null
