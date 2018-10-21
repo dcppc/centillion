@@ -783,7 +783,7 @@ class Search:
         # Get the set of remote ids:
         # ------
         # Start with google drive api object
-        gd = GDrive()
+        gd = GDrive(config)
         service = gd.get_service()
         drive = service.files()
 
