@@ -5,6 +5,7 @@ from .const import base
 from flask import Flask, request, abort, render_template
 import os
 
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 def get_flask_app():
     """

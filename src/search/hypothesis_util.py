@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import logging
 
 def get_headers():
 
@@ -28,11 +29,14 @@ def basic_auth():
 
         # Interpret results as JSON
         dat = response.json()
-        print(json.dumps(dat, indent=4))
+
+        msg = json.dumps(dat, indent=4)
+        logging.info(msg)
 
     else:
 
-        print("Response status code was not OK: %d"%(response.status_code))
+        msg = "Response status code was not OK: %d"%(response.status_code)
+        logging.info(msg)
 
 
 def list_annotations():
@@ -50,11 +54,14 @@ def list_annotations():
 
         # Interpret results as JSON
         dat = response.json()
-        print(json.dumps(dat, indent=4))
+
+        msg = json.dumps(dat, indent=4)
+        logging.info(msg)
 
     else:
 
-        print("Response status code was not OK: %d"%(response.status_code))
+        msg = "Response status code was not OK: %d"%(response.status_code)
+        logging.info(msg)
 
 
 def search_annotations():
@@ -77,11 +84,14 @@ def search_annotations():
 
         # Interpret results as JSON
         dat = response.json()
-        print(json.dumps(dat, indent=4))
+
+        msg = json.dumps(dat, indent=4)
+        logging.info(msg)
 
     else:
 
-        print("Response status code was not OK: %d"%(response.status_code))
+        msg = "Response status code was not OK: %d"%(response.status_code)
+        logging.info(msg)
 
 
 if __name__=="__main__":

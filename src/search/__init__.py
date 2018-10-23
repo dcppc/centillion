@@ -211,7 +211,8 @@ class Search:
         if create_new:
             if os.path.exists(index_folder):
                 shutil.rmtree(index_folder)
-                print("Deleted index folder: " + index_folder)
+                msg = "Deleted index folder: " + index_folder
+                logging.info(msg)
 
         if not os.path.exists(index_folder):
             os.mkdir(index_folder)
@@ -295,7 +296,9 @@ class Search:
         if mimetype not in mimemap.keys():
 
             # Not a document - just a file
-            print("Indexing Google Drive file \"%s\" of type %s"%(item['name'], mimetype))
+            msg = "Indexing Google Drive file \"%s\" of type %s"%(item['name'], mimetype)
+            logging.info(msg)
+
             writer.delete_by_term('id',item['id'])
 
             # Index a plain google drive file
@@ -322,10 +325,9 @@ class Search:
                         issue_url='',
                         content = content
                 )
-            except ValueError as e:
-                print(repr(e))
-                print(" > XXXXXX Failed to index Google Drive file \"%s\""%(item['name']))
-
+            except ValueError:
+                err = " > XXXXXX Failed to index Google Drive file \"%s\""%(item['name'])
+                logging.exception(err)
 
         else:
             # Document with text
@@ -338,8 +340,10 @@ class Search:
             # This is a file type we know how to convert
             # Construct the URL and download it
 
-            print("Indexing Google Drive document \"%s\" of type %s"%(item['name'], mimetype))
-            print(" > Extracting content")
+            msg = "Indexing Google Drive document \"%s\" of type %s"%(item['name'], mimetype)
+            logging.info(msg)
+
+            logging.info(" > Extracting content")
 
 
             # Create a URL and a destination filename
@@ -378,7 +382,8 @@ class Search:
                 )
                 assert output == ""
             except RuntimeError:
-                print(" > XXXXXX Failed to index Google Drive document \"%s\""%(item['name']))
+                err = " > XXXXXX Failed to index Google Drive document \"%s\""%(item['name'])
+                logging.exception(err)
 
 
             # If export was successful, read contents of markdown
@@ -390,21 +395,25 @@ class Search:
 
 
             # No matter what happens, clean up.
-            print(" > Cleaning up \"%s\""%item['name'])
+            msg = " > Cleaning up \"%s\""%item['name']
+            logging.info(msg)
 
             ## test
-            #print(" ".join(['rm','-fr',fullpath_output]))
-            #print(" ".join(['rm','-fr',fullpath_input]))
+            msg = " ".join(['rm','-fr',fullpath_output])
+            logging.info(msg)
+
+            msg = " ".join(['rm','-fr',fullpath_input])
+            logging.info(msg)
 
             # do it
             subprocess.call(['rm','-fr',fullpath_output])
             subprocess.call(['rm','-fr',fullpath_input])
 
             if update:
-                print(" > Removing old record")
+                logging.info(" > Removing old record")
                 writer.delete_by_term('id',item['id'])
             else:
-                print(" > Creating a new record")
+                logging.info(" > Creating a new record")
 
             try:
                 created_time = dateutil.parser.parse(item['createdTime'])
@@ -429,10 +438,9 @@ class Search:
                         issue_url='',
                         content = content
                 )
-            except ValueError as e:
-                print(repr(e))
-                print(" > XXXXXX Failed to index Google Drive file \"%s\""%(item['name']))
-
+            except ValueError:
+                msg = " > XXXXXX Failed to index Google Drive file \"%s\""%(item['name'])
+                logging.exception(msg)
 
 
 
@@ -450,14 +458,17 @@ class Search:
         repo_name = repo.owner.login+"/"+repo.name
         repo_url = repo.html_url
 
-        print("Indexing issue %s"%(issue.html_url))
+        msg = "Indexing issue %s"%(issue.html_url)
+        logging.info(msg)
         
         if issue is None:
             err = "ERROR: Github issue passed to add_issue() was None!"
+            logging.exception(err)
             raise Exception(err)
 
         if issue.body is None:
             err = "ERROR: Github issue passed to add_issue() has no body!"
+            logging.exception(err)
             raise Exception(err)
 
         # Combine comments with their respective issues.
@@ -501,9 +512,9 @@ class Search:
                     issue_url = issue.html_url,
                     content = issue_comment_content
             )
-        except ValueError as e:
-            msg = "ERROR: Failed to index Github issue \"%s\""%(issue.title)
-            logging.exception(msg)
+        except ValueError:
+            err = "ERROR: Failed to index Github issue \"%s\""%(issue.title)
+            logging.exception(err)
 
 
 
@@ -537,7 +548,8 @@ class Search:
         indexed_time = datetime.datetime.now()
 
         if fext in MARKDOWN_EXTS:
-            print("Indexing markdown doc %s from repo %s"%(fname,repo_name))
+            msg = "Indexing markdown doc %s from repo %s"%(fname,repo_name)
+            logging.info(msg)
 
             # Unpack the requests response and decode the content
             # 
@@ -593,7 +605,8 @@ class Search:
 
 
         else:
-            print("Indexing github file %s from repo %s"%(fname,repo_name))
+            msg = "Indexing github file %s from repo %s"%(fname,repo_name)
+            logging.info(msg)
 
             key = fname+"_"+fsha
 
@@ -824,7 +837,9 @@ class Search:
         writer = self.ix.writer()
         count = 0
         temp_dir = tempfile.mkdtemp(dir=os.getcwd())
-        print("Temporary directory: %s"%(temp_dir))
+
+        err = "centillion.search: Update Google Docs search index: using temporary directory: %s"%(temp_dir)
+        logging.info(err)
 
         try:
 
@@ -856,14 +871,17 @@ class Search:
 
         except Exception as e:
             err = "ERROR: Could not add Google Drive files to search index. Continuing..."
-            logging.exception(err)
+            logging.error(err)
             pass
 
-        print("Cleaning temporary directory: %s"%(temp_dir))
+        msg = "centillion.search: Cleaning temporary directory: %s"%(temp_dir)
+        logging.info(msg)
         subprocess.call(['rm','-fr',temp_dir])
 
         writer.commit()
-        print("Done, updated %d Google Drive files in the index" % count)
+
+        msg = "centillion.search: Done, updated %d Google Drive files in the index" % count
+        logging.info(msg)
 
 
     # ------------------------------
@@ -902,6 +920,7 @@ class Search:
 
             if '/' not in r:
                 err = "Error: specify org/reponame or user/reponame in list of repos"
+                logging.error(err)
                 raise Exception(err)
 
             this_org, this_repo = re.split('/',r)
@@ -909,7 +928,8 @@ class Search:
                 org = g.get_organization(this_org)
                 repo = org.get_repo(this_repo)
             except:
-                print("Error: could not gain access to repository %s"%(r))
+                err = "Error: could not gain access to repository %s"%(r)
+                logging.error(err)
                 continue
 
             # Iterate over each issue thread
@@ -952,7 +972,9 @@ class Search:
 
 
         writer.commit()
-        print("Done, updated %d Github issues in the index" % count)
+
+        msg = "Done, updated %d Github issues in the index" % count
+        logging.info(msg)
 
 
 
@@ -997,7 +1019,8 @@ class Search:
         for j, r in enumerate(list_of_repos):
 
             if '/' not in r:
-                err = "Error: specify org/reponame or user/reponame in list of repos"
+                err = "ERROR: specify org/reponame or user/reponame in list of repos"
+                logging.error(err)
                 raise Exception(err)
 
             this_org, this_repo = re.split('/',r)
@@ -1005,7 +1028,8 @@ class Search:
                 org = g.get_organization(this_org)
                 repo = org.get_repo(this_repo)
             except:
-                print("Error: could not gain access to repository %s"%(r))
+                err = "ERROR: could not gain access to repository %s"%(r)
+                logging.exception(err)
                 continue
 
 
@@ -1015,13 +1039,15 @@ class Search:
                 last = commits[0]
                 sha = last.sha
             except GithubException:
-                print("Error: could not get commits from repository %s"%(r))
+                err = "ERROR: could not get commits from repository %s"%(r)
+                logging.exception(err)
                 continue
 
             # Get all the docs
             tree = repo.get_git_tree(sha=sha, recursive=True)
             docs = tree.raw_data['tree']
-            print("Parsing file ids from repository %s"%(r))
+            msg = "Parsing file ids from repository %s"%(r)
+            logging.info(msg)
 
             for d in docs:
 
@@ -1068,7 +1094,9 @@ class Search:
             count += 1
 
         writer.commit()
-        print("Done, updated %d Github files in the index" % count)
+
+        msg = "Done, updated %d Github files in the index" % count
+        logging.info(msg)
 
 
 
@@ -1123,7 +1151,9 @@ class Search:
             count += 1
 
         writer.commit()
-        print("Done, updated %d Groups.io email threads in the index" % count)
+
+        msg = "Done, updated %d Groups.io email threads in the index" % count
+        logging.info(msg)
 
 
 
@@ -1189,7 +1219,9 @@ class Search:
             count += 1
 
         writer.commit()
-        print("Done, updated %d Disqus comment threads in the index" % count)
+
+        msg = "Done, updated %d Disqus comment threads in the index" % count
+        logging.info(msg)
 
 
 
@@ -1377,7 +1409,9 @@ class Search:
         elif doctype=='markdown':
             item_keys = ['title','repo_name','repo_url','url']
         else:
-            raise Exception("Could not find document of type %s"%(doctype))
+            err = "Could not find document of type %s"%(doctype)
+            logging.exception(err)
+            raise Exception(err)
 
         json_results = []
 
@@ -1425,8 +1459,10 @@ class Search:
                     try:
                         query = query.parse(query_string2)
                     except:
-                        print("parsing query %s failed"%(query_string))
-                        print("parsing query %s also failed"%(query_string2))
+                        msg = "parsing query %s failed"%(query_string)
+                        msg += "\n"
+                        msg += "parsing query %s also failed"%(query_string2)
+                        logging.exception(msg)
                         query = query.parse('')
 
             else:
@@ -1440,10 +1476,12 @@ class Search:
                 try:
                     query = query.parse(query_string)
                 except:
-                    print("parsing query %s failed"%(query_string))
+                    err = "parsing query %s failed"%(query_string)
+                    logging.exception(err)
                     query = query.parse('')
             parsed_query = "%s" % query
-            print("query: %s" % parsed_query)
+            msg = "query: %s" % parsed_query
+            logging.info(msg)
             results = searcher.search(query, terms=False, scored=True, groupedby="kind")
             search_result = self.create_search_result(results)
 
