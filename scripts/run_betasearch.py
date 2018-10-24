@@ -11,6 +11,9 @@ https://betasearch.nihdatacommons.us
 Port 5001
 """
 
+# use the centillion credentials
+os.environ['GOOGLE_DRIVE_CREDENTIALS'] = '/home/ubuntu/centillion/scripts/credentials.json'
+
 log_dir = '/tmp/centillion'
 log_file = os.path.join(log_dir,'betasearch.log')
 
