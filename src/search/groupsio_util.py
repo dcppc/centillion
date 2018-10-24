@@ -157,7 +157,9 @@ def extract_threads_from_mbox(mbox_file, subgroup_name):
                 archive_item['sender_name'] = ''
                 archive_item['sender_email'] = msg['From']
         except:
-            raise Exception("Crashed on From extraction regular expressions")
+            err = "Crashed on From extraction regular expressions"
+            logging.error(err)
+            raise Exception(err)
 
         # process the email content
         if msg.is_multipart():
@@ -211,8 +213,10 @@ def get_all_subgroups(groupsio_token):
     try:
         dat = response['data']
     except:
-        print(response)
-        raise Exception("Error getting subgroups")
+        msg = "ERROR: Groups.io utility: Could not get subgroups"
+        logging.error(msg)
+        logging.error(response)
+        raise Exception(msg)
 
     all_subgroups = {}
     for group in dat:
@@ -231,18 +235,26 @@ def get_archive_zip(group_name, group_id, groupsio_token):
     
     data = [('group_id',group_id)]
 
-    print("get_archive_zip(): getting .mbox archive for subgroup %s (%s)"%(group_name,group_id))
+    msg = "get_archive_zip(): getting .mbox archive for subgroup %s (%s)"%(group_name,group_id)
+    logging.info(msg)
+
     r = requests.post(url,data=data,auth=(key,''),stream=True)
     
     try:
         z = ZipFile(io.BytesIO(r.content))
         z.extractall()
-        print("SUCCESS: subgroup %s worked"%(group_name))
-        print("")
+
+        msg = "SUCCESS: subgroup %s worked"%(group_name)
+        logging.info(msg)
+
         return z
+
     except BadZipFile:
-        print("ABORTING: subgroup %s failed"%(group_name))
-        print(r.content.decode('utf-8'))
-        print("")
+        msg = "ABORTING: subgroup %s failed:\n"%(group_name)
+        msg += r.content.decode('utf-8')
+
+        logging.info(msg)
+        logging.info(msg)
+
         return None
 

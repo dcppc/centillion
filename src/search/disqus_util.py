@@ -2,6 +2,7 @@ import os, re
 import requests
 import json
 import dateutil.parser
+import logging
 
 from pprint import pprint
 
@@ -75,7 +76,9 @@ class DisqusCrawler(object):
                     thread_id = response['id']
                     thread_count = response['posts']
 
-                    print("Working on thread %s (%d posts)"%(thread_id,thread_count))
+                    msg = "Working on thread %s (%d posts)"%(thread_id,thread_count)
+                    logging.info(msg)
+
                     if thread_count > 0:
 
                         # prepare url params
@@ -96,7 +99,9 @@ class DisqusCrawler(object):
                         while True:
                             for comment in responses_comments:
                                 # Save comment info
-                                print("    + %s"%(comment['message']))
+                                msg = "    + %s"%(comment['message'])
+                                logging.info(msg)
+
                                 thread_comments.append(comment['message'])
                        
                             if cursor_comments['hasNext']:

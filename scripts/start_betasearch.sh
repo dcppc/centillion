@@ -28,8 +28,8 @@ echo "Installing virtualenv"
 virtualenv betavp
 source betavp/bin/activate
 betavp/bin/pip install -r requirements.txt
+python setup.py build install
 
 echo "Running beta search centillion"
-export CENTILLION_PORT="5001"
-CENTILLION_PORT="5001" python ${CENTIL_DIR}/centillion.py && tail -f /nev/null
 
+CENTILLION_CONFIG="${CENTIL_DIR}/config/config_flask.py" python ${CENTIL_DIR}/scripts/run_betasearch.py && tail -f /nev/null

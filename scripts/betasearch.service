@@ -4,8 +4,8 @@ After=multi-user.target
 
 [Service]
 Restart=always
-ExecStart=/usr/bin/sudo -H -u ubuntu /bin/bash /home/ubuntu/betasearch/scripts/run_betasearch.py
-ExecStop=/usr/bin/sudo -H -u ubuntu /bin/bash pkill run_betasearch.py
+ExecStart=/usr/bin/sudo -H -u ubuntu /bin/bash /home/ubuntu/betasearch/scripts/start_betasearch.sh
+ExecStop=/usr/bin/sudo -H -u ubuntu pkill run_betasearch.py
 
 [Install]
 WantedBy=multi-user.target

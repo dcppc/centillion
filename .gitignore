@@ -4,6 +4,7 @@ credentials.json
 drive*.json
 feedback_database.json
 vp
+betavp
 *.pyc
 out/
 search_index/
