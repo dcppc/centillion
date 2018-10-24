@@ -366,7 +366,7 @@ function load_emailthreads_table(){
                 $(idlabel).DataTable({
                     responsive: true,
                     lengthMenu: [50,100,250,500]
-                }).order([3, 'desc']);
+                }).order([2, 'desc']).draw();
                 // https://stackoverflow.com/a/31459336
 
                 initEmailthreadsTable = true;
