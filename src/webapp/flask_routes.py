@@ -5,7 +5,7 @@ from ..search import Search
 
 from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, request, redirect, url_for, abort, render_template
-from flask import Markup, flash
+from flask import Markup, flash, jsonify
 from flask_dance.contrib.github import make_github_blueprint, github
 
 import os
@@ -13,7 +13,9 @@ import sys
 import json
 import logging
 import markdown
+import codecs
 
+from datetime import datetime
 
 """
 Centillion Flask Routes:
