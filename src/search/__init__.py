@@ -467,23 +467,36 @@ class Search:
             raise Exception(err)
 
         if issue.body is None:
-            err = "ERROR: Github issue passed to add_issue() has no body!"
+            err = "ERROR: Github issue passed to add_issue() has no body! "
+            err += "(continuing anyway...)"
             logging.exception(err)
-            raise Exception(err)
+            #raise Exception(err)
 
         # Combine comments with their respective issues.
         # Otherwise just too noisy.
-        issue_comment_content = issue.body.rstrip()
+        try:
+            issue_comment_content = issue.body.rstrip()
+        except AttributeError:
+            issue_comment_content = ""
         issue_comment_content += "\n"
 
         # Handle the comments content
         if(issue.comments>0):
 
-            comments = issue.get_comments()
-            for comment in comments:
+            try:
+                comments = issue.get_comments()
+                for comment in comments:
 
-                issue_comment_content += comment.body.rstrip()
-                issue_comment_content += "\n"
+                    try:
+                        issue_comment_content += comment.body.rstrip()
+                    except AttributeError:
+                        pass
+                    issue_comment_content += "\n"
+
+            except GithubException:
+                err = "ERROR: could not get comments for this issue: %s"
+                logging.exception(err)
+                pass
 
         # Now create the actual search index record.
         # Add one document per issue thread,
@@ -872,7 +885,7 @@ class Search:
 
         except Exception as e:
             err = "ERROR: Could not add Google Drive files to search index. Continuing..."
-            logging.error(err)
+            logging.exception(err)
             pass
 
         msg = "centillion.search: Cleaning temporary directory: %s"%(temp_dir)
@@ -954,6 +967,8 @@ class Search:
 
             # Stop early if testing
             if config['TESTING'] is True and k>=1:
+                break
+            if k>=15:
                 break
 
 
