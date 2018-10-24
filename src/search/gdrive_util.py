@@ -61,7 +61,10 @@ class GDrive(object):
             raise Exception(err)
 
         else:
-            err = "ERROR: Missing credentials file, no 'credentials.json' found."
+            err = "ERROR: Missing credentials file:\n"
+            err += "- no GOOGLE_DRIVE_CREDENTIALS env var\n"
+            err += "- no GOOGLE_DRIVE_CREDENTIALS config var\n"
+            err += "- no 'credentials.json' found\n"
             raise Exception(err)
 
         # Setup the Drive v3 API
