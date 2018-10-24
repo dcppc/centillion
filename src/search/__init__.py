@@ -531,6 +531,7 @@ class Search:
             _, fext = os.path.splitext(fpath)
         except:
             logging.exception("ERROR: Failed to find file info.")
+            logging.error(d.keys())
             return
 
 
