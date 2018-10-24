@@ -694,12 +694,12 @@ class Search:
         if 'sender_name' in d.keys():
             sender_name = d['sender_name']
         else:
-            sender_name = None
+            sender_name = ''
 
         if 'sender_email' in d.keys():
             sender_email = d['sender_email']
         else:
-            sender_email = None
+            sender_email = ''
 
         indexed_time = datetime.datetime.now()
 
@@ -1299,21 +1299,39 @@ class Search:
 
             sr.mimetype = r['mimetype']
 
-            sr.owner_email = r['owner_email']
-            sr.owner_name = r['owner_name']
+            try:
+                sr.owner_email = r['owner_email']
+            except KeyError:
+                sr.owner_email = ''
+
+            try:
+                sr.owner_name = r['owner_name']
+            except KeyError:
+                sr.owner_name = ''
 
             try:
                 sr.group = r['group']
             except KeyError:
                 sr.group = ''
 
-            sr.repo_name = r['repo_name']
-            sr.repo_url = r['repo_url']
+            try:
+                sr.repo_name = r['repo_name']
+                sr.repo_url = r['repo_url']
+            except KeyError:
+                sr.repo_name = ''
+                sr.repo_url = ''
 
-            sr.issue_title = r['issue_title']
-            sr.issue_url = r['issue_url']
+            try:
+                sr.issue_title = r['issue_title']
+                sr.issue_url = r['issue_url']
+            except:
+                sr.issue_title = ''
+                sr.issue_url = ''
 
-            sr.github_user = r['github_user']
+            try:
+                sr.github_user = r['github_user']
+            except:
+                sr.github_user = ''
 
             sr.content = r['content']
 
@@ -1417,7 +1435,8 @@ class Search:
         elif doctype=='issue':
             item_keys = ['title','repo_name','repo_url','url','created_time','modified_time']
         elif doctype=='emailthread':
-            item_keys = ['title','owner_name','url','group','created_time','modified_time']
+            #item_keys = ['title','owner_name','url','group','created_time']
+            item_keys = ['title','url','group','created_time']
         elif doctype=='disqus':
             item_keys = ['title','created_time','url']
         elif doctype=='ghfile':
