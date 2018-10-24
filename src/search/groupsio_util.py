@@ -112,7 +112,7 @@ def extract_threads_from_mbox(mbox_file, subgroup_name):
     n_msgs = len(msgs)
 
     logging.info("=============================")
-    logging.info("Processing mbox %s with %s messages"%(mbox_file,n_msgs))
+    logging.info("Processing mbox %s with %s messages"%(tempf,n_msgs))
 
     findall_email_pattern  = re.compile('.*<.*>')
     finditer_email_pattern = re.compile('"(.*)" <(.*)>')
