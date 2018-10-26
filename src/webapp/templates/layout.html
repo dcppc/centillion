@@ -1,4 +1,5 @@
 <!doctype html>
+<head>
 <title>Centillion Search Engine</title>
 
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
@@ -22,7 +23,10 @@
 <script src="{{ url_for('static', filename='dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='dataTables.responsive.js') }}"></script>
 
+{% include "matomo.html" %}
 
+</head>
+<body>
 
 <div id="master-div">
 
@@ -63,3 +67,6 @@
 {% endif %}
 
 {% include "footer.html" %}
+
+</body>
+
