@@ -96,7 +96,17 @@ def setup_routes(app):
     def search():
         if not github.authorized:
             return redirect(url_for("github.login"))
-        username = github.get("/user").json()['login']
+        try:
+            username_payload = github.get('/user').json()
+            username = username_payload['login']
+        except KeyError:
+            err = "ERROR: Could not find 'login' key from /user endpoint of Github API, "
+            err += "may have hit rate limit.\n"
+            err += "Payload:\n"
+            err += "%s"%(username_payload)
+            logging.exception(err)
+            return render_template('404.html')
+
         resp = github.get("/user/orgs")
         if resp.ok:
     

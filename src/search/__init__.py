@@ -160,15 +160,6 @@ class Search:
                 logging.exception(msg)
                 pass
 
-        # Groups.io email threads
-        if run_which=='all' or run_which=='emailthreads':
-            try:
-                self.update_index_emailthreads(groupsio_token, config)
-            except GroupsIOException as e:
-                msg = "ERROR: While re-indexing: failed to update Groups.io email threads. Continuing..."
-                logging.exception(msg)
-                pass
-
         # Github files
         if run_which=='all' or run_which=='ghfiles':
             try:
@@ -195,6 +186,16 @@ class Search:
                 msg = "ERROR: While re-indexing: failed to update Google Drive. Continuing..."
                 logging.exception(msg)
                 pass
+
+        # Groups.io email threads
+        if run_which=='all' or run_which=='emailthreads':
+            try:
+                self.update_index_emailthreads(groupsio_token, config)
+            except GroupsIOException as e:
+                msg = "ERROR: While re-indexing: failed to update Groups.io email threads. Continuing..."
+                logging.exception(msg)
+                pass
+
 
 
     # ------------------------------
@@ -968,8 +969,6 @@ class Search:
             # Stop early if testing
             if config['TESTING'] is True and k>=1:
                 break
-            if k>=15:
-                break
 
 
         writer = self.ix.writer()
@@ -1144,32 +1143,34 @@ class Search:
 
         archives = get_mbox_archives(groupsio_token,config)
 
-        writer = self.ix.writer()
-        count = 0
+        if archives is not None:
 
-        # archives is a dictionary
-        # keys are IDs (urls)
-        # values are dictionaries
+            writer = self.ix.writer()
+            count = 0
 
-        # Start by collecting all the things
-        remote_ids = set()
-        for k in archives.keys():
-            remote_ids.add(k)
+            # archives is a dictionary
+            # keys are IDs (urls)
+            # values are dictionaries
 
-        # drop indexed_ids
-        for drop_id in indexed_ids:
-            writer.delete_by_term('id',drop_id)
+            # Start by collecting all the things
+            remote_ids = set()
+            for k in archives.keys():
+                remote_ids.add(k)
 
-        # add remote_ids
-        for add_id in remote_ids:
-            item = archives[add_id]
-            self.add_emailthread(writer, item, config, update=False)
-            count += 1
+            # drop indexed_ids
+            for drop_id in indexed_ids:
+                writer.delete_by_term('id',drop_id)
 
-        writer.commit()
+            # add remote_ids
+            for add_id in remote_ids:
+                item = archives[add_id]
+                self.add_emailthread(writer, item, config, update=False)
+                count += 1
 
-        msg = "Done, updated %d Groups.io email threads in the index" % count
-        logging.info(msg)
+            writer.commit()
+
+            msg = "Done, updated %d Groups.io email threads in the index" % count
+            logging.info(msg)
 
 
 
