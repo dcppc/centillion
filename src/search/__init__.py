@@ -1143,7 +1143,7 @@ class Search:
 
         archives = get_mbox_archives(groupsio_token,config)
 
-        if archives not None:
+        if archives is not None:
 
             writer = self.ix.writer()
             count = 0
