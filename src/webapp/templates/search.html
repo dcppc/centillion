@@ -41,19 +41,6 @@
 
         <ul class="list-group">
 
-            {% if config['SHOW_PARSED_QUERY'] and parsed_query %}
-                <li  class="list-group-item">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-xs-12 info">
-                                <b>Parsed query:</b> {{ parsed_query }}
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            {% endif %}
-
-
             {# use "if parsed_query" to check if this is 
                a new search or search results #}
             {% if parsed_query %}
@@ -70,75 +57,197 @@
             {% endif %}
 
 
-            <li  class="list-group-item">
+            {% if config['SHOW_PARSED_QUERY'] and parsed_query %}
+                <li  class="list-group-item">
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-xs-12 info">
-                                <b>Indexing:</b>
-
-                                <span class="badge indexing-count">{{totals["gdoc"]}}</span>
-                                <a href="/master_list?doctype=gdoc#gdoc">
-                                Google Drive files
-                                </a>,
-
-                                <span class="badge indexing-count">{{totals["issue"]}}</span>
-                                <a href="/master_list?doctype=issue#issue">
-                                Github issues and pull requests
-                                </a>,
-
-                                <span class="badge indexing-count">{{totals["ghfile"]}}</span>
-                                <a href="/master_list?doctype=ghfile#ghfile">
-                                Github files
-                                </a>,
-
-                                <span class="badge indexing-count">{{totals["markdown"]}}</span>
-                                <a href="/master_list?doctype=markdown#markdown">
-                                Github Markdown files
-                                </a>,
-
-                                <span class="badge indexing-count">{{totals["emailthread"]}}</span>
-                                <a href="/master_list?doctype=emailthread#emailthread">
-                                Groups.io email threads
-                                </a>,
-
-                                <span class="badge indexing-count">{{totals["disqus"]}}</span>
-                                <a href="/master_list?doctype=disqus#disqus">
-                                Disqus comment threads
-                                </a>
+                                <b>Parsed query:</b> {{ parsed_query }}
                             </div>
                         </div>
-                </div>
-            </li>
+                    </div>
+                </li>
+            {% endif %}
 
+
+            {% if parsed_query %}
+                <li  class="list-group-item">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-xs-12 info">
+                                    <b>Indexing:</b>
+
+                                    <span class="badge indexing-count">{{totals["gdoc"]}}</span>
+                                    <a href="/master_list?doctype=gdoc#gdoc">
+                                    Google Drive files
+                                    </a>,
+
+                                    <span class="badge indexing-count">{{totals["issue"]}}</span>
+                                    <a href="/master_list?doctype=issue#issue">
+                                    Github issues and pull requests
+                                    </a>,
+
+                                    <span class="badge indexing-count">{{totals["ghfile"]}}</span>
+                                    <a href="/master_list?doctype=ghfile#ghfile">
+                                    Github files
+                                    </a>,
+
+                                    <span class="badge indexing-count">{{totals["markdown"]}}</span>
+                                    <a href="/master_list?doctype=markdown#markdown">
+                                    Github Markdown files
+                                    </a>,
+
+                                    <span class="badge indexing-count">{{totals["emailthread"]}}</span>
+                                    <a href="/master_list?doctype=emailthread#emailthread">
+                                    Groups.io email threads
+                                    </a>,
+
+                                    <span class="badge indexing-count">{{totals["disqus"]}}</span>
+                                    <a href="/master_list?doctype=disqus#disqus">
+                                    Disqus comment threads
+                                    </a>
+                                </div>
+                            </div>
+                    </div>
+                </li>
+            {% endif %}
 
         </ul>
     </div>
 </div>
 
 {% if parsed_query %}
-<div id="search-results-container" class="container">
+<div id="search-results-container" class="container" width="100%">
     <div class="row">
-        <table id="search-results" class="table">
+        <table id="search-results" class="table display compact">
             <thead id="search-results-header">
                 <tr id="search-results-header-row">
+
+                    <td id="search-results-details-col">
+                        Results
+                    </td>
+
+                    <!--
+                    <td id="search-results-details-col">
+                        Result Details
+                    </td>
                     <td id="search-results-score-col">
                         Score
                     </td>
                     <td id="search-results-type-col">
                         Type
                     </td>
-                    <td id="search-results-details-col">
-                        Result Details
-                    </td>
+                    -->
+
                 </tr>
             </thead>
             <tbody>
 
                 {% for e in entries %}
                     <tr>
+
+                        <!-- result details-->
+                        <td>
+                            <ul class="list-group">
+                                <li  class="search-group-item">
+                                    <div class="url">
+
+                                        {% if e.kind=="gdoc" %}
+                                            {% if e.mimetype=="" %}
+                                            <a class="result-title" href='{{e.url}}'>{{e.title}}</a>
+                                                <br />
+                                                <span class="badge kind-badge">Google Document</span>
+                                                <br />
+                                                <b>Owner:</b> {{e.owner_name}} &lt;{{e.owner_email}}&gt;
+                                                {% if e.created_time %} 
+                                                    <br/>
+                                                    <b>Created:</b> {{e.created_time}}
+                                                {% endif %}
+                                            {% else %}
+                                                <a class="result-title" href='{{e.url}}'>{{e.title}}</a>
+                                                <br />
+                                                <span class="badge kind-badge">Google Drive File</span>
+                                                <br />
+                                                <b>Owner:</b> {{e.owner_name}}, {{e.owner_email}}
+                                                <br />
+                                                <b>Document Type</b>: {{e.mimetype}}
+                                                {% if e.created_time %} 
+                                                    <br/>
+                                                    <b>Created:</b> {{e.created_time}}
+                                                {% endif %}
+                                            {% endif %}
+
+                                        {% elif e.kind=="issue" %}
+                                            <a class="result-title" href='{{e.url}}'>{{e.title}}</a>
+                                            <br />
+                                            <span class="badge kind-badge">Github Issue</span>
+                                            {% if e.github_user %}
+                                                <br />
+                                                <b>Opened by:</b> <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
+                                            {% endif %}
+                                            <br/>
+                                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
+                                            {% if e.created_time %} 
+                                                <br/>
+                                                <b>Date:</b> {{e.created_time}}
+                                            {% endif %}
+
+                                        {% elif e.kind=="ghfile" %}
+                                            <a class="result-title" href='{{e.url}}'>{{e.title}}</a>
+                                            <br />
+                                            <span class="badge kind-badge">Github File</span>
+                                            <br/>
+                                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
+                                        {% elif e.kind=="markdown" %}
+                                            <a class="result-title" href='{{e.url}}'>{{e.title}}</a>
+                                            <br />
+                                            <span class="badge kind-badge">Github Markdown</span>
+                                            <br/>
+                                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
+
+                                        {% elif e.kind=="emailthread" %}
+                                            <a class="result-title" href='{{e.url}}'>{{e.title}}</a>
+                                            <br />
+                                            <span class="badge kind-badge">Groups.io Email Thread</span>
+                                            <br />
+                                            <b>Started By:</b> {{e.owner_name}}
+                                            <br/>
+                                            <b>Mailing List:</b> {{e.group}}
+                                            {% if e.created_time %} 
+                                                <br/>
+                                                <b>Date:</b> {{e.created_time}}
+                                            {% endif %}
+
+                                        {% elif e.kind=="disqus" %}
+                                            <a class="result-title" href='{{e.url}}'>{{e.title}}</a>
+                                            <br/>
+                                            <span class="badge kind-badge">Disqus Thread</span>
+                                            {% if e.created_time %} 
+                                                <br/>
+                                                <b>Date:</b> {{e.created_time}}
+                                            {% endif %}
+
+                                        {% else %}
+                                        <a class="result-title" href='{{e.url}}'>{{e.url}}</a>
+
+                                        {% endif %}
+                                    </div>
+                                    <div class="markdown-body">
+                                        {% if e.content_highlight %}
+                                            {{ e.content_highlight|safe}}
+                                        {% else %}
+                                        <p>(A preview of this document is not available.)</p>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            </ul>
+                        </td>
+
+                        <!--
                         <td>
                             {{'%d'  % e.score}}
                         </td>
+
                         <td>
                             {% if e.kind=="gdoc" %}
                                 {% if e.mimetype=="document" %}
@@ -164,91 +273,8 @@
 
                             {% endif %}
                         </td>
-                        <td>
-                            <ul class="list-group">
-                                <li  class="search-group-item">
-                                    <div class="url">
-                                        {% if e.kind=="gdoc" %}
-                                            {% if e.mimetype=="" %}
-                                                <b>Google Document:</b>
-                                                <a href='{{e.url}}'>{{e.title}}</a>
-                                                (Owner: {{e.owner_name}}, {{e.owner_email}})<br />
-                                                <b>Document Type</b>: {{e.mimetype}}
-                                                {% if e.created_time %} 
-                                                    <br/>
-                                                    <b>Created:</b> {{e.created_time}}
-                                                {% endif %}
-                                            {% else %}
-                                                <b>Google Drive File:</b>
-                                                <a href='{{e.url}}'>{{e.title}}</a><br />
-                                                <b>Owner:</b> {{e.owner_name}}, {{e.owner_email}}<br />
-                                                {% if e.created_time %} 
-                                                    <br/>
-                                                    <b>Created:</b> {{e.created_time}}
-                                                {% endif %}
-                                            {% endif %}
+                        -->
 
-                                        {% elif e.kind=="issue" %}
-                                            <b>Github Issue:</b>
-                                            <a href='{{e.url}}'>{{e.title}}</a>
-                                            {% if e.github_user %}<br />
-                                            <b>Opened by:</b> <a href='https://github.com/{{e.github_user}}'>@{{e.github_user}}</a>
-                                            {% endif %}
-                                            <br/>
-                                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
-                                            {% if e.created_time %} 
-                                                <br/>
-                                                <b>Date:</b> {{e.created_time}}
-                                            {% endif %}
-
-                                        {% elif e.kind=="ghfile" %}
-                                            <b>Github File:</b>
-                                            <a href='{{e.url}}'>{{e.title}}</a>
-                                            <br/>
-                                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
-
-                                        {% elif e.kind=="markdown" %}
-                                            <b>Github Markdown:</b>
-                                            <a href='{{e.url}}'>{{e.title}}</a>
-                                            <br/>
-                                            <b>Repository:</b> <a href='{{e.repo_url}}'>{{e.repo_name}}</a>
-
-                                        {% elif e.kind=="emailthread" %}
-                                            <b>Groups.io Email Thread:</b>
-                                            <a href='{{e.url}}'>{{e.title}}</a>
-                                            <br/>
-                                            <b>Started By:</b> {{e.owner_name}}
-                                            <br/>
-                                            <b>Mailing List:</b> {{e.group}}
-                                            {% if e.created_time %} 
-                                                <br/>
-                                                <b>Date:</b> {{e.created_time}}
-                                            {% endif %}
-
-                                        {% elif e.kind=="disqus" %}
-                                            <b>Disqus Comment Thread:</b>
-                                            <a href='{{e.url}}'>{{e.title}}</a>
-                                            <br/>
-                                            {% if e.created_time %} 
-                                                <br/>
-                                                <b>Date:</b> {{e.created_time}}
-                                            {% endif %}
-
-                                        {% else %}
-                                            <b>Item:</b> (<a href='{{e.url}}'>link</a>)
-
-                                        {% endif %}
-                                    </div>
-                                    <div class="markdown-body">
-                                        {% if e.content_highlight %}
-                                            {{ e.content_highlight|safe}}
-                                        {% else %}
-                                        <p>(A preview of this document is not available.)</p>
-                                        {% endif %}
-                                    </div>
-                                </li>
-                            </ul>
-                        </td>
                     </tr>
 
                 {% endfor %}
