@@ -63,9 +63,15 @@ button#feedback {
 
 
 /* search results table */
+/*
 td#search-results-score-col,
 td#search-results-type-col {
-    width: 90px;
+    width: 10%;
+}
+*/
+
+a.result-title {
+    font-size: 16px;
 }
 
 div.container {
@@ -73,7 +79,8 @@ div.container {
 }
 
 /* control panel button width */
-.btn-reindex-type, .btn-reindex-all {
+.btn-reindex-type,
+.btn-reindex-all {
     width: 350px;
 }
 
@@ -95,6 +102,10 @@ div.container {
 /* badges for number of docs indexed */
 span.results-count {
     background-color: #555;
+}
+
+span.kind-badge {
+    background-color: #337ab7;
 }
 
 span.indexing-count {

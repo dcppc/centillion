@@ -2,6 +2,7 @@
 # github oauth
 GITHUB_OAUTH_CLIENT_ID = "XXX"
 GITHUB_OAUTH_CLIENT_SECRET = "YYY"
+MATOMO_ID = 1
 
 ######################################
 # github acces token

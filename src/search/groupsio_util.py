@@ -48,11 +48,19 @@ def get_mbox_archives(groupsio_token,config):
 
         subgroup_name = subgroup_ids[subgroup_id]
 
-        # This function call below will call
-        # get_archive_zip for each subgroup,
-        # and extract the mbox contents from
-        # the zip file.
-        html = extract_mbox_from_zip(subgroup_name, subgroup_id, groupsio_token)
+        try:
+            # This function call below will call
+            # get_archive_zip for each subgroup,
+            # and extract the mbox contents from
+            # the zip file.
+            html = extract_mbox_from_zip(subgroup_name, subgroup_id, groupsio_token)
+            if html is None:
+                raise Exception("Could not extract mbox")
+
+        except:
+            logging.exception("FAILURE: Could not process mailbox for subgroup %s"%(subgroup_name))
+            # skip the rest and continue with the loop
+            continue
 
         # Now extract each email thread and 
         # add to final_archive dictionary
@@ -112,7 +120,7 @@ def extract_threads_from_mbox(mbox_file, subgroup_name):
     n_msgs = len(msgs)
 
     logging.info("=============================")
-    logging.info("Processing mbox %s with %s messages"%(mbox_file,n_msgs))
+    logging.info("Processing mbox %s with %s messages"%(tempf,n_msgs))
 
     findall_email_pattern  = re.compile('.*<.*>')
     finditer_email_pattern = re.compile('"(.*)" <(.*)>')
