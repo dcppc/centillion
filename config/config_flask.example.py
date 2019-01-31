@@ -4,13 +4,18 @@
 # ------------------------------
 #
 # This configuration file contains configuration
-# variables for the centillion search engine.s
+# variables for the centillion search engine.
 # 
 # Configuration variables are loaded by the Flask
 # web server when centillion is started.
 #
+# NOTE: to load a Python file as a Flask 
+# config file, use:
+# >>> app.config.from_pyfile("config_flask.py")
+#
 # Sections:
 # 
+#   Access Control
 #   Testing
 #   Searching
 #   User Interface
@@ -21,18 +26,70 @@
 #   Flask
 
 
+# Access Control
+# ==============
+
+# Is there a layer of access control 
+# based on Github in place to protect
+# this centillion instance?
+
+# Access control whitelist:
+
+# Pass a whitelist of Github organizations
+# whose members are permitted to access
+# centillion pages.
+# Independent of logins and teams below.
+WHITELIST_GITHUB_ORGS = []
+
+# Pass a whitelist of Github team IDs
+# whose members are permitted to access
+# centillion pages.
+# Team IDs are tricky to find but not hard.
+# Also independent of the orgs listed above.
+WHITELIST_GITHUB_TEAMS = []
+
+# Pass a whitelist of Github logins
+# (usernames) of users who are permitted
+# to access centillion pages.
+# Independent of orgs and teams above.
+WHITELIST_GITHUB_LOGINS = []
+
+
+# Admin whitelist:
+
+# Pass a whitelist of admin Github organizations
+# whose members are permitted to access
+# the centillion control panel/admin pages.
+# Independent of logins and teams below.
+ADMIN_WHITELIST_GITHUB_ORGS = []
+
+# Pass a whitelist of admin Github team IDs
+# whose members are permitted to access
+# the centillion control panel/admin pages.
+# Team IDs are tricky to find but not hard.
+# Also independent of the orgs listed above.
+ADMIN_WHITELIST_GITHUB_TEAMS = []
+
+# Pass a whitelist of admin Github logins
+# (usernames) of users who are permitted
+# to access control panel/admin pages.
+# Independent of orgs and teams above.
+ADMIN_WHITELIST_GITHUB_LOGINS = []
+
+
 # Testing
 # ========
 
-# Turning on the DEBUG setting will print/log
-# extra information about what centillion
-# is doing
+# Turning on the DEBUG setting will...?
 # NOTE: This is a Flask setting
 DEBUG = False
 
-# Turning on the TESTING setting will
-# turn off Github authentication layer
-TESTING = False
+# If true, this will populate the centillion search index
+# with a pile of fake documents. If this is true,
+# all API credentials are ignored.
+# (This is extremely useful for testing without the
+# hassle of APIs.)
+FAKEDOCS = False
 
 
 # Searching
@@ -75,6 +132,10 @@ GITHUB_ENABLED = True
 # These are required to index Github issues and files.
 GITHUB_OAUTH_CLIENT_ID = "XXX"
 GITHUB_OAUTH_CLIENT_SECRET = "YYY"
+
+# Alternatively, a Github access token
+# can be used
+#GITHUB_TOKEN = "XXXXX"
 
 REPOSITORIES = [
         "dcppc/documentation-archive",
@@ -119,26 +180,6 @@ REPOSITORIES = [
 ]
 
 
-
-
-
-######################################
-# github oauth
-GITHUB_OAUTH_CLIENT_ID = "XXX"
-GITHUB_OAUTH_CLIENT_SECRET = "YYY"
-MATOMO_ID = 1
-
-######################################
-# github acces token
-GITHUB_TOKEN = "XXX"
-
-######################################
-# groups.io
-GROUPSIO_TOKEN = "XXXXX"
-GROUPSIO_USERNAME = "XXXXX"
-GROUPSIO_PASSWORD = "XXXXX"
-
-
 # Google Drive
 # =============
 
@@ -155,19 +196,30 @@ GOOGLE_DRIVE_ENABLED = True
 
 GROUPSIO_ENABLED = False
 
+# API token (for the API endpoints that work)
+GROUPSIO_TOKEN = "XXXXX"
+
+# Groups.io username and password (for the API
+# endpoints that do not work and require a
+# web spider to crawl the page)
+GROUPSIO_USERNAME = "XXXXX"
+GROUPSIO_PASSWORD = "XXXXX"
+
 
 # Disqus
 # ======
 
 DISQUS_ENABLED = False
 
+# Disqus API token
 DISQUS_TOKEN = "XXXXX"
 
 
 # Flask
 # =====
 
-# Flask secret key
+# Flask secret key 
+# (should be a random string, this is
+# used to establish sessions with users)
 SECRET_KEY = 'XXXXX'
-
 
