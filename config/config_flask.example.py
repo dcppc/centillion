@@ -1,48 +1,80 @@
-######################################
-# github oauth
-GITHUB_OAUTH_CLIENT_ID = "XXX"
-GITHUB_OAUTH_CLIENT_SECRET = "YYY"
-MATOMO_ID = 1
+#
+# centillion search engine tool
+# configuration file
+# ------------------------------
+#
+# This configuration file contains configuration
+# variables for the centillion search engine.s
+# 
+# Configuration variables are loaded by the Flask
+# web server when centillion is started.
+#
+# Sections:
+# 
+#   Testing
+#   Searching
+#   User Interface
+#   Github
+#   Google Drive
+#   Groups.io
+#   Disqus
+#   Flask
 
-######################################
-# github acces token
-GITHUB_TOKEN = "XXX"
 
-######################################
-# groups.io
-GROUPSIO_TOKEN = "XXXXX"
-GROUPSIO_USERNAME = "XXXXX"
-GROUPSIO_PASSWORD = "XXXXX"
+# Testing
+# ========
 
-######################################
-# disqus 
-DISQUS_TOKEN = "XXXXX"
+# Turning on the DEBUG setting will print/log
+# extra information about what centillion
+# is doing
+# NOTE: This is a Flask setting
+DEBUG = False
 
-######################################
-# everything else
+# Turning on the TESTING setting will
+# turn off Github authentication layer
+TESTING = False
 
-# Location of index file
+
+# Searching
+# ==========
+
+# Set the on-disk location of the search
+# index (relative path)
 INDEX_DIR = "search_index"
 
-# More information footer: Repository label
-FOOTER_REPO_ORG = "dcppc"
-FOOTER_REPO_NAME = "centillion"
 
-# Toggle to show Whoosh parsed query
-SHOW_PARSED_QUERY=True
+# User Interface
+# ==============
 
+# This is the tagline that appears below the
+# centillion logo on all centillion pages
 TAGLINE = "Search the Data Commons"
 
-# Flask settings
-DEBUG = True
+# Customize the organization, name, and URL
+# of the centillion Github repo in the footer
+FOOTER_REPO_ORG = "dcppc"
+FOOTER_REPO_NAME = "centillion"
+FOOTER_REPO_URL = "https://github.com/dcppc/centillion"
 
-# Flask secret key
-SECRET_KEY = 'XXXXX'
+# When someone runs a search on centillion, 
+# centillion (under the hood, whoosh) parses the
+# query string. If this setting is true, it shows
+# the user the full parsed query
+# NOTE: This is usually more confusing than helpful,
+# but can be useful for debugging
+SHOW_PARSED_QUERY = False
 
 
+# Github
+# ======
 
-######################################
-# List of DCPPC repositories to index
+GITHUB_ENABLED = True
+
+# Set the API keys for the Github API.
+# These are obtained from Github Account Settings.
+# These are required to index Github issues and files.
+GITHUB_OAUTH_CLIENT_ID = "XXX"
+GITHUB_OAUTH_CLIENT_SECRET = "YYY"
 
 REPOSITORIES = [
         "dcppc/documentation-archive",
@@ -85,4 +117,57 @@ REPOSITORIES = [
         "dcppc/2018-oct-workshop",
         "dcppc/cloud-guidebook",
 ]
+
+
+
+
+
+######################################
+# github oauth
+GITHUB_OAUTH_CLIENT_ID = "XXX"
+GITHUB_OAUTH_CLIENT_SECRET = "YYY"
+MATOMO_ID = 1
+
+######################################
+# github acces token
+GITHUB_TOKEN = "XXX"
+
+######################################
+# groups.io
+GROUPSIO_TOKEN = "XXXXX"
+GROUPSIO_USERNAME = "XXXXX"
+GROUPSIO_PASSWORD = "XXXXX"
+
+
+# Google Drive
+# =============
+
+GOOGLE_DRIVE_ENABLED = True
+
+# Set the path to the JSON file containing 
+# client API credentials, downloaded from
+# Google Cloud console. This is required to
+# index Google Drive files.
+
+
+# Groups.io
+# =========
+
+GROUPSIO_ENABLED = False
+
+
+# Disqus
+# ======
+
+DISQUS_ENABLED = False
+
+DISQUS_TOKEN = "XXXXX"
+
+
+# Flask
+# =====
+
+# Flask secret key
+SECRET_KEY = 'XXXXX'
+
 
