@@ -2,14 +2,15 @@ from .const import base
 
 from .gdrive_util import GDrive
 from .disqus_util import DisqusCrawler
-from .groupsio_util import get_mbox_archives, GroupsIOException
 
 import os, re, io, requests
 import os.path
 import logging
+import json
 
 import dateutil.parser
 import datetime
+from dateutil.parser import parse
 
 import bs4
 import shutil
@@ -43,7 +44,8 @@ Define a Search object for use by the centillion search engine.
 
 Auth notes:
     - Google drive/Google oauth requires credentials.json
-    - Github oauth requires api token passed in via Flask config
+    - Github, Disqus require API tokens passed in 
+      via centillion config file (available through Flask app.config)
 
 Utility functions:
     - clean_timestamp (for cleanup of timestamps)
@@ -52,26 +54,43 @@ Utility functions:
     - DontEscapeHtmlInCodeRenderer (used to render markdown as html)
 
 Search class:
-    - update_index (update entire search index)
+
+    create:
+
     - open_index (create new schema, open index on disk)
+
+    populate:
 
     - add_drive_file (add an individual google drive file item)
     - add_issue (add an individual github issue item)
     - add_ghfile (add an individual github file item)
-    - add_emailthread (add groups.io email thread item)
     - add_disqusthread (add disqus comments thread)
 
+    update:
+
+    - update_index (update entire search index)
     - update_index_gdocs (iterate over all Google Drive documents and add them)
     - update_index_issues (iterate over all Github issues and add them)
     - update_index_ghfiles (iterate over all github files and add them)
-    - update_index_emailthreads (iterate over all groups.io subgroup email threads and add them)
     - update_index_disqus (iterate over all disqus comment threads and add them)
+
+    test update:
+
+    - test_update_index (called by update_index if testing)
+    - test_update_index_gdocs (test harness for update_index_gdocs calls; if fake docs is enabled, this will populate index with fake docs)
+    - test_update_index_issues (see above)
+    - test_update_index_ghfiles (see above)
+    - test_update_index_disqus (see above)
+
+    search:
+
+    - search (perform a search on the search index with the user's query)
+
+    util:
 
     - create_search_results (package search results for the Flask template)
     - get_document_total_count (ask centillion for count of documents of each type)
     - get_list (get a listing of all files of a particular type)
-
-    - search (perform a search on the search index with the user's query)
 
 Schema:
     - id
@@ -92,6 +111,9 @@ Schema:
     - github_user
     - content
 """
+
+
+here = os.path.abspath(os.path.dirname(__file__))
 
 
 def clean_timestamp(dt):
@@ -147,7 +169,7 @@ class Search:
     # ------------------------------
     # Update the entire index
 
-    def update_index(self, groupsio_token, gh_token, disqus_token, run_which, config):
+    def update_index(self, gh_token, disqus_token, run_which, config):
         """
         Update the entire search index
         """
@@ -187,15 +209,28 @@ class Search:
                 logging.exception(msg)
                 pass
 
-        # Groups.io email threads
-        if run_which=='all' or run_which=='emailthreads':
-            try:
-                self.update_index_emailthreads(groupsio_token, config)
-            except GroupsIOException as e:
-                msg = "ERROR: While re-indexing: failed to update Groups.io email threads. Continuing..."
-                logging.exception(msg)
-                pass
 
+
+    def test_update_index(self, run_which, config):
+        """
+        Update the search index with test docs
+        for purposes of testing
+        """
+        # Google Drive Files
+        if run_which=='all' or run_which=='gdocs':
+            self.test_update_index_gdocs(config)
+
+        # Github files
+        if run_which=='all' or run_which=='ghfiles':
+            self.test_update_index_ghfiles(config)
+
+        # Github issues
+        if run_which=='all' or run_which=='issues':
+            self.test_update_index_issues(config)
+
+        # Disqus
+        if run_which=='all' or run_which=='disqus':
+            self.test_update_index_disqus(config)
 
 
     # ------------------------------
@@ -246,7 +281,7 @@ class Search:
                 owner_email = fields.ID(stored=True),
                 owner_name = fields.TEXT(stored=True),
 
-                # mainly for email threads, groups.io, hypothesis
+                # mainly for email threads
                 group = fields.ID(stored=True),
 
                 repo_name = fields.TEXT(stored=True),
@@ -662,75 +697,6 @@ class Search:
 
 
     # ------------------------------
-    # Add a single groups.io email thread
-    # to a search index.
-
-
-    def add_emailthread(self, writer, d, config, update=True):
-        """
-        Use a Groups.io email thread record to add 
-        an email thread to the search index.
-        """
-        if 'permalink' not in d.keys():
-            err = "Error: attempted to add email thread with no 'permalink' field."
-            raise Exception(err)
-
-        if 'content' not in d.keys():
-            err = "Error: attempted to add email thread with no 'content' field."
-            raise Exception(err)
-
-        if 'subgroup' not in d.keys():
-            err = "Error: attempted to add email thread with no 'subgroup' field."
-            raise Exception(err)
-
-        if 'subject' not in d.keys():
-            err = "Error: attempted to add email thread with no 'subject' field."
-            raise Exception(err)
-
-        if 'date' in d.keys() and d['date'] is not None:
-            created_time = dateutil.parser.parse(d['date'])
-        else:
-            created_time = None
-
-        if 'sender_name' in d.keys():
-            sender_name = d['sender_name']
-        else:
-            sender_name = ''
-
-        if 'sender_email' in d.keys():
-            sender_email = d['sender_email']
-        else:
-            sender_email = ''
-
-        indexed_time = datetime.datetime.now()
-
-        # Now create the actual search index record
-        try:
-            writer.add_document(
-                    id = d['permalink'],
-                    kind = 'emailthread',
-                    created_time = created_time,
-                    indexed_time = indexed_time,
-                    title = d['subject'],
-                    url = d['permalink'],
-                    mimetype='',
-                    owner_email=sender_email,
-                    owner_name=sender_name,
-                    group=d['subgroup'],
-                    repo_name = '',
-                    repo_url = '',
-                    github_user = '',
-                    issue_title = '',
-                    issue_url = '',
-                    content = d['content']
-            )
-        except ValueError as e:
-            err = "ERROR: Failed to index Groups.io thread \"%s\""%(d['subject'])
-            logging.exception(err)
-
-
-
-    # ------------------------------
     # Add a single disqus comment thread
     # to the search index.
 
@@ -778,6 +744,7 @@ class Search:
 
     # ------------------------------
     # Google Drive Files/Documents
+
 
     def update_index_gdocs(self, config):
         """
@@ -842,10 +809,10 @@ class Search:
                 # Also store the doc
                 full_items[f['id']] = f
             
-            # if TESTING, we should end early
-            if nextPageToken is None or config['TESTING'] is True:
-                # stop if done,
-                # stop early if testing
+            if nextPageToken is None or config['TRUNCATE_DRIVE_LISTING'] is True:
+                # stop if we are finished or if the 
+                # user has asked to truncate the 
+                # drive files list
                 break
 
 
@@ -897,6 +864,42 @@ class Search:
 
         msg = "centillion.search: Done, updated %d Google Drive files in the index" % count
         logging.info(msg)
+
+
+    def test_update_index_gdocs(self, config):
+        """
+        Update the search index using fake
+        Google document item.
+        """
+        p = QueryParser("kind", schema=self.ix.schema)
+
+        writer = self.ix.writer()
+
+        # Clear out the fake docs if they
+        # already exist in the search index
+        q = p.parse("gdoc")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            indexed_ids = set()
+            for result in results:
+                indexed_ids.add(result['id'])
+            for drop_id in indexed_ids:
+                writer.delete_by_term('id',drop_id)
+
+        # Load the fake
+        with open(os.path.join(here,'payloads/gdoc_sample.json'),'r') as f:
+            sample = json.load(f)
+
+        for k in ['indexed_time','created_time','modified_time']:
+            sample[k] = parse(sample[k])
+
+        # Write it to the search index
+        writer.add_document(**sample)
+        writer.commit()
+
+        msg = "Done, updated 1 fake Google Drive document in the index"
+        logging.info(msg)
+
 
 
     # ------------------------------
@@ -967,7 +970,7 @@ class Search:
                 full_items[key] = value
 
             # Stop early if testing
-            if config['TESTING'] is True and k>=1:
+            if config['TRUNCATE_ISSUES_LISTING'] is True and k>=1:
                 break
 
 
@@ -989,6 +992,41 @@ class Search:
         writer.commit()
 
         msg = "Done, updated %d Github issues in the index" % count
+        logging.info(msg)
+
+
+    def test_update_index_issues(self, config):
+        """
+        Update the search index using fake
+        Github issue.
+        """
+        p = QueryParser("kind", schema=self.ix.schema)
+
+        writer = self.ix.writer()
+
+        # Clear out the fake docs if they
+        # already exist in the search index
+        q = p.parse("issue")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            indexed_ids = set()
+            for result in results:
+                indexed_ids.add(result['id'])
+            for drop_id in indexed_ids:
+                writer.delete_by_term('id',drop_id)
+
+        # Load the fake
+        with open(os.path.join(here,'payloads/ghissue_sample.json'),'r') as f:
+            sample = json.load(f)
+
+        for k in ['indexed_time','created_time','modified_time']:
+            sample[k] = parse(sample[k])
+
+        # Write it to the search index
+        writer.add_document(**sample)
+        writer.commit()
+
+        msg = "Done, updated 1 fake Github issue in the index"
         logging.info(msg)
 
 
@@ -1114,69 +1152,58 @@ class Search:
         logging.info(msg)
 
 
-
-    # ------------------------------
-    # Groups.io Emails
-
-
-
-    def update_index_emailthreads(self, groupsio_token, config):
+    def test_update_index_ghfiles(self, config):
         """
-        Update the search index using the email archives
-        of groups.io subgroups. This method uses the Groups.io
-        API via methods defined in groupsio_util.py
+        Update the search index using fake
+        Github file.
         """
-
-        # Get the set of indexed ids:
-        # ------
-        indexed_ids = set()
         p = QueryParser("kind", schema=self.ix.schema)
-        q = p.parse("emailthread")
-        with self.ix.searcher() as s:
-            results = s.search(q,limit=None)
-            for result in results:
-                indexed_ids.add(result['id'])
+
+        writer = self.ix.writer()
+
+        # Clear out the fake docs if they
+        # already exist in the search index
+        for doctype in ["ghfile","markdown"]:
+            q = p.parse(doctype)
+            with self.ix.searcher() as s:
+                results = s.search(q,limit=None)
+                indexed_ids = set()
+                for result in results:
+                    indexed_ids.add(result['id'])
+                for drop_id in indexed_ids:
+                    writer.delete_by_term('id',drop_id)
+
+        # Load the fakes
+        with open(os.path.join(here,'payloads/ghfile_sample.json'),'r') as f:
+            filesample = json.load(f)
+
+        for k in ['indexed_time','created_time','modified_time']:
+            try:
+                filesample[k] = parse(filesample[k])
+            except:
+                filesample[k] = None
+
+        with open(os.path.join(here,'payloads/ghmd_sample.json'),'r') as f:
+            mdsample = json.load(f)
+
+        for k in ['indexed_time','created_time','modified_time']:
+            try:
+                mdsample[k] = parse(mdsample[k])
+            except:
+                mdsample[k] = None
+
+        # Write them to the search index
+        writer.add_document(**filesample)
+        writer.add_document(**mdsample)
+        writer.commit()
+
+        msg = "Done, updated 1 fake Github file and 1 fake Github markdown file in the index"
+        logging.info(msg)
 
 
-        # Get the set of remote ids:
-        # ------
-
-        archives = get_mbox_archives(groupsio_token,config)
-
-        if archives is not None:
-
-            writer = self.ix.writer()
-            count = 0
-
-            # archives is a dictionary
-            # keys are IDs (urls)
-            # values are dictionaries
-
-            # Start by collecting all the things
-            remote_ids = set()
-            for k in archives.keys():
-                remote_ids.add(k)
-
-            # drop indexed_ids
-            for drop_id in indexed_ids:
-                writer.delete_by_term('id',drop_id)
-
-            # add remote_ids
-            for add_id in remote_ids:
-                item = archives[add_id]
-                self.add_emailthread(writer, item, config, update=False)
-                count += 1
-
-            writer.commit()
-
-            msg = "Done, updated %d Groups.io email threads in the index" % count
-            logging.info(msg)
-
-
-
-
+    
     # ------------------------------
-    # Disqus Comments
+    # Disqus Threads
 
 
     def update_index_disqus(self, disqus_token, config):
@@ -1241,6 +1268,42 @@ class Search:
         logging.info(msg)
 
 
+    def test_update_index_disqus(self, config):    
+        """
+        Update the search index using fake
+        Disqus comment threads.
+        """
+        p = QueryParser("kind", schema=self.ix.schema)
+
+        writer = self.ix.writer()
+
+        # Clear out the fake docs if they
+        # already exist in the search index
+        q = p.parse("disqus")
+        with self.ix.searcher() as s:
+            results = s.search(q,limit=None)
+            indexed_ids = set()
+            for result in results:
+                indexed_ids.add(result['id'])
+            for drop_id in indexed_ids:
+                writer.delete_by_term('id',drop_id)
+
+        # Load the fake
+        with open(os.path.join(here,'payloads/disqus_sample.json'),'r') as f:
+            sample = json.load(f)
+
+        for k in ['indexed_time','created_time','modified_time']:
+            try:
+                sample[k] = parse(sample[k])
+            except:
+                sample[k] = None
+
+        # Write it to the search index
+        writer.add_document(**sample)
+        writer.commit()
+
+        msg = "Done, updated 1 fake Disqus comment thread in the index"
+        logging.info(msg)
 
 
 
@@ -1404,7 +1467,6 @@ class Search:
                 "issue" : None,
                 "ghfile" : None,
                 "markdown" : None,
-                "emailthread" : None,
                 "disqus" : None,
                 "total" : None
         }
@@ -1435,9 +1497,6 @@ class Search:
             item_keys = ['title','owner_name','url','mimetype','created_time','modified_time']
         elif doctype=='issue':
             item_keys = ['title','repo_name','repo_url','url','created_time','modified_time']
-        elif doctype=='emailthread':
-            #item_keys = ['title','owner_name','url','group','created_time']
-            item_keys = ['title','url','group','created_time']
         elif doctype=='disqus':
             item_keys = ['title','created_time','url']
         elif doctype=='ghfile':

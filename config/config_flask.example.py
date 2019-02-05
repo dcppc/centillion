@@ -89,7 +89,7 @@ DEBUG = False
 # all API credentials are ignored.
 # (This is extremely useful for testing without the
 # hassle of APIs.)
-FAKEDOCS = False
+FAKEDOCS = True
 
 
 # Searching
@@ -136,6 +136,11 @@ GITHUB_OAUTH_CLIENT_SECRET = "YYY"
 # Alternatively, a Github access token
 # can be used
 #GITHUB_TOKEN = "XXXXX"
+
+# Flag to indicate whether to truncate the
+# list of a repo's issues/PRs processed.
+# This is mainly useful for testing.
+TRUNCATE_ISSUES_LISTING = False
 
 REPOSITORIES = [
         "dcppc/documentation-archive",
@@ -189,6 +194,12 @@ GOOGLE_DRIVE_ENABLED = True
 # client API credentials, downloaded from
 # Google Cloud console. This is required to
 # index Google Drive files.
+
+
+# Flag to indicate whether to truncate the
+# list of documents processed from Google Drive.
+# This is mainly useful for testing.
+TRUNCATE_DRIVE_LISTING = False
 
 
 # Groups.io

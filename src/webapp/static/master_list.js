@@ -21,7 +21,6 @@ var initGdocTable = false;
 var initIssuesTable = false;
 var initGhfilesTable = false;
 var initMarkdownTable = false;
-var initEmailthreadsTable = false;
 var initDisqusTable = false;
 
 $(document).ready(function() {
@@ -44,10 +43,6 @@ $(document).ready(function() {
     } else if (d==='markdown') {
         load_markdown_table();
         var divList = $('div#collapseMarkdown').addClass('in');
-
-    } else if (d==='emailthread') {
-        load_emailthreads_table();
-        var divList = $('div#collapseThreads').addClass('in');
 
     } else if (d==='disqus') {
         load_disqusthreads_table();
@@ -92,7 +87,6 @@ var toType = function(obj) {
 // Github issues
 // Github files
 // Github markdown
-// Groups.io email threads
 
 // ------------------------
 // Google Drive
@@ -318,63 +312,6 @@ function load_markdown_table(){
     }
 }
 
-
-// ------------------------
-// Groups.io Email Threads
-
-function load_emailthreads_table(){
-    if(!initEmailthreadsTable) { 
-        var divList = $('div#collapseThreads').attr('class');
-        if (divList.indexOf('in') !== -1) {
-            //console.log('Closing Groups.io email threads master list');
-        } else { 
-            //console.log('Opening Groups.io email threads master list');
-    
-            $.getJSON("/list/emailthread", function(result){
-                var r = new Array(), j = -1, size=result.length;
-                r[++j] = '<thead>'
-                r[++j] = '<tr class="header-row">';
-                r[++j] = '<th width="60%">Topic</th>';
-                r[++j] = '<th width="15%">Started By</th>';
-                r[++j] = '<th width="15%">Date</th>';
-                r[++j] = '<th width="10%">Mailing List</th>';
-                r[++j] = '</tr>';
-                r[++j] = '</thead>'
-                r[++j] = '<tbody>'
-                for (var i=0; i<size; i++){
-                    r[++j] ='<tr><td>';
-                    r[++j] = '<a href="' + result[i]['url'] + '" target="_blank">'
-                    r[++j] = result[i]['title'];
-                    r[++j] = '</a>'
-                    r[++j] = '</td><td>';
-                    r[++j] = result[i]['owner_name'];
-                    r[++j] = '</td><td>';
-                    r[++j] = result[i]['created_time'];
-                    r[++j] = '</td><td>';
-                    r[++j] = result[i]['group'];
-                    r[++j] = '</td></tr>';
-                }
-                r[++j] = '</tbody>'
-
-                // Construct names of id tags
-                var doctype = 'emailthreads';
-                var idlabel = '#' + doctype + '-master-list';
-                var filtlabel = idlabel + '_filter';
-
-                // Initialize the DataTable
-                $(idlabel).html(r.join(''));
-                $(idlabel).DataTable({
-                    responsive: true,
-                    lengthMenu: [50,100,250,500]
-                }).order([2, 'desc']).draw();
-                // https://stackoverflow.com/a/31459336
-
-                initEmailthreadsTable = true;
-            });
-            //console.log('Finished loading Groups.io email threads list');
-        }
-    }
-}
 
 // ------------------------
 // Disqus Comment Threads

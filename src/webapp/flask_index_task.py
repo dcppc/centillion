@@ -32,21 +32,42 @@ class UpdateIndexTask(object):
     def __init__(self, app_config, run_which='all'):
         self.run_which = run_which
         self.app_config = app_config
-        thread = threading.Thread(target=self.run, args=())
-
-        self.gh_token = app_config['GITHUB_TOKEN']
-        self.groupsio_token = app_config['GROUPSIO_TOKEN']
-        self.disqus_token = app_config['DISQUS_TOKEN']
+        if self.app_config['FAKEDOCS']:
+            print("Found FAKEDOCS = True in config file, running test update index task")
+            thread = threading.Thread(target=self.test, args=())
+        else:
+            print("Found FAKEDOCS = False in config file, running real update index task")
+            thread = threading.Thread(target=self.run, args=())
         thread.daemon = True
         thread.start()
 
-    def run(self):
+
+    def test(self):
+        """
+        Run the test update index method to populate the
+        search index with fake documents.
+        """
+        # Load the search index
         search = Search(self.app_config["INDEX_DIR"])
 
-        search.update_index(self.groupsio_token,
-                            self.gh_token,
+        # Update the index with fake docs
+        search.test_update_index(self.run_which,
+                                 self.app_config)
+
+
+    def run(self):
+        """Run the actual update index task against live APIs.
+        """
+        # Load API credentials
+        self.gh_token       = self.app_config['GITHUB_TOKEN']
+        self.disqus_token   = self.app_config['DISQUS_TOKEN']
+
+         #Load the search index
+        search = Search(self.app_config["INDEX_DIR"])
+
+        # Update the index with real docs
+        search.update_index(self.gh_token,
                             self.disqus_token,
                             self.run_which,
                             self.app_config)
-
 

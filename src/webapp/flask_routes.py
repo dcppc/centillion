@@ -58,7 +58,7 @@ def setup_routes(app):
             self.is_landing_page = is_landing_page
             self.admin = admin
 
-        def __call__(self):
+        def __call__(self,*args,**kwargs):
             """Return a function that takes a function
             """
             # If the auth layer is disabled, this decorator
@@ -136,7 +136,8 @@ def setup_routes(app):
     ##############################
     # Flask routes
 
-    @centillion_github_auth(is_landing_page=True)
+    #@centillion_github_auth(is_landing_page=True)
+    @centillion_github_auth
     @app.route('/')
     def index():
         # Business as usual
@@ -179,6 +180,10 @@ def setup_routes(app):
     @centillion_github_auth
     @app.route('/master_list')
     def master_list():
+        """Serve the master list page, which has a
+        master list of all types of documents 
+        contained in the search index.
+        """
         return render_template("masterlist.html") # Proceed
 
 
@@ -205,32 +210,6 @@ def setup_routes(app):
         return jsonify(results_list)
 
 
-    @centillion_github_auth
-    @app.route('/master_list')
-    def master_list():
-        """Serve the master list page, which has a
-        master list of all types of documents 
-        contained in the search index.
-        """
-        return render_template("masterlist.html") # Proceed
-
-
-    @centillion_github_auth
-    @app.route('/list/<doctype>')
-    def list_docs(doctype):
-        search = Search(app.config["INDEX_DIR"])
-        results_list = search.get_list(doctype)
-        for result in results_list:
-            if 'created_time' in result.keys():
-                ct = result['created_time']
-                result['created_time'] = datetime.strftime(ct,"%Y-%m-%d %I:%M %p")
-            if 'modified_time' in result.keys():
-                mt = result['modified_time']
-                result['modified_time'] = datetime.strftime(mt,"%Y-%m-%d %I:%M %p")
-            if 'indexed_time' in result.keys():
-                it = result['indexed_time']
-                result['indexed_time'] = datetime.strftime(it,"%Y-%m-%d %I:%M %p")
-        return jsonify(results_list)
 
 
     @centillion_github_auth
@@ -296,7 +275,8 @@ def setup_routes(app):
     def update_index(run_which):
         """Update the centillion search index.
         """
-        # Business as usual
+        # This is the task that links into the
+        # search submodule of centillion.
         UpdateIndexTask(
                 app.config,
                 run_which = run_which
