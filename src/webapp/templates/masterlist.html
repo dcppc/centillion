@@ -8,6 +8,7 @@
 
     <div class="row">
 
+    {% if config['GOOGLE_DRIVE_ENABLED'] %}
     {#
     # google drive files panel
     #}
@@ -43,9 +44,11 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
 
 
+    {% if config['GITHUB_ENABLED'] %}
     {#
     # github issue panel
     #}
@@ -82,7 +85,6 @@
             </div>
         </div>
     </div>
-
 
 
 
@@ -160,9 +162,11 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
 
 
+    {% if config['DISQUS_ENABLED'] %}
     {#
     # disqus comment threads
     #}
@@ -199,6 +203,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
 
 </div>

@@ -7,9 +7,7 @@
         <div class="col12sm" id="banner-col">
             <center>
                 <a id="banner-a" href="{{ url_for('search')}}?query=&fields=">
-                    {% if 'betasearch' in request.url %}
-                        <img id="banner-img" src="{{ url_for('static', filename='centillion_white_beta.png') }}">
-                    {% elif 'localhost' in request.url %}
+                    {% if 'localhost' in request.url %}
                         <img id="banner-img" src="{{ url_for('static', filename='centillion_white_localhost.png') }}">
                     {% else %}
                         <img id="banner-img" src="{{ url_for('static', filename='centillion_white.png') }}">
@@ -23,7 +21,7 @@
     <div class="row" id="tagline-row">
         <div class="col12sm" id="tagline-col">
             <center>
-                    <h2 id="tagline-tagline"> {{config['TAGLINE']}} </h2>
+                <h2 id="tagline-tagline"> {{config['TAGLINE']}} </h2>
             </center>
         </div>
     </div>

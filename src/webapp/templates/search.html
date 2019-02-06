@@ -76,30 +76,37 @@
                                 <div class="col-xs-12 info">
                                     <b>Indexing:</b>
 
-                                    <span class="badge indexing-count" id="gdoc-count">{{totals["gdoc"]}}</span>
-                                    <a href="/master_list?doctype=gdoc#gdoc">
-                                    Google Drive files
-                                    </a>,
+                                    {% if config['GOOGLE_DRIVE_ENABLED'] %}
+                                        <span class="badge indexing-count" id="gdoc-count">{{totals["gdoc"]}}</span>
+                                        <a href="/master_list?doctype=gdoc#gdoc">
+                                        Google Drive files
+                                        </a>,
+                                    {% endif %}
 
-                                    <span class="badge indexing-count" id="issue-count">{{totals["issue"]}}</span>
-                                    <a href="/master_list?doctype=issue#issue">
-                                    Github issues and pull requests
-                                    </a>,
+                                    {% if config['GITHUB_ENABLED'] %}
+                                        <span class="badge indexing-count" id="issue-count">{{totals["issue"]}}</span>
+                                        <a href="/master_list?doctype=issue#issue">
+                                        Github issues and pull requests
+                                        </a>,
 
-                                    <span class="badge indexing-count" id="ghfile-count">{{totals["ghfile"]}}</span>
-                                    <a href="/master_list?doctype=ghfile#ghfile">
-                                    Github files
-                                    </a>,
+                                        <span class="badge indexing-count" id="ghfile-count">{{totals["ghfile"]}}</span>
+                                        <a href="/master_list?doctype=ghfile#ghfile">
+                                        Github files
+                                        </a>,
 
-                                    <span class="badge indexing-count" id="markdown-count">{{totals["markdown"]}}</span>
-                                    <a href="/master_list?doctype=markdown#markdown">
-                                    Github Markdown files
-                                    </a>,
+                                        <span class="badge indexing-count" id="markdown-count">{{totals["markdown"]}}</span>
+                                        <a href="/master_list?doctype=markdown#markdown">
+                                        Github Markdown files
+                                        </a>,
+                                    {% endif %}
 
-                                    <span class="badge indexing-count" id="disqus-count">{{totals["disqus"]}}</span>
-                                    <a href="/master_list?doctype=disqus#disqus">
-                                    Disqus comment threads
-                                    </a>
+                                    {% if config['DISQUS_ENABLED'] %}
+                                        <span class="badge indexing-count" id="disqus-count">{{totals["disqus"]}}</span>
+                                        <a href="/master_list?doctype=disqus#disqus">
+                                        Disqus comment threads
+                                        </a>
+                                    {% endif %}
+
                                 </div>
                             </div>
                     </div>
