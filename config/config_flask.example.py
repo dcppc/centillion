@@ -9,10 +9,6 @@
 # Configuration variables are loaded by the Flask
 # web server when centillion is started.
 #
-# NOTE: to load a Python file as a Flask 
-# config file, use:
-# >>> app.config.from_pyfile("config_flask.py")
-#
 # Sections:
 # 
 #   Access Control
@@ -21,7 +17,6 @@
 #   User Interface
 #   Github
 #   Google Drive
-#   Groups.io
 #   Disqus
 #   Flask
 
@@ -200,21 +195,6 @@ GOOGLE_DRIVE_ENABLED = True
 # list of documents processed from Google Drive.
 # This is mainly useful for testing.
 TRUNCATE_DRIVE_LISTING = False
-
-
-# Groups.io
-# =========
-
-GROUPSIO_ENABLED = False
-
-# API token (for the API endpoints that work)
-GROUPSIO_TOKEN = "XXXXX"
-
-# Groups.io username and password (for the API
-# endpoints that do not work and require a
-# web spider to crawl the page)
-GROUPSIO_USERNAME = "XXXXX"
-GROUPSIO_PASSWORD = "XXXXX"
 
 
 # Disqus
