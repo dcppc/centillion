@@ -1,4 +1,4 @@
-from .const import base, call
+from .const import base, call, DEFAULT_CONFIG
 
 from flask import Flask, request, abort, render_template
 import os, sys
@@ -16,8 +16,9 @@ This Flask class gets a config file name
 from an environment varible, and attempts
 to load it and set it as the Flask config.
 
-NOTE: to load a Python file as a Flask 
-config file, use:
+NOTE: to load a Python file as a Flask config file,
+use the flask app's built-in config.from_pyfile() method:
+
 >>> app.config.from_pyfile("config_flask.py")
 """
 
@@ -36,6 +37,11 @@ class CentillionFlask(Flask):
         Do everything the parent does.
         Then load the config file.
         """
+        # Pop config_file key before calling flask app constructor
+        if 'config_file' in kwargs.keys():
+            config_file = kwargs['config_file']
+            del kwargs['config_file']
+
         super().__init__(*args,**kwargs)
 
         # ----------------------------
@@ -46,18 +52,25 @@ class CentillionFlask(Flask):
 
         # Flask Config 
         # ------------
-        # We have 3 ways to pass a Flask config to centillion.
+        # We have 4 ways to pass a Flask config to centillion.
         # 
         # Option 1: set the `CONFIG_CENTILLION` env var
-        # Option 2 (lazy): have a `config_flask.py` in the current directory
-        # Option 3 (lazy): have a `config_flask.py` in `~/.config/centillion/config_flask.py`
+        # Option 2A: specify the relative or absolute path to a config file when initializing flask app
+        # Option 2B: have a `config_flask.py` config file in the current directory
+        # Option 3: have a `config_flask.py` in `~/.config/centillion/`
+        # 
+        # (Option 2A and 2B are the same, but one specifies
+        # the config file name and one uses the default.)
 
-        # Option 1:
-        # The user can set the centillion config file
-        # using the CENTILLION_CONFIG environment var
-        # when they run their centillion driver program.
+
         cf = 'CENTILLION_CONFIG'
         if cf in os.environ:
+
+            # Option 1:
+            # 
+            # The user can set the centillion config file
+            # using the CENTILLION_CONFIG environment var
+            # when they run their centillion driver program.
 
             # If the config file is in the 
             # current working directory:
@@ -80,14 +93,20 @@ class CentillionFlask(Flask):
                 logging.info(msg)
         
         else:
-            default_name = 'config_flask.py'
 
-            # Option 2 (lazy):
-            # The user can be lazy and not specify `CONFIG_CENTILLION`,
-            # but then they must have a file named `config_flask.py`
-            # in the current working directory (this option)
-            # or in ~/.config/centillion/config_flask.py (next option)
-            cwd_config = os.path.join(call,default_name)
+            msg = "CentillionFlask: __init__(): Did not find CENTILLION_CONFIG environment variable, searching for config file...\n"
+            logging.info(msg)
+
+            # Option 2:
+            # 
+            # User specifies the name of a config file,
+            # either relative or absolute, when they
+            # create the Flask app.
+            # 
+            # Note: if config_file = DEFAULT_CONFIG,
+            # this is Option 2B.
+            # 
+            cwd_config = os.path.join(call,config_file)
             if os.path.isfile(cwd_config):
                 self.config.from_pyfile(cwd_config)
                 loaded_config = True
@@ -95,36 +114,35 @@ class CentillionFlask(Flask):
                 msg += "Loaded config file at %s"%(cwd_config)
                 logging.info(msg)
 
-
-            # Option 3 (lazy):
-            # The user can be lazy and not specify CONFIG_CENTILLION,
-            # but then they must have a file named config_flask.py
-            # in the current working directory (prior option)
-            # or in ~/.config/centillion/config_flask.py (this option)
-            home = str(Path.home())
-            home_config = os.path.join(home,'.config','centillion',default_name)
-            if os.path.isfile(home_config):
-                self.config.from_pyfile(home_config)
+            elif os.path.isfile(config_file):
+                self.config.from_pyfile(config_file)
                 loaded_config = True
-                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file in home directory\n"
-                msg += "Loaded config file at %s"%(home_config)
+                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file\n"
+                msg += "Loaded config file at %s"%(config_file)
                 logging.info(msg)
 
+            else:
+
+                msg = "CentillionFlask: __init__(): Did not find config file anywhere, punting and looking for ~/.config/centillion/%s\n"%(DEFAULT_CONFIG)
+                logging.info(msg)
+
+                # Option 3:
+                # 
+                # User must have a config file in 
+                # ~/.config/centillion/$DEFAULT_CONFIG
+                # 
+                home = str(Path.home())
+                home_config = os.path.join(home,'.config','centillion',DEFAULT_CONFIG)
+                if os.path.isfile(home_config):
+                    self.config.from_pyfile(home_config)
+                    loaded_config = True
+                    msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file in home directory\n"
+                    msg += "Loaded config file at %s"%(home_config)
+                    logging.info(msg)
 
 
         if not loaded_config:
-            err = "ERROR: CentillionFlask: __init__(): Problem setting config file with %s environment variable\n"%(cf)
-            try:
-                err += "%s value : %s\n"%(cf,os.environ[cf])
-            except:
-                pass
-
-            try:
-                err += "Missing config file : %s\n"%(os.environ[cf])
-                err += "Missing config file : %s\n"%(os.path.join(call, os.environ[cf]))
-            except:
-                pass
-
+            err = "ERROR: CentillionFlask: __init__(): Problem setting config file. Check that %s exists or that the %s environment variable is set!\n"%(config_file,cf)
             logging.exception(err)
             raise Exception(err)
 

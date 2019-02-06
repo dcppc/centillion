@@ -1,1 +1,19 @@
-{"id": "https://github.com/dcppc/organize/pull/80", "kind": "issue", "created_time": "2018-08-07 20:40:25", "modified_time": "2019-01-19 17:56:58", "indexed_time": "2019-02-01 21:01:42.810190", "title": "reformat info into tables and add GitHub usernames", "url": "https://github.com/dcppc/organize/pull/80", "mimetype": "", "owner_email": "", "owner_name": "", "group": "", "repo_name": "dcppc/organize", "repo_url": "https://github.com/dcppc/organize", "github_user": "bilafer", "issue_title": "reformat info into tables and add GitHub usernames", "issue_url": "https://github.com/dcppc/organize/pull/80", "content": "Amanda had asked for the addition of GitHub usernames to this file.  While I was here, I decided to change the text into tables for each team to make it easier to read (IMHO).  There was no ticket for this request.\r\n\r\n@ACharbonneau , @raynamharris , @sedrie  and anyone else on Team Copper (@dcppc/dcppc-copper-admin?), I would greatly appreciate any feedback.   \r\n\r\nIf no changes are necessary, I can attempt to merge.  Not sure if I have the ability to do so, but I'm happy to try.\noops! I wasn't done yet -_-\nAlso the Copper one isn't right\n"}
+{
+    "id": "https://github.com/garlic/oregano/pull/80",
+    "kind": "issue",
+    "created_time": "2018-08-07 20:40:25",
+    "modified_time": "2019-01-19 17:56:58",
+    "indexed_time": "2019-02-01 21:01:42.810190",
+    "title": "",
+    "url": "https://github.com/garlic/oregano/pull/1",
+    "mimetype": "",
+    "owner_email": "",
+    "owner_name": "",
+    "group": "",
+    "repo_name": "garlic/oregano",
+    "repo_url": "https://github.com/garlic/oregano",
+    "github_user": "pasteur",
+    "issue_title": "microbiologist (Pasteur) in need collaborators",
+    "issue_url": "https://github.com/garlic/oregano/pull/1",
+    "content": "After the importance of the subject had been demonstrated by Pasteur, others turned their attention in the same direction, either for the purpose of verification or refutation of Pasteur's views. The advance was not very rapid, however, since bacteriological experimentation proved to be a subject of extraordinary difficulty. Bacteria were not even yet recognised as a group of organisms distinct enough to be grouped by themselves, but were even by Pasteur at first confounded with yeasts.\n\nAs a distinct group of organisms they were first distinguished by Hoffman in 1869, since which date the term bacteria, as applying to this special group of organisms, has been coming more and more into use. So difficult were the investigations, that for years there were hardly any investigators besides Pasteur who could successfully handle the subject and reach conclusions which could stand the test of time."
+}
