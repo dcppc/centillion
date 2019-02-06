@@ -98,15 +98,15 @@ INDEX_DIR = "search_index"
 # User Interface
 # ==============
 
-# This is the tagline that appears below the
-# centillion logo on all centillion pages
-TAGLINE = "Search the Data Commons"
+# This is the tagline that appears at the top,
+# just below the centillion logo, on all pages
+TAGLINE = "document search engine"
 
 # Customize the organization, name, and URL
 # of the centillion Github repo in the footer
 FOOTER_REPO_ORG = "dcppc"
 FOOTER_REPO_NAME = "centillion"
-FOOTER_REPO_URL = "https://github.com/dcppc/centillion"
+FOOTER_REPO_VERSION = "v1.8public"
 
 # When someone runs a search on centillion, 
 # centillion (under the hood, whoosh) parses the
