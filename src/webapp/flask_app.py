@@ -37,7 +37,8 @@ class CentillionFlask(Flask):
         Do everything the parent does.
         Then load the config file.
         """
-        # Pop config_file key before calling flask app constructor
+        # Pop config_file key before calling flask app constructor,
+        # since that isn't a flask param
         if 'config_file' in kwargs.keys():
             config_file = kwargs['config_file']
             del kwargs['config_file']
@@ -145,4 +146,33 @@ class CentillionFlask(Flask):
             err = "ERROR: CentillionFlask: __init__(): Problem setting config file. Check that %s exists or that the %s environment variable is set!\n"%(config_file,cf)
             logging.exception(err)
             raise Exception(err)
+
+        self.validate_config()
+
+
+
+    def validate_config(self):
+        """
+        Perform validation of the configuration file.
+        Check for required keys, invalid conditions,
+        or other weirdness.
+        """
+        config = self.config
+
+        # which doc types are enabled
+        need_at_least_one = ['GOOGLE_DRIVE_ENABLED','GITHUB_ENABLED','DISQUS_ENABLED']
+        found_one = False
+        for n in need_at_least_one:
+            if n in config.keys():
+                found_one = True
+                break
+        if not found_one:
+            raise Exception("Error: need at least one of: %s"%(", ".join(need_at_least_one)))
+
+        if 'GOOGLE_DRIVE_ENABLED' in config.keys():
+            if config['GOOGLE_DRIVE_ENABLED']:
+                if 'GOOGLE_DRIVE_CREDENTIALS_FILE' in config.keys():
+                    if os.path.basename(config['GOOGLE_DRIVE_CREDENTIALS_FILE']) != 'credentials.json':
+                        raise Exception("Error: the file specified with GOOGLE_DRIVE_CREDENTIALS_FILE in the config file must have a filename of 'credentials.json'")
+
 
