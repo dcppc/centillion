@@ -169,16 +169,16 @@ class Search:
     # ------------------------------
     # Update the entire index
 
-    def update_index(self, gh_token, disqus_token, run_which, config):
+    def update_index(self, gdrive_token_path, gh_token, disqus_token, run_which, config):
         """
         Update the entire search index
         """
-        # Disqus
-        if run_which=='all' or run_which=='disqus':
+        # Google Drive Files
+        if run_which=='all' or run_which=='gdocs':
             try:
-                self.update_index_disqus(disqus_token, config)
+                self.update_index_gdocs(gdrive_token_path,config)
             except Exception as e:
-                msg = "ERROR: While re-indexing: failed to update Disqus comment threads. Continuing..."
+                msg = "ERROR: While re-indexing: failed to update Google Drive. Continuing..."
                 logging.exception(msg)
                 pass
 
@@ -200,12 +200,12 @@ class Search:
                 logging.exception(msg)
                 pass
 
-        # Google Drive Files
-        if run_which=='all' or run_which=='gdocs':
+        # Disqus
+        if run_which=='all' or run_which=='disqus':
             try:
-                self.update_index_gdocs(config)
+                self.update_index_disqus(disqus_token, config)
             except Exception as e:
-                msg = "ERROR: While re-indexing: failed to update Google Drive. Continuing..."
+                msg = "ERROR: While re-indexing: failed to update Disqus comment threads. Continuing..."
                 logging.exception(msg)
                 pass
 
@@ -746,7 +746,7 @@ class Search:
     # Google Drive Files/Documents
 
 
-    def update_index_gdocs(self, config):
+    def update_index_gdocs(self, gdrive_token_path, config):
         """
         Update the search index using a collection of 
         Google Drive documents and files.
@@ -778,7 +778,7 @@ class Search:
         # Get the set of remote ids:
         # ------
         # Start with google drive api object
-        gd = GDrive(config)
+        gd = GDrive(gdrive_token_path,config)
         service = gd.get_service()
         drive = service.files()
 
