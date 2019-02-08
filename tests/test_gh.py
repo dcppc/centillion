@@ -8,31 +8,31 @@ from utils import SearchIndexException
 
 
 """
-test_gdrive
+test_gh
 
 Test a real centillion instance hooked up to 
-a real Google Drive account and making real
-calls to the Google Drive API. 
+a real Github account and making real
+calls to the Github API. 
 
 To run, use pytest:
 
     $ pytest
-    $ py.test -q -s test_gdrive.py::GDriveTest
+    $ py.test -q -s test_gh.py::GithubTest
 """
 
 
-CONFIG_FILE = 'config_gdrive.py'
-INDEX_DIR = 'test_search_index_gd'
+CONFIG_FILE = 'config_gh.py'
+INDEX_DIR = 'test_search_index_gh'
 HERE = os.path.split(os.path.abspath(__file__))[0]
 
 # Search index directory location
 si = os.path.join(HERE,INDEX_DIR)
 
 
-class GDriveTest(unittest.TestCase):
+class GithubTest(unittest.TestCase):
     """
     Run tests on a centillion Flask app
-    with real Google Drive API credentials.
+    with real Github API credentials.
     """
     @classmethod
     def setUpClass(self):
@@ -109,8 +109,12 @@ class GDriveTest(unittest.TestCase):
         code = r.status_code
         data = str(r.data)
 
-        # should find 2 google docs
-        self.assertIn('id="gdoc-count">2',data)
+        # should find 1 issue + 1 pull request
+        self.assertIn('id="issue-count">2',data)
+
+        # should find 2 files, 1 markdown
+        self.assertIn('id="ghfile-count">2',data)
+        self.assertIn('id="markdown-count">1',data)
 
 
     @pytest.mark.flaky(reruns=5, reruns_delay=10)
@@ -120,8 +124,9 @@ class GDriveTest(unittest.TestCase):
         will return expected results
         """
         simple_search = {
-                'exceptionally' : ['Google Drive File','Crime and Punishment'],
-                'getting+some+money' : ['Google Drive File','Crime and Punishment','rouble'],
+                'laser+sharks' : ['Github Markdown','Readme.md'],
+                'tarantula' : ['Github Issue','Add a license to this repository'],
+                'seattle' : ['Github Issue','@charlesreid1','Range Rover']
         }
 
         for search_term in simple_search:
@@ -135,5 +140,4 @@ class GDriveTest(unittest.TestCase):
 
             for imp in imperatives:
                 self.assertIn(imp,data)
-
 
