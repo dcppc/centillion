@@ -80,31 +80,31 @@
                                         <span class="badge indexing-count" id="gdoc-count">{{totals["gdoc"]}}</span>
                                         <a href="/master_list?doctype=gdoc#gdoc">
                                         Google Drive files
-                                        </a>,
+                                        </a>&nbsp;&nbsp;
                                     {% endif %}
 
                                     {% if config['GITHUB_ENABLED'] %}
                                         <span class="badge indexing-count" id="issue-count">{{totals["issue"]}}</span>
                                         <a href="/master_list?doctype=issue#issue">
                                         Github issues and pull requests
-                                        </a>,
+                                        </a>&nbsp;&nbsp;
 
                                         <span class="badge indexing-count" id="ghfile-count">{{totals["ghfile"]}}</span>
                                         <a href="/master_list?doctype=ghfile#ghfile">
                                         Github files
-                                        </a>,
+                                        </a>&nbsp;&nbsp;
 
                                         <span class="badge indexing-count" id="markdown-count">{{totals["markdown"]}}</span>
                                         <a href="/master_list?doctype=markdown#markdown">
                                         Github Markdown files
-                                        </a>,
+                                        </a>&nbsp;&nbsp;
                                     {% endif %}
 
                                     {% if config['DISQUS_ENABLED'] %}
                                         <span class="badge indexing-count" id="disqus-count">{{totals["disqus"]}}</span>
                                         <a href="/master_list?doctype=disqus#disqus">
                                         Disqus comment threads
-                                        </a>
+                                        </a>&nbsp;&nbsp;
                                     {% endif %}
 
                                 </div>
