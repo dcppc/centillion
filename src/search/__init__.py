@@ -961,9 +961,13 @@ class Search:
                 org = g.get_organization(this_org)
                 repo = org.get_repo(this_repo)
             except:
-                err = "Error: could not gain access to repository %s"%(r)
-                logging.error(err)
-                continue
+                try:
+                    user = g.get_user(this_org) 
+                    repo = user.get_repo(this_repo)
+                except:
+                    err = "ERROR: could not gain access to repository %s"%(r)
+                    logging.error(err)
+                    continue
 
             # Iterate over each issue thread
             open_issues   = repo.get_issues(state='open')
@@ -1096,9 +1100,13 @@ class Search:
                 org = g.get_organization(this_org)
                 repo = org.get_repo(this_repo)
             except:
-                err = "ERROR: could not gain access to repository %s"%(r)
-                logging.exception(err)
-                continue
+                try:
+                    user = g.get_user(this_org) 
+                    repo = user.get_repo(this_repo)
+                except:
+                    err = "ERROR: could not gain access to repository %s"%(r)
+                    logging.exception(err)
+                    continue
 
 
             # Get head commit
@@ -1127,6 +1135,7 @@ class Search:
                 _, fext = os.path.splitext(fpath)
                 fpathpieces = fpath.split('/')
 
+                # Ignore anything whose name starts with . or _
                 ignore_file = fname[0]=='.' or fname[0]=='_'
                 ignore_dir = False
                 for piece in fpathpieces:
