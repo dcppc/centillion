@@ -3,6 +3,7 @@ import time
 import os
 import centillion
 import unittest
+import pytest
 from utils import SearchIndexException
 
 
@@ -86,6 +87,7 @@ class GDriveTest(unittest.TestCase):
 
         time.sleep(2)
 
+
     def test_1_searchindex(self):
         """Check to make sure search index exists
         """
@@ -94,6 +96,7 @@ class GDriveTest(unittest.TestCase):
             raise SearchIndexException("Error: search index %s should exist, but nothing was found"%(si))
 
 
+    @pytest.mark.flaky(reruns=5, reruns_delay=10)
     def test_2_document_counts(self):
         """
         Verify document counts for this real
@@ -112,6 +115,8 @@ class GDriveTest(unittest.TestCase):
         #self.assertIn('id="markdown-count">',data)
         #self.assertIn('id="disqus-count">',data)
 
+
+    @pytest.mark.flaky(reruns=5, reruns_delay=10)
     def test_3_simple_search(self):
         """
         Verify that searches for known terms 
