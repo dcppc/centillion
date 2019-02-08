@@ -58,15 +58,44 @@ class UpdateIndexTask(object):
     def run(self):
         """Run the actual update index task against live APIs.
         """
-        # Load API credentials
-        self.gh_token       = self.app_config['GITHUB_TOKEN']
-        self.disqus_token   = self.app_config['DISQUS_TOKEN']
 
-         #Load the search index
+        # Load API credentials
+        if self.app_config['GOOGLE_DRIVE_ENABLED'] and 'GOOGLE_DRIVE_CREDENTIALS' not in os.environ:
+            # path to json file containing google drive credentials
+            k = 'GOOGLE_DRIVE_CREDENTIALS_FILE'
+            if k in self.app_config.keys():
+                self.gdrive_token_path = self.app_config[k]
+            else:
+                self.gdrive_token_path = 'credentials.json'
+
+        else:
+            self.gdrive_token_path = ''
+
+        if self.app_config['GITHUB_ENABLED']:
+            self.gh_token = self.app_config['GITHUB_TOKEN']
+        else:
+            self.gh_token = ''
+
+        if self.app_config['DISQUS_ENABLED']:
+            self.disqus_token = self.app_config['DISQUS_TOKEN']
+        else:
+            self.disqus_token = ''
+
+        
+        # Note that you need SOMETHING enabled...
+        if (not self.app_config['GOOGLE_DRIVE_ENABLED'] ) \
+            and (not self.app_config['GITHUB_ENABLED'] ) \
+            and (not self.app_config['DISQUS_ENABLED'] ):
+                raise Exception("Error: Google Drive, Github, and Disqus all disabled.")
+
+
+
+        # Load the search index
         search = Search(self.app_config["INDEX_DIR"])
 
         # Update the index with real docs
-        search.update_index(self.gh_token,
+        search.update_index(self.gdrive_token_path,
+                            self.gh_token,
                             self.disqus_token,
                             self.run_which,
                             self.app_config)

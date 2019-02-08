@@ -24,62 +24,22 @@ that just logged in/granted permission to your app.
 
 
 class GDrive(object):
-    def __init__(self,config):
+    def __init__(self, gdrive_token_path, config):
         """
         Set up the Google Drive API instance.
         Create the API instance here, hand it over in get_service().
         """
-        default_credentials_file = 'credentials.json'
-        default_client_file = 'client_secrets.json'
-
-        # GOOGLE_DRIVE_CREDENTIALS env var takes priority
-        if 'GOOGLE_DRIVE_CREDENTIALS' in os.environ:
-            self.credentials_file = os.environ['GOOGLE_DRIVE_CREDENTIALS']
-            if not os.path.exists(self.credentials_file):
-                err = "ERROR: Missing credentials file specified by GOOGLE_DRIVE_CREDENTIALS "
-                err += "environment variable: %s"%(self.credentials_file)
-                raise Exception(err)
-
-        # GOOGLE_DRIVE_CREDENTIALS config var takes second priority
-        elif 'GOOGLE_DRIVE_CREDENTIALS' in config:
-            self.credentials_file = config['GOOGLE_DRIVE_CREDENTIALS']
-            if not os.path.exists(self.credentials_file):
-                err = "ERROR: Missing credentials file specified by GOOGLE_DRIVE_CREDENTIALS "
-                err += "in centillion config file: %s"%(self.credentials_file)
-                raise Exception(err)
-
-        # hail mary: look for credentials.json
-        elif os.path.exists(default_credentials_file):
-            self.credentials_file = default_credentials_file
-
-        # halfway there: client_secrets.json
-        elif os.path.exists(default_client_file):
-            err = "ERROR: Missing credentials file, only 'client_secrets.json' found. "
-            err += "The 'client_secrets.json' file is for the OAuth application only, "
-            err += "you must use 'client_secrets.json' to authenticate a Google account "
-            err += "with the Google Drive API. See the scripts folder."
-            raise Exception(err)
-
-        else:
-            err = "ERROR: Missing credentials file:\n"
-            err += "- no GOOGLE_DRIVE_CREDENTIALS env var\n"
-            err += "- no GOOGLE_DRIVE_CREDENTIALS config var\n"
-            err += "- no 'credentials.json' found\n"
-            raise Exception(err)
-
         # Setup the Drive v3 API
         self.SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly'
-        self.store = file.Storage(self.credentials_file)
+        self.store = file.Storage(gdrive_token_path)
 
     def get_service(self):
         """
         Return an instance of the Google Drive API service.
         """
-
         creds = self.store.get()
         if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets(self.client_secret_file, self.SCOPES)
-            creds = tools.run_flow(flow, self.store)
+            raise Exception("Error: invalid or missing Google Drive API credentials")
 
         service = build('drive', 'v3', http=creds.authorize(Http()))
         return service

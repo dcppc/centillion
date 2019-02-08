@@ -14,6 +14,7 @@ import json
 import logging
 import markdown
 import codecs
+import subprocess
 
 from datetime import datetime
 
@@ -318,7 +319,9 @@ def setup_routes(app):
         if not search in contents:
             contents.insert(0, search)
     
-        # TODO: Fix this to record information more cleanly
-        with codecs.open(last_searches_file, 'w', encoding='utf-8') as f:
-            f.writelines(contents)
+        ### # Record history of searches
+        ### if not os.path.exists(last_searches_file):
+        ###     subprocess.call(['touch',last_searches_file])
+        ### with codecs.open(last_searches_file, 'w', encoding='utf-8') as f:
+        ###     f.writelines(contents)
 

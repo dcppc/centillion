@@ -46,14 +46,23 @@
                         <div class="col-md-12">
                             <p class="panel-text">Re-index individual document types in the search index.
                             </p>
-                            <p><a href="{{ url_for('update_index',run_which='gdocs') }}"        class="btn btn-large btn-danger btn-reindex-type">Update Google Drive Index</a>
+    {% if config['GOOGLE_DRIVE_ENABLED'] %}
+                            <p><a href="{{ url_for('update_index',run_which='gdocs') }}"   class="btn btn-large btn-danger btn-reindex-type">Update Google Drive Index</a>
                             </p>  
-                            <p><a href="{{ url_for('update_index',run_which='ghfiles') }}"      class="btn btn-large btn-danger btn-reindex-type">Update Github Files Index</a>
+    {% endif %}
+    {% if config['GITHUB_ENABLED'] %}
+                            <p><a href="{{ url_for('update_index',run_which='ghfiles') }}" class="btn btn-large btn-danger btn-reindex-type">Update Github Files Index</a>
                             </p>  
-                            <p><a href="{{ url_for('update_index',run_which='issues') }}"       class="btn btn-large btn-danger btn-reindex-type">Update Github Issues Index</a>
+    {% endif %}
+    {% if config['GITHUB_ENABLED'] %}
+                            <p><a href="{{ url_for('update_index',run_which='issues') }}"  class="btn btn-large btn-danger btn-reindex-type">Update Github Issues Index</a>
                             </p>  
-                            <p><a href="{{ url_for('update_index',run_which='disqus') }}"       class="btn btn-large btn-danger btn-reindex-type">Update Disqus Comment Threads Index</a>
+    {% endif %}
+    {% if config['DISQUS_ENABLED'] %}
+                            <p><a href="{{ url_for('update_index',run_which='disqus') }}"  class="btn btn-large btn-danger btn-reindex-type">Update Disqus Comment Threads Index</a>
                             </p> 
+    {% endif %}
+
                         </div>
                     </div>
                 </div>

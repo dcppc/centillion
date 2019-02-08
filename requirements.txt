@@ -16,3 +16,4 @@ pytz
 markdown
 mkdocs>=1.0
 pytest>=4.2
+pytest-rerunfailures>=6.0

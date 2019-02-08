@@ -9,10 +9,6 @@
 # Configuration variables are loaded by the Flask
 # web server when centillion is started.
 #
-# NOTE: to load a Python file as a Flask 
-# config file, use:
-# >>> app.config.from_pyfile("config_flask.py")
-#
 # Sections:
 # 
 #   Access Control
@@ -21,7 +17,6 @@
 #   User Interface
 #   Github
 #   Google Drive
-#   Groups.io
 #   Disqus
 #   Flask
 
@@ -103,15 +98,15 @@ INDEX_DIR = "search_index"
 # User Interface
 # ==============
 
-# This is the tagline that appears below the
-# centillion logo on all centillion pages
-TAGLINE = "Search the Data Commons"
+# This is the tagline that appears at the top,
+# just below the centillion logo, on all pages
+TAGLINE = "document search engine"
 
 # Customize the organization, name, and URL
 # of the centillion Github repo in the footer
 FOOTER_REPO_ORG = "dcppc"
 FOOTER_REPO_NAME = "centillion"
-FOOTER_REPO_URL = "https://github.com/dcppc/centillion"
+FOOTER_REPO_VERSION = "v1.8public"
 
 # When someone runs a search on centillion, 
 # centillion (under the hood, whoosh) parses the
@@ -143,45 +138,7 @@ GITHUB_OAUTH_CLIENT_SECRET = "YYY"
 TRUNCATE_ISSUES_LISTING = False
 
 REPOSITORIES = [
-        "dcppc/documentation-archive",
-        "dcppc/organize",
-        "dcppc/apis",
-        "dcppc/data-stewards",
-        "dcppc/dcppc-phase1-demos",
-        "dcppc/dcppc-deliverables",
-        "dcppc/dcppc-bot",
-        "dcppc/guids",
-        "dcppc/dcppc.github.io",
-        "dcppc/test-dcppc-deliverables",
-        "dcppc/crosscut-metadata",
-        "dcppc/project-management",
-        "dcppc/dcppc-milestones",
-        "dcppc/dcppc-workshops",
-        "dcppc/2018-may-workshop",
-        "dcppc/internal",
-        "dcppc/private-www",
-        "dcppc/full-stacks",
-        "dcppc/2018-june-workshop",
-        "dcppc/2018-july-workshop",
-        "dcppc/metadata-matrix",
-        "dcppc/design-guidelines",
-        "dcppc/design-guidelines-discuss",
-        "dcppc/lucky-penny",
-        "dcppc/2018-august-workshop",
-        "dcppc/2018-september-workshop",
-        "dcppc/nih-demo-meetings",
-        "dcppc/markdown-issues",
-        "dcppc/2018-paper-dcppc",
-        "dcppc/centillion",
-        "dcppc/public-www",
-        "dcppc/uncle-archie",
-        "dcppc/use-case-library",
-        "dcppc/sodium-documentation",
-        "dcppc/calendars",
-        "dcppc/data-access",
-        "dcppc/four-year-plan",
-        "dcppc/2018-oct-workshop",
-        "dcppc/cloud-guidebook",
+        "dcppc/centillion"
 ]
 
 
@@ -194,27 +151,13 @@ GOOGLE_DRIVE_ENABLED = True
 # client API credentials, downloaded from
 # Google Cloud console. This is required to
 # index Google Drive files.
-
+# NOTE: this is different from client_secret.json
+GOOGLE_DRIVE_CREDENTIALS_FILE="credentials.json"
 
 # Flag to indicate whether to truncate the
 # list of documents processed from Google Drive.
 # This is mainly useful for testing.
 TRUNCATE_DRIVE_LISTING = False
-
-
-# Groups.io
-# =========
-
-GROUPSIO_ENABLED = False
-
-# API token (for the API endpoints that work)
-GROUPSIO_TOKEN = "XXXXX"
-
-# Groups.io username and password (for the API
-# endpoints that do not work and require a
-# web spider to crawl the page)
-GROUPSIO_USERNAME = "XXXXX"
-GROUPSIO_PASSWORD = "XXXXX"
 
 
 # Disqus
