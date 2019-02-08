@@ -1,6 +1,8 @@
+secrets.py
 config*.py
 config_flask.py
 credentials.json
+client_secret.json
 drive*.json
 feedback_database.json
 vp
