@@ -104,9 +104,42 @@ class FakeDocsTest(unittest.TestCase):
             r = self.client.get(r.headers['Location'])
         code = r.status_code
         data = str(r.data)
-        self.assertIn('id="gdoc-count">1',data)
+        self.assertIn('id="gdoc-count">2',data)
         self.assertIn('id="issue-count">1',data)
         self.assertIn('id="ghfile-count">1',data)
         self.assertIn('id="markdown-count">1',data)
         self.assertIn('id="disqus-count">1',data)
+
+
+    def test_3_simple_search(self):
+        """Verify that searches for known terms return expected results
+        """
+        # Create a map of search terms: (keys)
+        # keys - the term to search for
+        # values - list of strings that must appear in output
+        simple_search = {
+                'barley' : ['Disqus Thread','for the improvement thereof'],
+                'masked+figure' : ['Google Drive File', 'Edgar Allen Poe'],
+                'bananas' : ['Github File','preview','not available'],
+                'bacteria' : ['Github Markdown','Github Issue','Chicken_and_Waffles.md','@pasteur','microbiologist Louis Pasteur'],
+                'microscope' : ['Github Markdown','seventeenth century','Chicken_and_Waffles.md']
+        }
+
+        #'pineapple' : 'THIS IS BROKEN'
+        #'oranges' : 'THIS IS BROKEN TOO'
+        # need to index repo name too,
+        # get partial matches on repo name
+        # and on (full) file path
+
+        for search_term in simple_search:
+
+            r = self.client.get('/search?query=%s'%(search_term))
+            code = r.status_code
+            data = str(r.data)
+            self.assertEqual(code,200)
+
+            imperatives = simple_search[search_term]
+
+            for imp in imperatives:
+                self.assertIn(imp,data)
 

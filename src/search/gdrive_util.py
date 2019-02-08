@@ -39,8 +39,7 @@ class GDrive(object):
         """
         creds = self.store.get()
         if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets(self.client_secret_file, self.SCOPES)
-            creds = tools.run_flow(flow, self.store)
+            raise Exception("Error: invalid or missing Google Drive API credentials")
 
         service = build('drive', 'v3', http=creds.authorize(Http()))
         return service

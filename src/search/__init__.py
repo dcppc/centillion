@@ -14,7 +14,6 @@ from dateutil.parser import parse
 
 import bs4
 import shutil
-import html.parser
 import pytz
 
 from github import Github, GithubException
@@ -159,7 +158,6 @@ class Search:
     ix = None
     index_folder = None
     markdown = mistune.Markdown(renderer=DontEscapeHtmlInCodeRenderer(), escape=False)
-    html_parser = html.parser.HTMLParser()
     schema = None
 
     def __init__(self, index_folder):
@@ -175,39 +173,43 @@ class Search:
         """
         # Google Drive Files
         if run_which=='all' or run_which=='gdocs':
-            try:
-                self.update_index_gdocs(gdrive_token_path,config)
-            except Exception as e:
-                msg = "ERROR: While re-indexing: failed to update Google Drive. Continuing..."
-                logging.exception(msg)
-                pass
+            if config['GOOGLE_DRIVE_ENABLED']:
+                try:
+                    self.update_index_gdocs(gdrive_token_path,config)
+                except Exception as e:
+                    msg = "ERROR: While re-indexing: failed to update Google Drive. Continuing..."
+                    logging.exception(msg)
+                    pass
 
         # Github files
         if run_which=='all' or run_which=='ghfiles':
-            try:
-                self.update_index_ghfiles(gh_token,config)
-            except Exception as e:
-                msg = "ERROR: While re-indexing: failed to update Github files. Continuing..."
-                logging.exception(msg)
-                pass
+            if config['GITHUB_ENABLED']:
+                try:
+                    self.update_index_ghfiles(gh_token,config)
+                except Exception as e:
+                    msg = "ERROR: While re-indexing: failed to update Github files. Continuing..."
+                    logging.exception(msg)
+                    pass
 
         # Github issues
         if run_which=='all' or run_which=='issues':
-            try:
-                self.update_index_issues(gh_token,config)
-            except Exception as e:
-                msg = "ERROR: While re-indexing: failed to update Github issues. Continuing..."
-                logging.exception(msg)
-                pass
+            if config['GITHUB_ENABLED']:
+                try:
+                    self.update_index_issues(gh_token,config)
+                except Exception as e:
+                    msg = "ERROR: While re-indexing: failed to update Github issues. Continuing..."
+                    logging.exception(msg)
+                    pass
 
         # Disqus
         if run_which=='all' or run_which=='disqus':
-            try:
-                self.update_index_disqus(disqus_token, config)
-            except Exception as e:
-                msg = "ERROR: While re-indexing: failed to update Disqus comment threads. Continuing..."
-                logging.exception(msg)
-                pass
+            if config['DISQUS_ENABLED']:
+                try:
+                    self.update_index_disqus(disqus_token, config)
+                except Exception as e:
+                    msg = "ERROR: While re-indexing: failed to update Disqus comment threads. Continuing..."
+                    logging.exception(msg)
+                    pass
 
 
 
@@ -886,7 +888,9 @@ class Search:
             for drop_id in indexed_ids:
                 writer.delete_by_term('id',drop_id)
 
-        # Load the fake
+        # Load the fakes
+
+        # google drive document (full content)
         with open(os.path.join(here,'payloads/gdoc_sample.json'),'r') as f:
             sample = json.load(f)
 
@@ -895,9 +899,20 @@ class Search:
 
         # Write it to the search index
         writer.add_document(**sample)
+
+        # google drive file (no content)
+        with open(os.path.join(here,'payloads/gdrive_sample.json'),'r') as f:
+            sample2 = json.load(f)
+
+        for k in ['indexed_time','created_time','modified_time']:
+            sample2[k] = parse(sample2[k])
+
+        # Write it to the search index
+        writer.add_document(**sample2)
+
         writer.commit()
 
-        msg = "Done, updated 1 fake Google Drive document in the index"
+        msg = "Done, updated 2 fake Google Drive documents in the index"
         logging.info(msg)
 
 
@@ -1406,7 +1421,8 @@ class Search:
                 # just use the first 1,000 words of the document
                 highlights = self.cap(r['content'], 1000)
 
-            highlights = self.html_parser.unescape(highlights)
+            import html
+            highlights = html.unescape(highlights)
 
             # ----------------------------------------------
             # Before continuing, we need to process some of the
