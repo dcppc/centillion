@@ -1,0 +1,708 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="http://charlesreid1.github.io/centillion/backend/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching pages">
+      
+        <meta name="lang:search.result.one" content="1 matching page">
+      
+        <meta name="lang:search.result.other" content="# matching page">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="..">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.3">
+    
+    
+      
+        <title>Backend Search - centillion search engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.451f80e5.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.22915126.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#2196f3">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto Slab","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../#backend" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">search</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                centillion search engine
+              </span>
+              <span class="md-header-nav__topic">
+                Backend Search
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search this site" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching this site
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+    
+    <div class="md-source__repository">
+      charlesreid1/centillion
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
+      
+        <i class="md-icon">search</i>
+      
+    </a>
+    centillion search engine
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+    
+    <div class="md-source__repository">
+      charlesreid1/centillion
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../config/" title="Configuring Centillion" class="md-nav__link">
+      Configuring Centillion
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../submodules/" title="Submodules" class="md-nav__link">
+      Submodules
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Backend Search
+      </label>
+    
+    <a href="./" title="Backend Search" class="md-nav__link md-nav__link--active">
+      Backend Search
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#technologies" title="Technologies" class="md-nav__link">
+    Technologies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" title="Configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-class" title="Search class" class="md-nav__link">
+    Search class
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-search-class-does" title="What the Search class does" class="md-nav__link">
+    What the Search class does
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods-implemented-by-the-search-class" title="Methods implemented by the search class" class="md-nav__link">
+    Methods implemented by the search class
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-index-schema" title="Search Index Schema" class="md-nav__link">
+    Search Index Schema
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schema-fields" title="Schema fields" class="md-nav__link">
+    Schema fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#translating-new-items-into-the-schema" title="Translating new items into the schema" class="md-nav__link">
+    Translating new items into the schema
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../frontend/" title="Frontend Web Interface" class="md-nav__link">
+      Frontend Web Interface
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../auth/" title="Github Authentication" class="md-nav__link">
+      Github Authentication
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../apis_all/" title="APIs" class="md-nav__link">
+      APIs
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#technologies" title="Technologies" class="md-nav__link">
+    Technologies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" title="Configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-class" title="Search class" class="md-nav__link">
+    Search class
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-search-class-does" title="What the Search class does" class="md-nav__link">
+    What the Search class does
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods-implemented-by-the-search-class" title="Methods implemented by the search class" class="md-nav__link">
+    Methods implemented by the search class
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search-index-schema" title="Search Index Schema" class="md-nav__link">
+    Search Index Schema
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schema-fields" title="Schema fields" class="md-nav__link">
+    Schema fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#translating-new-items-into-the-schema" title="Translating new items into the schema" class="md-nav__link">
+    Translating new items into the schema
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="backend">Backend<a class="headerlink" href="#backend" title="Permanent link">&para;</a></h1>
+<h2 id="technologies">Technologies<a class="headerlink" href="#technologies" title="Permanent link">&para;</a></h2>
+<p>centillion is a Python program built using
+<a href="https://bitbucket.org/mchaput/whoosh">whoosh</a> (search
+engine library).  It indexes the full text of docx files
+in Google Documents, just the filenames for non-docx
+files. The full text of issues and their comments are
+indexed, and results are grouped by issue. centillion
+requires Google Drive and Github OAuth apps. The
+credentials to access these services via their respective
+APIs can be accomplished by providing the API credentials
+via the centillion configuration file.</p>
+<p>Also see <a href="../apis_all/">APIs</a> page.</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<p>See <a href="../config/">Configuring centillion</a> page.</p>
+<h2 id="search-class">Search class<a class="headerlink" href="#search-class" title="Permanent link">&para;</a></h2>
+<p>The <code>centillion_search.py</code> file defines a
+<code>Search</code> class that serves as the backend
+for centillion.</p>
+<h3 id="what-the-search-class-does">What the Search class does<a class="headerlink" href="#what-the-search-class-does" title="Permanent link">&para;</a></h3>
+<p>The <code>Search</code> class has two roles:</p>
+<ul>
+<li>
+<p>create (and update) the search index
+  (this also requires the <code>Search</code> class
+  to define the schema for storing documents)</p>
+</li>
+<li>
+<p>run queries against the search index and 
+  prepare the query results to be rendered 
+  by Flask using Jinja templates</p>
+</li>
+</ul>
+<h3 id="methods-implemented-by-the-search-class">Methods implemented by the search class<a class="headerlink" href="#methods-implemented-by-the-search-class" title="Permanent link">&para;</a></h3>
+<p>The Search class implements the following methods:</p>
+<ul>
+<li><code>update_index</code> (update entire search index)</li>
+<li>
+<p><code>open_index</code> (create new schema, open index on disk)</p>
+</li>
+<li>
+<p><code>add_drive_file</code> (add an individual google drive file item)</p>
+</li>
+<li><code>add_issue</code> (add an individual github issue item)</li>
+<li><code>add_ghfile</code> (add an individual github file item)</li>
+<li><code>add_emailthread</code> (add groups.io email thread item)</li>
+<li>
+<p><code>add_disqusthread</code> (add disqus comments thread)</p>
+</li>
+<li>
+<p><code>update_index_gdocs</code> (iterate over all Google Drive documents and add them)</p>
+</li>
+<li><code>update_index_issues</code> (iterate over all Github issues and add them)</li>
+<li><code>update_index_ghfiles</code> (iterate over all github files and add them)</li>
+<li><code>update_index_emailthreads</code> (iterate over all groups.io subgroup email threads and add them)</li>
+<li>
+<p><code>update_index_disqus</code> (iterate over all disqus comment threads and add them)</p>
+</li>
+<li>
+<p><code>create_search_results</code> (package search results for the Flask template)</p>
+</li>
+<li><code>get_document_total_count</code> (ask centillion for count of documents of each type)</li>
+<li>
+<p><code>get_list</code> (get a listing of all files of a particular type)</p>
+</li>
+<li>
+<p><code>search</code> (perform a search on the search index with the user's query)</p>
+</li>
+</ul>
+<h2 id="search-index-schema">Search Index Schema<a class="headerlink" href="#search-index-schema" title="Permanent link">&para;</a></h2>
+<h3 id="schema-fields">Schema fields<a class="headerlink" href="#schema-fields" title="Permanent link">&para;</a></h3>
+<p>Following is a list of fields contained in the 
+search index schema. (These are not all defined
+for all document.)</p>
+<ul>
+<li><code>id</code></li>
+<li><code>kind</code></li>
+<li><code>fingerprint</code></li>
+<li><code>created_time</code></li>
+<li><code>modified_time</code></li>
+<li><code>indexed_time</code></li>
+<li><code>title</code></li>
+<li><code>url</code></li>
+<li><code>mimetype</code></li>
+<li><code>owner_email</code></li>
+<li><code>owner_name</code></li>
+<li><code>repo_name</code></li>
+<li><code>repo_url</code></li>
+<li><code>issue_title</code></li>
+<li><code>issue_url</code></li>
+<li><code>github_user</code></li>
+<li><code>content</code></li>
+</ul>
+<h3 id="translating-new-items-into-the-schema">Translating new items into the schema<a class="headerlink" href="#translating-new-items-into-the-schema" title="Permanent link">&para;</a></h3>
+<p>centillion contains support for Google Drive,
+Github, Groups.io, and Disqus APIs. </p>
+<p>If you want to add a new API with new types of items,
+you need to map the fields of the new type of items 
+that centillion will index to the search index schema
+fields above.</p>
+<p>Not every item needs to define every field. However, 
+if the schema needs new fields added to it, the entire
+search index will need to be re-built (may be 
+time-consuming).</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../submodules/" title="Submodules" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Submodules
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../frontend/" title="Frontend Web Interface" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Frontend Web Interface
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            <span style="font-size: 16px;">Report problems and typos: <a href="https://github.com/dcppc/centillion/issues/new">file an issue</a> in the <a href="https://github.com/dcppc/centillion">dcppc/centillion</a> repository</span> <br />
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.e72fd936.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+        <script src="../search/main.js"></script>
+      
+    
+    
+      
+    
+  </body>
+</html>

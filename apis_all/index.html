@@ -1,0 +1,752 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="http://charlesreid1.github.io/centillion/apis_all/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching pages">
+      
+        <meta name="lang:search.result.one" content="1 matching page">
+      
+        <meta name="lang:search.result.other" content="# matching page">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="..">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.3">
+    
+    
+      
+        <title>APIs - centillion search engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.451f80e5.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.22915126.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#2196f3">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+      
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto Slab","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../#apis-used" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">search</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                centillion search engine
+              </span>
+              <span class="md-header-nav__topic">
+                APIs
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search this site" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching this site
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+    
+    <div class="md-source__repository">
+      charlesreid1/centillion
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
+      
+        <i class="md-icon">search</i>
+      
+    </a>
+    centillion search engine
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+    
+    <div class="md-source__repository">
+      charlesreid1/centillion
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../config/" title="Configuring Centillion" class="md-nav__link">
+      Configuring Centillion
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../submodules/" title="Submodules" class="md-nav__link">
+      Submodules
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../backend/" title="Backend Search" class="md-nav__link">
+      Backend Search
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../frontend/" title="Frontend Web Interface" class="md-nav__link">
+      Frontend Web Interface
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../auth/" title="Github Authentication" class="md-nav__link">
+      Github Authentication
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        APIs
+      </label>
+    
+    <a href="./" title="APIs" class="md-nav__link md-nav__link--active">
+      APIs
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#apis-used" title="APIs used" class="md-nav__link">
+    APIs used
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-drive" title="Google Drive" class="md-nav__link">
+    Google Drive
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-an-account" title="Creating an account" class="md-nav__link">
+    Creating an account
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-the-api" title="Enabling the API" class="md-nav__link">
+    Enabling the API
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-credentials" title="Creating credentials" class="md-nav__link">
+    Creating credentials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converting-client-secret-to-credentials" title="Converting client secret to credentials" class="md-nav__link">
+    Converting client secret to credentials
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github" title="Github" class="md-nav__link">
+    Github
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-api-keys" title="Creating API keys" class="md-nav__link">
+    Creating API keys
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disqus" title="Disqus" class="md-nav__link">
+    Disqus
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#apis-used" title="APIs used" class="md-nav__link">
+    APIs used
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-drive" title="Google Drive" class="md-nav__link">
+    Google Drive
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-an-account" title="Creating an account" class="md-nav__link">
+    Creating an account
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-the-api" title="Enabling the API" class="md-nav__link">
+    Enabling the API
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-credentials" title="Creating credentials" class="md-nav__link">
+    Creating credentials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converting-client-secret-to-credentials" title="Converting client secret to credentials" class="md-nav__link">
+    Converting client secret to credentials
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github" title="Github" class="md-nav__link">
+    Github
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-api-keys" title="Creating API keys" class="md-nav__link">
+    Creating API keys
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disqus" title="Disqus" class="md-nav__link">
+    Disqus
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>APIs</h1>
+                
+                <h2 id="apis-used">APIs used<a class="headerlink" href="#apis-used" title="Permanent link">&para;</a></h2>
+<p>To index content provided and hosted by third party
+services, centillion uses API calls. API keys are 
+provided in the centillion configuration file.</p>
+<p>Currently, centillion works with the following APIs</p>
+<ul>
+<li><a href="#drive">Google Drive</a></li>
+<li><a href="#github">Github</a></li>
+<li><a href="#disqus">Disqus</a></li>
+</ul>
+<p>We cover more information about each below.</p>
+<p><a name="drive"></a></p>
+<h2 id="google-drive">Google Drive<a class="headerlink" href="#google-drive" title="Permanent link">&para;</a></h2>
+<p>The Google Drive API is used to obtain documents from
+Google Drive. We walk through the steps of setting up
+the Google Drive API below.</p>
+<h3 id="creating-an-account">Creating an account<a class="headerlink" href="#creating-an-account" title="Permanent link">&para;</a></h3>
+<p>Create an account: it is important to note that when
+you provide a Google Drive API key to centillion, 
+centillion will index <strong>everything that it can access</strong>.
+This means you <strong>shoudl not</strong> use individuals' Google
+accounts to set up centillion. Instead, <strong>create a 
+dedicated Google account for your centillion instance</strong>
+and grant it access only to the items or folders that
+need to be indexed.</p>
+<h3 id="enabling-the-api">Enabling the API<a class="headerlink" href="#enabling-the-api" title="Permanent link">&para;</a></h3>
+<p>Once you have created an account, you need to enable
+the Google Drive API from the Google Cloud console.</p>
+<p>Instructions for enabling the Google Drive API here:
+<a href="https://developers.google.com/drive/api/v3/enable-sdk">https://developers.google.com/drive/api/v3/enable-sdk</a></p>
+<p>Start by opening the Google Cloud console:
+<a href="https://console.cloud.google.com/">https://console.cloud.google.com/</a></p>
+<p>In the console, create a new project for your 
+centillion instance.</p>
+<p>Once you've created your new project, you should be
+on the APIs page. If not, you can always click the
+three-line hamburger menu icon (top left) and pick
+APIs from there.</p>
+<p>To enable the Google Drive API from the APIs page,
+click "Library" on the left side menu. Search for
+Google Drive, pick the Google Drive API result,
+and pick "Enable".</p>
+<h3 id="creating-credentials">Creating credentials<a class="headerlink" href="#creating-credentials" title="Permanent link">&para;</a></h3>
+<p>Once you have enabled the API, you still need to
+make API keys to call the Google Drive API.
+You can do this from the APIs page of the Google 
+Cloud console.</p>
+<p>To create Google Drive credentials from the APIs
+page, pick "Credentials" on the left side menu.
+Pick Create Credentials, then OAuth credentials.
+You can add the project name to the "Consent Screen",
+and leave everything else blank. When asked for
+an application type, pick "Other".</p>
+<p>Once you have done this, a temporary window showing 
+your API keys will pop up. There is no need to save
+this information. Click "OK" and you should see your
+new credentials show up in the list.</p>
+<p>On the right side, there is a down arrow icon.
+Click this to download your OAuth API credentials.
+This will download <code>client_secret.json</code>.</p>
+<p><strong>IMPORTANT:</strong> <code>client_secret.json</code> contains information
+specific to the centillion OAuth application you just
+created, it <em>does not</em> give you the ability to use
+the API by itself. To do that, you have to log in
+using your new centillion Google account, and grant 
+permission for the centillion OAuth application to 
+make API calls using that account.</p>
+<p>(Note that normally the account creating an app is 
+different from the account granting permission to 
+an app.)</p>
+<h3 id="converting-client-secret-to-credentials">Converting client secret to credentials<a class="headerlink" href="#converting-client-secret-to-credentials" title="Permanent link">&para;</a></h3>
+<p>Once the Google Drive API is enabled, you can download
+<code>client_secrets.json</code>, which contains a token and a
+secret token that enable you to verify you are the
+true owner of the centillion OAuth application that
+was just created.</p>
+<p>To link these to an account, use the 
+<code>scripts/prepare_gdrive.py</code> script in this repo
+(requires the <code>google-api-python-client</code> package):</p>
+<pre class="codehilite"><code>$ pip install --upgrade google-api-python-client
+
+$ ls client_secrets.json
+client_secrets.json
+
+$ python scripts/prepare_gdrive.py</code></pre>
+
+
+<p>This will look for a <code>clients_secret.json</code> in the 
+current directory, and will use it to 
+generate a login link, which a Google
+user can then visit and log in. This will then
+create a <code>credentials.json</code> file, which is what
+centillion needs to make real API calls.</p>
+<p><a name="github"></a></p>
+<h2 id="github">Github<a class="headerlink" href="#github" title="Permanent link">&para;</a></h2>
+<p>There are two types of Github API credentials, used
+for two different things by centillion.</p>
+<p>First, if centillion is indexing Github content (files
+or Markdown in a Github repo, or Github issues or pull
+requests), it will use a Github API access token to
+access information about the repository. This key
+is provided in the centillion configuration file.</p>
+<p>Second, and <em>independent of whether centillion is indexing
+any Github content</em>, centillion implements an
+authentication layer to limit access to authorized
+users only. This authentication layer uses Github
+accounts to control access (specific Github users,
+organizations, or teams are whitelisted in the
+centillion configuration file). This requires an
+OAuth application, since users log in using their
+Github account to verify their identity. The OAuth
+application key and secret are provided in the
+centillion configuration file.</p>
+<h3 id="creating-api-keys">Creating API keys<a class="headerlink" href="#creating-api-keys" title="Permanent link">&para;</a></h3>
+<p>The following instructions cover creating both types
+of API credentials mentioned above. </p>
+<p>Before logging into Github, decide what Github account
+you should use. Like with Google Drive, it is recommended
+to use a dedicated Github account for your centillion
+instance. The account should have access to any private
+repositories that are to be indexed, and should have
+the ability to view the members of a Github organization
+or team, if those are used to control access.</p>
+<p>(For example, if access to centillion is restricted to
+members of the "Admins" group using centillion's access
+control mechanism, the account used to create API keys
+must be able to see who is in the "Admins" group!)</p>
+<p>Start by logging into a Github account.</p>
+<p>Click user icon in upper right and pick Settings.</p>
+<p>Pick Developer Settings on the left side menu.</p>
+<p>From here, you can create an API access token or
+OAuth application credentials.</p>
+<p>Copy and paste the API keys into the centillion 
+config file.</p>
+<p><a name="disqus"></a></p>
+<h2 id="disqus">Disqus<a class="headerlink" href="#disqus" title="Permanent link">&para;</a></h2>
+<p>The Disqus API takes a URL and returns a comment thread.</p>
+<p>The <a href="https://help.disqus.com/developer/using-the-api">using the api</a>
+instructions at the disqus help site is a
+useful place to start.</p>
+<p>First, <a href="https://help.disqus.com/api/how-to-create-an-api-application">create an api application</a>
+using an account that is an owner or admin
+for the Disqus forum/forums being indexed.</p>
+<p>Once you hae an API key, you can provide it
+in the centillion configuration file.</p>
+<p>To test out the ability to list all threads in a forum
+using the API, you can run the following curl command
+(replacing the forum name and public API key):</p>
+<pre class="codehilite"><code>$ curl -0 -L &quot;https://disqus.com/api/3.0/threads/list.json?forum=&lt;forum-name-here&gt;&amp;api_key=&lt;public-api-key-here&gt;</code></pre>
+
+
+<p>This will return json.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../auth/" title="Github Authentication" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Github Authentication
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            <span style="font-size: 16px;">Report problems and typos: <a href="https://github.com/dcppc/centillion/issues/new">file an issue</a> in the <a href="https://github.com/dcppc/centillion">dcppc/centillion</a> repository</span> <br />
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.e72fd936.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+        <script src="../search/main.js"></script>
+      
+    
+    
+      
+    
+  </body>
+</html>
