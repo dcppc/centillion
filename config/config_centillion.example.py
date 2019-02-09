@@ -27,6 +27,14 @@
 # Is there a layer of access control 
 # based on Github in place to protect
 # this centillion instance?
+ACCESS_CONTROL = False
+
+# If you have enabled a Github authentication layer,
+# you must create a Github OAuth application, and
+# obtain a client ID and client secret for your
+# centillion instance.
+GITHUB_OAUTH_CLIENT_ID      = "XXXXX"
+GITHUB_OAUTH_CLIENT_SECRET  = "XXXXX"
 
 # Access control whitelist:
 
@@ -125,13 +133,6 @@ GITHUB_ENABLED = True
 # a Github API access token is used.
 GITHUB_TOKEN = "XXXXX"
 
-# If you have enabled a Github authentication layer,
-# you must create a Github OAuth application, and
-# obtain a client ID and client secret for your
-# centillion instance.
-GITHUB_OAUTH_CLIENT_ID      = "XXXXX"
-GITHUB_OAUTH_CLIENT_SECRET  = "XXXXX"
-
 # Flag to indicate whether to truncate the
 # list of a repo's issues/PRs processed.
 # This is mainly useful for testing.
@@ -175,5 +176,5 @@ DISQUS_TOKEN = "XXXXX"
 # Flask secret key 
 # (should be a random string, this is
 # used to establish sessions with users)
-SECRET_KEY = 'XXXXX'
+SECRET_KEY = "XXXXX"
 
