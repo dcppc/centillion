@@ -1,6 +1,18 @@
 centillion is configured using a single configuration file that contains
 configuration details for both the flask frontend and the whoosh backend.
 
+## General Info
+
+## Example config files
+
+## Test config files
+
+
+
+
+
+
+
 ## Just one configuration file (frontend+backend)
 
 To configure centillion, provide a single configuration file that 
