@@ -15,8 +15,8 @@
 # This is reliant on having pyenv set up already
 # on beavo, the server.
 
-CENTIL_DIR="/home/ubuntu/centillion"
-PYENV_BIN="/home/ubuntu/.pyenv/bin"
+CENTIL_DIR="${HOME}/centillion"
+PYENV_BIN="${HOME}/.pyenv/bin"
 
 echo "Preparing python"
 eval "$(${PYENV_BIN}/pyenv init -)"
@@ -32,4 +32,5 @@ python setup.py build install
 
 echo "Running centillion"
 
-CENTILLION_CONFIG="${CENTIL_DIR}/config/config_flask.py" python ${CENTIL_DIR}/scripts/run_centillion.py && tail -f /nev/null
+python ${CENTIL_DIR}/scripts/run_centillion.py && tail -f /nev/null
+
