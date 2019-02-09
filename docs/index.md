@@ -1,9 +1,10 @@
 # centillion
 
-![version number](https://img.shields.io/badge/version-1.8public-blue.svg)
+![version number](https://img.shields.io/badge/version-1.8.0-blue.svg)
 
-**centillion**: a search engine that searches across Github issues, Github pull requests, Github files, 
-Google Drive documents, Groups.io email threads, and Disqus comment threads.
+**centillion**: a document search engine that searches
+across Github issues, Github pull requests, Github files,
+Google Drive documents, and Disqus comment threads.
 
 **a centillion**: a very large number consisting of a 1 with 303 zeros after it.
 
@@ -16,7 +17,7 @@ One centillion is 3.03 log-times better than a googol.
 
 centillion is a search engine that can index different kinds of document
 collections: Google Documents (.docx files), Google Drive files, Github issues,
-Github files, Github Markdown files, and Groups.io email threads.
+Github files, Github Markdown files, and Disqus comment threads.
 
 
 ## How centillion works
@@ -32,7 +33,12 @@ and interfacing with the search index. ([More information](frontend.md))
 
 ## Quick start: using centillion
 
-Also see [Quick Start](quickstart.md).
+To get started with centillion, you will need to create
+a centillion configuration file. Start with the example
+configuration file in the `examples/` directory.
+
+
+
 
 To use centillion, start with a Python script that will import
 centillion, create an instance of the webapp, set any custom
