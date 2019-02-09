@@ -1,6 +1,6 @@
 # centillion
 
-![version number](https://img.shields.io/badge/version-1.8dev-blue.svg)
+![version number](https://img.shields.io/badge/version-1.8public-blue.svg)
 
 **centillion**: a document search engine that searches
 across Github issues, Github pull requests, Github files,
