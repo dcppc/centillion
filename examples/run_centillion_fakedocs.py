@@ -1,7 +1,7 @@
 import centillion
 import os
 
-CONFIG_FILE = 'config_localtests.py'
+CONFIG_FILE = '../config/config_centillion.example.py'
 INDEX_DIR = 'search_index'
 HERE = os.path.split(os.path.abspath(__file__))[0]
 
