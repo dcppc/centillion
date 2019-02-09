@@ -27,6 +27,14 @@
 # Is there a layer of access control 
 # based on Github in place to protect
 # this centillion instance?
+ACCESS_CONTROL = False
+
+# If you have enabled a Github authentication layer,
+# you must create a Github OAuth application, and
+# obtain a client ID and client secret for your
+# centillion instance.
+GITHUB_OAUTH_CLIENT_ID      = "XXXXX"
+GITHUB_OAUTH_CLIENT_SECRET  = "XXXXX"
 
 # Access control whitelist:
 

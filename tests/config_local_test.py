@@ -92,7 +92,7 @@ DEBUG = False
 # all API credentials are ignored.
 # (This is extremely useful for testing without the
 # hassle of APIs.)
-FAKEDOCS = False
+FAKEDOCS = True
 
 
 # Searching
@@ -100,7 +100,7 @@ FAKEDOCS = False
 
 # Set the on-disk location of the search
 # index (relative path)
-INDEX_DIR = "test_search_index_gh"
+INDEX_DIR = "search_index"
 
 
 # User Interface
@@ -131,7 +131,7 @@ GITHUB_ENABLED = True
 
 # To access documents in various repositories,
 # a Github API access token is used.
-from secrets import GITHUB_TOKEN
+GITHUB_TOKEN = "XXXXX"
 
 # Flag to indicate whether to truncate the
 # list of a repo's issues/PRs processed.
@@ -146,14 +146,28 @@ REPOSITORIES = [
 # Google Drive
 # =============
 
-GOOGLE_DRIVE_ENABLED = False
+GOOGLE_DRIVE_ENABLED = True
 
+# Set the path to the JSON file containing 
+# client API credentials, downloaded from
+# Google Cloud console. This is required to
+# index Google Drive files.
+# NOTE: this is different from client_secret.json
+GOOGLE_DRIVE_CREDENTIALS_FILE="credentials.json"
+
+# Flag to indicate whether to truncate the
+# list of documents processed from Google Drive.
+# This is mainly useful for testing.
+TRUNCATE_DRIVE_LISTING = False
 
 
 # Disqus
 # ======
 
-DISQUS_ENABLED = False
+DISQUS_ENABLED = True
+
+# Disqus API token
+DISQUS_TOKEN = "XXXXX"
 
 
 # Flask
@@ -162,5 +176,5 @@ DISQUS_ENABLED = False
 # Flask secret key 
 # (should be a random string, this is
 # used to establish sessions with users)
-from secrets import SECRET_KEY
+from secret import SECRET_KEY
 
