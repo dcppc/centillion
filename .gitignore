@@ -2,10 +2,7 @@ encrypted_config_files.tar.gz
 secrets.py
 config*.py
 config_flask.py
-credentials.json
-client_secret.json
-drive*.json
-feedback_database.json
+*.json
 vp
 betavp
 *.pyc
