@@ -13,7 +13,7 @@ credentials to access these services via their respective
 APIs can be accomplished by providing the API credentials
 via the centillion configuration file.
 
-Also see [APIs](api_all.md) page.
+Also see [APIs](apis_all.md) page.
 
 
 ## Configuration

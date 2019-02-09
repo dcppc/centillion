@@ -282,6 +282,6 @@ for details.
 
 ## APIs
 
-See the [APIs](api_all.md) page for an overview of the third-party
+See the [APIs](apis_all.md) page for an overview of the third-party
 APIs that centillion interfaces with to populate the search index.
 

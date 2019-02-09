@@ -82,6 +82,6 @@ third-party services:
 * Google Drive
 * Disqus
 
-See [APIs](api_all.md) page for details about the types of API keys
+See [APIs](apis_all.md) page for details about the types of API keys
 required and how each API is used by centillion.
 
