@@ -84,7 +84,7 @@ DEBUG = False
 # all API credentials are ignored.
 # (This is extremely useful for testing without the
 # hassle of APIs.)
-FAKEDOCS = True
+FAKEDOCS = False
 
 
 # Searching
@@ -92,21 +92,20 @@ FAKEDOCS = True
 
 # Set the on-disk location of the search
 # index (relative path)
-INDEX_DIR = "search_index"
+INDEX_DIR = "test_search_index_gd"
 
 
 # User Interface
 # ==============
 
-# This is the tagline that appears at the top,
-# just below the centillion logo, on all pages
-TAGLINE = "document search engine"
+# This is the tagline that appears below the
+# centillion logo on all centillion pages
+TAGLINE = "the document search engine"
 
 # Customize the organization, name, and URL
 # of the centillion Github repo in the footer
 FOOTER_REPO_ORG = "dcppc"
 FOOTER_REPO_NAME = "centillion"
-FOOTER_REPO_VERSION = "v1.8public"
 
 # When someone runs a search on centillion, 
 # centillion (under the hood, whoosh) parses the
@@ -120,26 +119,7 @@ SHOW_PARSED_QUERY = False
 # Github
 # ======
 
-GITHUB_ENABLED = True
-
-# Set the API keys for the Github API.
-# These are obtained from Github Account Settings.
-# These are required to index Github issues and files.
-GITHUB_OAUTH_CLIENT_ID = "XXX"
-GITHUB_OAUTH_CLIENT_SECRET = "YYY"
-
-# Alternatively, a Github access token
-# can be used
-#GITHUB_TOKEN = "XXXXX"
-
-# Flag to indicate whether to truncate the
-# list of a repo's issues/PRs processed.
-# This is mainly useful for testing.
-TRUNCATE_ISSUES_LISTING = False
-
-REPOSITORIES = [
-        "dcppc/centillion"
-]
+GITHUB_ENABLED = False
 
 
 # Google Drive
@@ -152,7 +132,7 @@ GOOGLE_DRIVE_ENABLED = True
 # Google Cloud console. This is required to
 # index Google Drive files.
 # NOTE: this is different from client_secret.json
-GOOGLE_DRIVE_CREDENTIALS_FILE="credentials.json"
+GOOGLE_DRIVE_CREDENTIALS_FILE="../config/credentials.json"
 
 # Flag to indicate whether to truncate the
 # list of documents processed from Google Drive.
@@ -165,9 +145,6 @@ TRUNCATE_DRIVE_LISTING = False
 
 DISQUS_ENABLED = False
 
-# Disqus API token
-DISQUS_TOKEN = "XXXXX"
-
 
 # Flask
 # =====
@@ -175,5 +152,5 @@ DISQUS_TOKEN = "XXXXX"
 # Flask secret key 
 # (should be a random string, this is
 # used to establish sessions with users)
-SECRET_KEY = 'XXXXX'
+SECRET_KEY = "XXXXX"
 
