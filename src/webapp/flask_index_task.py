@@ -3,6 +3,7 @@ from ..search import Search
 import threading
 import subprocess
 import markdown
+import logging
 
 import codecs
 import os, json
@@ -33,10 +34,10 @@ class UpdateIndexTask(object):
         self.run_which = run_which
         self.app_config = app_config
         if self.app_config['FAKEDOCS']:
-            print("Found FAKEDOCS = True in config file, running test update index task")
+            logging.info("Found FAKEDOCS = True in config file, running test update index task")
             thread = threading.Thread(target=self.test, args=())
         else:
-            print("Found FAKEDOCS = False in config file, running real update index task")
+            logging.info("Found FAKEDOCS = False in config file, running real update index task")
             thread = threading.Thread(target=self.run, args=())
         thread.daemon = True
         thread.start()
