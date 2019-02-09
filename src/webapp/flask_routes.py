@@ -29,16 +29,17 @@ with all routes.
 
 def setup_routes(app):
 
-    client_id = app.config['GITHUB_OAUTH_CLIENT_ID']
-    client_secret = app.config['GITHUB_OAUTH_CLIENT_SECRET']
+    if app.config['AUTHENTICATION_LAYER']:
+        client_id = app.config['GITHUB_OAUTH_CLIENT_ID']
+        client_secret = app.config['GITHUB_OAUTH_CLIENT_SECRET']
 
-    # Make the github login blueprint
-    github_bp = make_github_blueprint(
-                            client_id = client_id,
-                            client_secret = client_secret,
-                            scope='read:org')
+        # Make the github login blueprint
+        github_bp = make_github_blueprint(
+                                client_id = client_id,
+                                client_secret = client_secret,
+                                scope='read:org')
 
-    app.register_blueprint(github_bp, url_prefix="/login")
+        app.register_blueprint(github_bp, url_prefix="/login")
 
     last_searches_file = app.config["INDEX_DIR"] + "/last_searches.txt" 
 
@@ -55,8 +56,11 @@ def setup_routes(app):
         on top of Flask routes
         """
         def __init__(self,enabled=True,admin=False,is_landing_page=False):
+            # is auth layer enabled?
             self.enabled = enabled
+            # is this the landing page?
             self.is_landing_page = is_landing_page
+            # is this an admin-only page?
             self.admin = admin
 
         def __call__(self,*args,**kwargs):
