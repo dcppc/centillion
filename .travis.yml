@@ -1,22 +1,15 @@
 language: python
-
 python:
 - '3.6'
-
-# Decrypt config files containing sensitive API keys
-# Config files are all kept in a .tar.gz file in tests/
-# Decrypt first, then untar
 before_install:
 - cd tests/
 - openssl aes-256-cbc -K $encrypted_d2ff316999ca_key -iv $encrypted_d2ff316999ca_iv
-  -in encrypted_config_files.tar.gz.enc -out encrypted_config_files.tar.gz -d
-- tar xvf encrypted_config_files.tar.gz
+  -in secrets.tar.gz.enc -out secrets.tar.gz -d
+- tar xvf secrets.tar.gz
 - cd ../
-
 install:
 - pip install -r requirements.txt
 - python setup.py build install
-
 script:
 - cd tests/
 - pytest
