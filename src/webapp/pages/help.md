@@ -1,30 +1,23 @@
 # Help Page: centillion
 
 This page provides some guidance on using centillion,
-the Data Commons search engine.
+the document search engine.
 
 ## What does centillion index?
 
 centillion indexes the following:
 
-- Google Drive files in the Data Commons Google Drive
+- Google Drive files
   folder (the entire contents of docx files are indexed,
   while only the metadata is indexed for non-docx files)
 
 - Github issues and pull requests (both open and closed)
-  in all of the [DCPPC Github organization's](https://github.com/dcppc)
-  Github repositories (both public and private)
 
 - Github files (the entire contents of Markdown files
   are indexed, only the metadata is indexed for
   non-Markdown files)
 
-- Groups.io email threads for the [DCPPC group](https://dcppc.groups.io/)
-  on Groups.io
-
-- Disqus comment threads on the internal DCPPC site,
-  <https://pilot.nihdatacommons.us>
-
+- Disqus comment threads
 
 
 
@@ -35,15 +28,15 @@ To run a basic search, just type a search term into the text box and click "Sear
 Try the following search terms:
 
 <div class="alert alert-info" role="alert">
-onboarding
+pineapple
 </div>
 
 <div class="alert alert-info" role="alert">
-oxygen
+orange
 </div>
 
 <div class="alert alert-info" role="alert">
-fullstack
+banana
 </div>
 
 ### Basic Searching: Multi-Term Searches
@@ -58,29 +51,25 @@ Try the following search terms - then try them without
 the double quotes to see what chages:
 
 <div class="alert alert-info" role="alert">
-"analysis pipeline"
+"no way"
 </div>
 
 <div class="alert alert-info" role="alert">
-"onboarding process"
+"he left without the"
 </div>
 
 <div class="alert alert-info" role="alert">
-"full stacks"
-</div>
-
-<div class="alert alert-info" role="alert">
-"deliverables due"
+"laser sharks"
 </div>
 
 Note that if you search for a term (for example
-`"onboarding process"`) with _double quotes_, centillion
+`"laser sharks"`) with _double quotes_, centillion
 will ignore anything in the search index where the word
-`"onboarding"` and the word `"process"` are not contiguous.
+`"laser"` and the word `"sharks"` are not contiguous.
 
 The exception is stop words. For example, searching for
-`"onboarding process"` will also find the phrase 
-`"process of onboarding"`.
+`"laser sharks"` will also find the phrase 
+`"sharks anad lasers"`.
 
 
 ### Search Operators
@@ -90,46 +79,43 @@ centillion. However, _these operators must be CAPITALIZED_
 or they will be interpreted as literal words!
 
 To include any item in the search index that contains
-the word `"onboarding"` and contains the word `"whitelist"`, 
+the word `"sharks"` and contains the word `"lasers"`, 
 but where the two words are not necessarily next to each other,
 use the `AND` operator:
 
 <div class="alert alert-info" role="alert">
-onboarding AND whitelist
+sharks AND lasers
 </div>
 
 This can also be used with multi-word phrases, using
 double quotes accordingly: to search for all documents
-containing the word `onboarding` and the phrase
-`"full stack"`, pass both to centillion with `AND`:
+containing the word `sharks` and the phrase
+`"laser helmet"`, pass both to centillion with `AND`:
 
 <div class="alert alert-info" role="alert">
-onboarding AND "full stack"
+sharks AND "laser helmet"
 </div>
 
 You can also use the OR operator to return any
 documents containing one or the other or both of the
 given search term or phrase. For example, to seach for
-any documents involving Team Oxygen or Team Calcium,
+any documents involving garlic or onions,
 
 <div class="alert alert-info" role="alert">
-oygen OR calcium
+garlic OR onions
 </div>
 
 Finally, these operators can be combined by wrapping
 statements in parentheses. For example, suppose we
 wanted to look for all information about either
-onboarding or whitelisting, and only if related to Team
-Copper or Team Phosphorus. We can combine the two `AND`
-searches with an `OR`:
+garlic or onions, and only if related to cooking
+or to vampires.
+
+We can combine the two `AND` searches with an `OR`:
 
 <div class="alert alert-info" role="alert">
-(onboarding OR whitelisting) AND (copper OR phosphorus OR phosphorous)
+(garlic OR onions) AND (cooking OR vampires)
 </div>
-
-Side note: phosphorus is a special case, as its correct
-spelling ("phosphorus") is not as common as the incorrect
-spelling ("phosphorous").
 
 
 ### Advanced Search: Searching By Field Name
@@ -177,22 +163,26 @@ search index schema contains the following fields:
 
 * `kind` - can be one of "gdoc" (Google Drive file), "issue" (Github issue),
   "markdown" (Markdown files in Github repositories), "ghfile" (non-Markdown
-  files in Github repositories), "emailthread" (Groups.io email thread), and
-  "disqus" (Disqus comment threads)
+  files in Github repositories), and "disqus" (Disqus comment threads)
+
 * `title` - title of the document
+
 * `owner_name` - the name of the owner of the Google Drive file
-  (permissions/ownership information comes from Google via their API), or the
-  original sender of the Groups.io email thread (this field is not linked to
-  Github items)
+  (permissions/ownership information comes from Google via their API)
+  (this field is not set for Github items)
+
 * `owner_email` - the email address of the Google Drive file owner (this
-  information is not linked to Github items or Groups.io items)
+  information is not set for Github items)
+
 * `github_user` - for Github files and issues, the Github @user is the only
   info available
+
 * `content` - the field containing the entire contents of each document
 
 Documents also have three fields containing date and time information:
 
 * `created_time` - date and time stamp for when this item was created
+
 * `modified_time` - date and time stamp for when this item was modified
 
 
@@ -254,16 +244,17 @@ colon, and the search term you wish to search for. Use double quotes for
 phrases, as usual.
 
 For example, the following will find all Google Drive files or Groups.io email
-threads created by Titus Brown:
+threads created by Santa Claus:
 
 <div class="alert alert-info" role="alert">
-owner_name:"Titus Brown"
+owner_name:"Santa Claus"
 </div>
 
-To expand this search to include things on Github, too, we can include a
-`github_user` field search as well: 
+To expand this search to include things on Github, 
+too, we can include Santa's Github handle using the
+`github_user` field search:
 
 <div class="alert alert-info" role="alert">
-owner_name:"Titus Brown" OR github_user:"ctb"
+owner_name:"Santa Claus" OR github_user:"realsanta"
 </div>
 
