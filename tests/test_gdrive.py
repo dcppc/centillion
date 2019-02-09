@@ -21,7 +21,7 @@ To run, use pytest:
 """
 
 
-CONFIG_FILE = 'config_gdrive.py'
+CONFIG_FILE = 'config_gdrive_test.py'
 INDEX_DIR = 'test_search_index_gd'
 HERE = os.path.split(os.path.abspath(__file__))[0]
 

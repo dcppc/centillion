@@ -21,7 +21,7 @@ To run, use pytest:
 """
 
 
-CONFIG_FILE = 'config_localtests.py'
+CONFIG_FILE = 'config_local_test.py'
 INDEX_DIR = 'test_search_index'
 HERE = os.path.split(os.path.abspath(__file__))[0]
 
