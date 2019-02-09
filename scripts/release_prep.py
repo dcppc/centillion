@@ -34,7 +34,7 @@ Examples:
 
     scripts/release_prep.py 1.7.3
 
-    scripts/release_prep.py 1.8dev
+    scripts/release_prep.py 1.8.0
 
     """
     print(msg)
@@ -64,6 +64,8 @@ def doit(x_y_z):
         print("Writing %s"%(which_file))
         with open(which_file,'w') as f:
             f.write(content2)
+
+        print("Done.\n")
     
     def replace_version(which_file):
         replace(which_file,r'version-\d\.\d\.\d','version-%s'%(x_y_z))
@@ -124,5 +126,6 @@ if __name__=="__main__":
             print("Aborting.")
             exit(1)
         else:
+            print("\n")
             doit(sys.argv[1])
 
