@@ -19,7 +19,7 @@ to load it and set it as the Flask config.
 NOTE: to load a Python file as a Flask config file,
 use the flask app's built-in config.from_pyfile() method:
 
->>> app.config.from_pyfile("config_flask.py")
+>>> app.config.from_pyfile("my_config_file.py")
 """
 
 
@@ -37,8 +37,9 @@ class CentillionFlask(Flask):
         Do everything the parent does.
         Then load the config file.
         """
-        # Pop config_file key before calling flask app constructor,
-        # since that isn't a flask param
+        # Pop config_file keyword argument
+        # before calling flask app constructor,
+        # since this is the only non-flask parameter
         if 'config_file' in kwargs.keys():
             config_file = kwargs['config_file']
             del kwargs['config_file']
@@ -57,8 +58,8 @@ class CentillionFlask(Flask):
         # 
         # Option 1: set the `CONFIG_CENTILLION` env var
         # Option 2A: specify the relative or absolute path to a config file when initializing flask app
-        # Option 2B: have a `config_flask.py` config file in the current directory
-        # Option 3: have a `config_flask.py` in `~/.config/centillion/`
+        # Option 2B: have a config file (with name specified by DEFAULT_CONFIG on const.py) in the current directory
+        # Option 3: have a config file (wth name specified by DEFAULT_CONFIG in const.py) in `~/.config/centillion/`
         # 
         # (Option 2A and 2B are the same, but one specifies
         # the config file name and one uses the default.)
@@ -95,7 +96,7 @@ class CentillionFlask(Flask):
         
         else:
 
-            msg = "CentillionFlask: __init__(): Did not find CENTILLION_CONFIG environment variable, searching for config file...\n"
+            msg = "CentillionFlask: __init__(): Did not find CENTILLION_CONFIG environment variable. Still looking for config file...\n"
             logging.info(msg)
 
             # Option 2:
@@ -111,14 +112,14 @@ class CentillionFlask(Flask):
             if os.path.isfile(cwd_config):
                 self.config.from_pyfile(cwd_config)
                 loaded_config = True
-                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file found in current directory\n"
+                msg = "CentillionFlask: __init__(): Succesfuly loaded user-specified config file\n"
                 msg += "Loaded config file at %s"%(cwd_config)
                 logging.info(msg)
 
             elif os.path.isfile(config_file):
                 self.config.from_pyfile(config_file)
                 loaded_config = True
-                msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file\n"
+                msg = "CentillionFlask: __init__(): Succesfuly loaded user-specified config file\n"
                 msg += "Loaded config file at %s"%(config_file)
                 logging.info(msg)
 
@@ -137,7 +138,7 @@ class CentillionFlask(Flask):
                 if os.path.isfile(home_config):
                     self.config.from_pyfile(home_config)
                     loaded_config = True
-                    msg = "CentillionFlask: __init__(): Succesfuly loaded webapp config file in home directory\n"
+                    msg = "CentillionFlask: __init__(): Succesfuly loaded config file in home directory\n"
                     msg += "Loaded config file at %s"%(home_config)
                     logging.info(msg)
 
