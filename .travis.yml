@@ -1,0 +1,12 @@
+language: python
+python:
+- '3.6'
+before_install:
+- openssl aes-256-cbc -K $encrypted_d2ff316999ca_key -iv $encrypted_d2ff316999ca_iv
+  -in encrypted_config_files.tar.gz.enc -out encrypted_config_files.tar.gz -d
+install:
+- pip install -r requirements.txt
+- python setup.py build install
+script:
+- cd tests/
+- pytest

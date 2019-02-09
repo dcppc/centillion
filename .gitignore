@@ -1,3 +1,4 @@
+encrypted_config_files.tar.gz
 secrets.py
 config*.py
 config_flask.py
