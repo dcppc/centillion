@@ -29,7 +29,7 @@ with all routes.
 
 def setup_routes(app):
 
-    if app.config['AUTHENTICATION_LAYER']:
+    if app.config['ACCESS_CONTROL']:
         client_id = app.config['GITHUB_OAUTH_CLIENT_ID']
         client_secret = app.config['GITHUB_OAUTH_CLIENT_SECRET']
 
@@ -55,11 +55,13 @@ def setup_routes(app):
         Github authentication layer
         on top of Flask routes
         """
-        def __init__(self,enabled=True,admin=False,is_landing_page=False):
+        def __init__(self,admin=False,is_landing_page=False):
             # is auth layer enabled?
-            self.enabled = enabled
+            self.enabled = app.config['ACCESS_CONTROL']
+
             # is this the landing page?
             self.is_landing_page = is_landing_page
+
             # is this an admin-only page?
             self.admin = admin
 
