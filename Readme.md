@@ -11,7 +11,7 @@ Google Drive documents, and Disqus comment threads.
 
 One centillion is 3.03 log-times better than a googol.
 
-![Screenshot: centillion search](images/search.png)
+![Screenshot: centillion search](docs/images/search.png)
 
 
 ## What is centillion
