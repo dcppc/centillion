@@ -1,6 +1,7 @@
 # centillion
 
 ![version number](https://img.shields.io/badge/version-1.8.0-blue.svg)
+[![travis](https://img.shields.io/travis/charlesreid1/centillion.svg)](https://travis-ci.org/charlesreid1/centillion)
 
 **centillion**: a document search engine that searches
 across Github issues, Github pull requests, Github files,
@@ -10,7 +11,7 @@ Google Drive documents, and Disqus comment threads.
 
 One centillion is 3.03 log-times better than a googol.
 
-![Screenshot: centillion search](images/search.png)
+![Screenshot: centillion search](docs/images/search.png)
 
 
 ## What is centillion

@@ -1,87 +1,63 @@
-centillion is configured using a single configuration file that contains
-configuration details for both the flask frontend and the whoosh backend.
+The configuration file is the main way to customize
+the behavior of the centillion application.
+
+To specify a configuration file, use the `config_file`
+keyword when calling `centillion.webapp.get_flask_app()`:
+
+```
+import centillion
+app = centillion.webapp.get_flask_app(config_file='../config/config_centillion_fakedocs.py')
+app.run()
+```
+
+The configuration file will configure both the frontend webapp and
+the backend search engine.
+
+Several example configuration files are given in the `config/`
+directory of this repository. Additionally, several configuration
+files used in tests are in the `tests/` directory.
 
 ## General Info
 
-## Example config files
+The centillion configuration file is a Python file that mainly
+contains variable declarations. These configuration variables
+are passed into the centillion Flask app, and are also passed
+through to the search backend.
 
-## Test config files
+The configuration file has the following sections:
 
-
-
-
-
-
-
-## Just one configuration file (frontend+backend)
-
-To configure centillion, provide a single configuration file that 
-specifies configuration details for both the Flask webapp frontend
-and the search backend.
-
-There is an example configuration file in 
-the repository at:
-
-```
-config/config_flask.example.py
-```
-
-The contents of this file are given below:
-
-```
-# github oauth (access control)
-GITHUB_OAUTH_CLIENT_ID = "XXX"
-GITHUB_OAUTH_CLIENT_SECRET = "YYY"
-
-# github acces token (issues/PRs/files)
-GITHUB_TOKEN = "XXX"
-
-# groups.io
-GROUPSIO_TOKEN = "XXXXX"
-
-# disqus 
-DISQUS_TOKEN = "XXXXX"
-
-# location of search index on disk
-INDEX_DIR = "search_index"
-
-# labels for repo footer
-FOOTER_REPO_ORG = "dcppc"
-FOOTER_REPO_NAME = "centillion"
-
-# Flask secret key
-SECRET_KEY = 'XXXXX'
-
-REPOSITORIES = [
-        "dcppc/organize",
-        "dcppc/apis",
-        "dcppc/data-stewards",
-        ...
-]
-```
-
-## Pass location with environment variable
-
-The location of this configuration file should be passed in to the program
-running centillion via the `CENTILLION_CONFIG` environment variable. For 
-example, if the program `examples/run_centillion.py` contains a script that
-imports centillion and runs the webapp, you can pass the config file using the
-`CENTILLION_CONFIG` environment variable like this:
-
-```
-CENTILLION_CONFIG="config/config_flask.py" python examples/run_centillion.py
-```
-
-## Configuring API access
-
-The centillion configuration file must contain API keys for each of the following
-third-party services:
-
-* Github 
-* Groups.io
+* Access Control
+* Testing
+* Searching
+* User Interface
+* Github
 * Google Drive
 * Disqus
+* Flask
 
-See [APIs](api_all.md) page for details about the types of API keys
-required and how each API is used by centillion.
+
+## Example config files
+
+The main example configuration file is located at
+
+```
+config/config_centillion.example.py
+```
+
+There are three other example configuration files
+in that directory. These are configuration files
+for running a centillion instance with a search
+index populated by fake documents, Google Drive
+documents, and Github files/issues/pull requests
+(respectively):
+
+```
+config/config_centillion_fakedocs.py
+config/config_centillion_gdrive.py
+config/config_centillion_gh.py
+```
+
+The `tests/` directory contains three additional
+configuration files that are similar to the three
+example config files above.
 
