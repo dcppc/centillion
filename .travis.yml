@@ -2,8 +2,8 @@ language: python
 python:
 - '3.6'
 before_install:
-- openssl aes-256-cbc -K $encrypted_d2ff316999ca_key -iv $encrypted_d2ff316999ca_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
 - cd tests/
+- openssl aes-256-cbc -K $encrypted_d2ff316999ca_key -iv $encrypted_d2ff316999ca_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
 - tar xvf secrets.tar.gz
 - cd ../
 install:
