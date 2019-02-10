@@ -140,7 +140,7 @@ GOOGLE_DRIVE_ENABLED = True
 # Google Cloud console. This is required to
 # index Google Drive files.
 # NOTE: this is different from client_secret.json
-GOOGLE_DRIVE_CREDENTIALS_FILE="../config/credentials.json"
+GOOGLE_DRIVE_CREDENTIALS_FILE="credentials.json"
 
 # Flag to indicate whether to truncate the
 # list of documents processed from Google Drive.

@@ -21,6 +21,9 @@ To run, use pytest:
 """
 
 
+# retry test delay
+DELAY = 10
+
 CONFIG_FILE = 'config_gdrive_test.py'
 INDEX_DIR = 'test_search_index_gd'
 HERE = os.path.split(os.path.abspath(__file__))[0]
@@ -96,7 +99,7 @@ class GDriveTest(unittest.TestCase):
             raise SearchIndexException("Error: search index %s should exist, but nothing was found"%(si))
 
 
-    @pytest.mark.flaky(reruns=5, reruns_delay=10)
+    @pytest.mark.flaky(reruns=5, reruns_delay=DELAY)
     def test_2_document_counts(self):
         """
         Verify document counts for this real
@@ -113,7 +116,7 @@ class GDriveTest(unittest.TestCase):
         self.assertIn('id="gdoc-count">2',data)
 
 
-    @pytest.mark.flaky(reruns=5, reruns_delay=10)
+    @pytest.mark.flaky(reruns=5, reruns_delay=DELAY)
     def test_3_simple_search(self):
         """
         Verify that searches for known terms 
