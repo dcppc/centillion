@@ -1,7 +1,7 @@
 # centillion
 
 ![version number](https://img.shields.io/badge/version-1.8.0-blue.svg)
-[![travis](https://img.shields.io/travis/charlesreid1/centillion.svg?style=flat-square)](https://travis-ci.org/charlesreid1/centillion)
+[![travis](https://img.shields.io/travis/charlesreid1/centillion.svg)](https://travis-ci.org/charlesreid1/centillion)
 
 **centillion**: a document search engine that searches
 across Github issues, Github pull requests, Github files,
