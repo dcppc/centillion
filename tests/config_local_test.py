@@ -176,5 +176,5 @@ DISQUS_TOKEN = "XXXXX"
 # Flask secret key 
 # (should be a random string, this is
 # used to establish sessions with users)
-from secret import SECRET_KEY
+from secrets import SECRET_KEY
 

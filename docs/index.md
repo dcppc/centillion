@@ -1,6 +1,7 @@
 # centillion
 
 ![version number](https://img.shields.io/badge/version-1.8.0-blue.svg)
+[![travis](https://img.shields.io/travis/charlesreid1/centillion.svg)](https://travis-ci.org/charlesreid1/centillion)
 
 **centillion**: a document search engine that searches
 across Github issues, Github pull requests, Github files,
@@ -282,6 +283,6 @@ for details.
 
 ## APIs
 
-See the [APIs](api_all.md) page for an overview of the third-party
+See the [APIs](apis_all.md) page for an overview of the third-party
 APIs that centillion interfaces with to populate the search index.
 
