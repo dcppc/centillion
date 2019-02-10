@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://charlesreid1.github.io/centillion/">
+        <link rel="canonical" href="http://dcppc.github.io/centillion/">
       
       
       
@@ -111,7 +111,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
+        <a href="http://dcppc.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
           
             <i class="md-icon">search</i>
           
@@ -173,10 +173,10 @@
   
 
 
-  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/dcppc/centillion" title="Go to repository" class="md-source" data-md-source="github">
     
     <div class="md-source__repository">
-      charlesreid1/centillion
+      dcppc/centillion
     </div>
   </a>
 
@@ -200,7 +200,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
+    <a href="http://dcppc.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
       
         <i class="md-icon">search</i>
       
@@ -215,10 +215,10 @@
   
 
 
-  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/dcppc/centillion" title="Go to repository" class="md-source" data-md-source="github">
     
     <div class="md-source__repository">
-      charlesreid1/centillion
+      dcppc/centillion
     </div>
   </a>
 
@@ -517,7 +517,8 @@
                 
                 
                 <h1 id="centillion">centillion<a class="headerlink" href="#centillion" title="Permanent link">&para;</a></h1>
-<p><img alt="version number" src="https://img.shields.io/badge/version-1.8.0-blue.svg" /></p>
+<p><img alt="version number" src="https://img.shields.io/badge/version-1.8.0-blue.svg" />
+<a href="https://travis-ci.org/charlesreid1/centillion"><img alt="travis" src="https://img.shields.io/travis/charlesreid1/centillion.svg" /></a></p>
 <p><strong>centillion</strong>: a document search engine that searches
 across Github issues, Github pull requests, Github files,
 Google Drive documents, and Disqus comment threads.</p>
@@ -559,30 +560,35 @@ the need to make real API calls). This will allow you
 to try out centillion before you enable any APIs.</p>
 <p><strong>Clone:</strong></p>
 <p>Start by cloning a copy of the repo:</p>
-<pre class="codehilite"><code>cd
+<div class="codehilite"><pre><span></span>cd
 git clone https://github.com/dcppc/centillion
-cd ~/centillion/</code></pre>
+cd ~/centillion/
+</pre></div>
 
 
 <p><strong>Virtual Environment:</strong></p>
 <p>(This step is optional.)</p>
 <p>Start by setting up a virtual environment, where centillion
 will be installed:</p>
-<pre class="codehilite"><code>virtualenv vp
-source vp/bin/activate</code></pre>
+<div class="codehilite"><pre><span></span>virtualenv vp
+source vp/bin/activate
+</pre></div>
 
 
 <p><strong>Install:</strong> </p>
 <p>To install centillion, first install the required packages:</p>
-<pre class="codehilite"><code>pip install -r requirements.txt</code></pre>
+<div class="codehilite"><pre><span></span>pip install -r requirements.txt
+</pre></div>
 
 
 <p>Now install centillion:</p>
-<pre class="codehilite"><code>python setup.py build install</code></pre>
+<div class="codehilite"><pre><span></span>python setup.py build install
+</pre></div>
 
 
 <p>Test that your centillion installation went okay:</p>
-<pre class="codehilite"><code>python -m centillion</code></pre>
+<div class="codehilite"><pre><span></span>python -m centillion
+</pre></div>
 
 
 <p>If you see no output, that means centillion has been successfully installed.
@@ -590,25 +596,29 @@ If you see an error message, check that you have activated your virtual
 environment (<code>source vp/bin/activate</code>).</p>
 <p><strong>Run:</strong> </p>
 <p>Crete a temporary working directory:</p>
-<pre class="codehilite"><code>mkdir -p /tmp/my-centillion-instance &amp;&amp; cd /tmp/my-centillion-instance</code></pre>
+<div class="codehilite"><pre><span></span>mkdir -p /tmp/my-centillion-instance &amp;&amp; cd /tmp/my-centillion-instance
+</pre></div>
 
 
 <p>Now create a minimal centillion instance with the following
 Python program:</p>
 <p><strong><code>run_centillion.py</code>:</strong></p>
-<pre class="codehilite"><code>import centillion
+<div class="codehilite"><pre><span></span>import centillion
 
-app = centillion.webapp.get_flask_app(config_file='config.py')
-app.run()</code></pre>
+app = centillion.webapp.get_flask_app(config_file=&#39;config.py&#39;)
+app.run()
+</pre></div>
 
 
 <p>The <code>config.py</code> file can be copied verbatim from the example
 configuration file in the repository:</p>
-<pre class="codehilite"><code>cp ~/centillion/config/config_centillion.example.py config.py</code></pre>
+<div class="codehilite"><pre><span></span>cp ~/centillion/config/config_centillion.example.py config.py
+</pre></div>
 
 
 <p>Now run the centillion instance by running the script:</p>
-<pre class="codehilite"><code>python run_centillion.py</code></pre>
+<div class="codehilite"><pre><span></span>python run_centillion.py
+</pre></div>
 
 
 <p>This will run the webapp on port 5000, so navigate to
@@ -681,11 +691,12 @@ index Github repositories or Google Drive folders.</p>
 </ul>
 <h3 id="fakedocs-example">Fakedocs example<a class="headerlink" href="#fakedocs-example" title="Permanent link">&para;</a></h3>
 <p>To run the fakedocs example:</p>
-<pre class="codehilite"><code># make sure you have centillion installed:
+<div class="codehilite"><pre><span></span># make sure you have centillion installed:
 python -m centillion
 
 # run the fakedocs example
-cd examples/ &amp;&amp; python run_centillion_fakedocs.py</code></pre>
+cd examples/ &amp;&amp; python run_centillion_fakedocs.py
+</pre></div>
 
 
 <p>The centillion instance will be available on port 5000.
@@ -702,7 +713,7 @@ paste your Github API credentials or point
 to the path of your Google Drive <code>credentials.json</code>
 file.</p>
 <p>Now you can run the Github or Google Drive examples:</p>
-<pre class="codehilite"><code># make sure you have centillion installed:
+<div class="codehilite"><pre><span></span># make sure you have centillion installed:
 python -m centillion
 
 cd examples/
@@ -711,7 +722,8 @@ cd examples/
 python run_centillion_gh.py
 
 # run the Google Drive example
-python run_centillion_gdocs.py</code></pre>
+python run_centillion_gdocs.py
+</pre></div>
 
 
 <h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permanent link">&para;</a></h2>

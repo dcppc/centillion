@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://charlesreid1.github.io/centillion/auth/">
+        <link rel="canonical" href="http://dcppc.github.io/centillion/auth/">
       
       
       
@@ -111,7 +111,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
+        <a href="http://dcppc.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
           
             <i class="md-icon">search</i>
           
@@ -173,10 +173,10 @@
   
 
 
-  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/dcppc/centillion" title="Go to repository" class="md-source" data-md-source="github">
     
     <div class="md-source__repository">
-      charlesreid1/centillion
+      dcppc/centillion
     </div>
   </a>
 
@@ -200,7 +200,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
+    <a href="http://dcppc.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
       
         <i class="md-icon">search</i>
       
@@ -215,10 +215,10 @@
   
 
 
-  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/dcppc/centillion" title="Go to repository" class="md-source" data-md-source="github">
     
     <div class="md-source__repository">
-      charlesreid1/centillion
+      dcppc/centillion
     </div>
   </a>
 
@@ -455,7 +455,8 @@ from the Github application's page.</p>
 <p>When you create the application, set the callback
 URL to the base URL of your centillion server, plus
 <code>/login/github/authorized</code>, as in:</p>
-<pre class="codehilite"><code>https://&lt;url&gt;/login/github/authorized</code></pre>
+<div class="codehilite"><pre><span></span>https://&lt;url&gt;/login/github/authorized
+</pre></div>
 
 
 <p>(see "How does it work?" section below.)</p>
@@ -463,14 +464,16 @@ URL to the base URL of your centillion server, plus
 <p>If you are testing centillion locally, you can use <code>http://localhost</code>
 as the callback URL, but to do so you must set the following
 environment variable:</p>
-<pre class="codehilite"><code>OAUTHLIB_INSECURE_TRANSPORT=&quot;true&quot;</code></pre>
+<div class="codehilite"><pre><span></span>OAUTHLIB_INSECURE_TRANSPORT=&quot;true&quot;
+</pre></div>
 
 
 <p>Alternatively you can set this environment variable from the
 centillion run script using the Python command:</p>
-<pre class="codehilite"><code>import os
+<div class="codehilite"><pre><span></span>import os
 
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = True</code></pre>
+os.environ[&#39;OAUTHLIB_INSECURE_TRANSPORT&#39;] = True
+</pre></div>
 
 
 <h2 id="how-does-it-work">How does it work?<a class="headerlink" href="#how-does-it-work" title="Permanent link">&para;</a></h2>

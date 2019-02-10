@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://charlesreid1.github.io/centillion/config/">
+        <link rel="canonical" href="http://dcppc.github.io/centillion/config/">
       
       
       
@@ -111,7 +111,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
+        <a href="http://dcppc.github.io/centillion" title="centillion search engine" class="md-header-nav__button md-logo">
           
             <i class="md-icon">search</i>
           
@@ -173,10 +173,10 @@
   
 
 
-  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/dcppc/centillion" title="Go to repository" class="md-source" data-md-source="github">
     
     <div class="md-source__repository">
-      charlesreid1/centillion
+      dcppc/centillion
     </div>
   </a>
 
@@ -200,7 +200,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="http://charlesreid1.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
+    <a href="http://dcppc.github.io/centillion" title="centillion search engine" class="md-nav__button md-logo">
       
         <i class="md-icon">search</i>
       
@@ -215,10 +215,10 @@
   
 
 
-  <a href="https://github.com/charlesreid1/centillion" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/dcppc/centillion" title="Go to repository" class="md-source" data-md-source="github">
     
     <div class="md-source__repository">
-      charlesreid1/centillion
+      dcppc/centillion
     </div>
   </a>
 
@@ -469,11 +469,12 @@ specifies configuration details for both the Flask webapp frontend
 and the search backend.</p>
 <p>There is an example configuration file in 
 the repository at:</p>
-<pre class="codehilite"><code>config/config_flask.example.py</code></pre>
+<div class="codehilite"><pre><span></span>config/config_flask.example.py
+</pre></div>
 
 
 <p>The contents of this file are given below:</p>
-<pre class="codehilite"><code># github oauth (access control)
+<div class="codehilite"><pre><span></span># github oauth (access control)
 GITHUB_OAUTH_CLIENT_ID = &quot;XXX&quot;
 GITHUB_OAUTH_CLIENT_SECRET = &quot;YYY&quot;
 
@@ -494,14 +495,15 @@ FOOTER_REPO_ORG = &quot;dcppc&quot;
 FOOTER_REPO_NAME = &quot;centillion&quot;
 
 # Flask secret key
-SECRET_KEY = 'XXXXX'
+SECRET_KEY = &#39;XXXXX&#39;
 
 REPOSITORIES = [
         &quot;dcppc/organize&quot;,
         &quot;dcppc/apis&quot;,
         &quot;dcppc/data-stewards&quot;,
         ...
-]</code></pre>
+]
+</pre></div>
 
 
 <h2 id="pass-location-with-environment-variable">Pass location with environment variable<a class="headerlink" href="#pass-location-with-environment-variable" title="Permanent link">&para;</a></h2>
@@ -510,7 +512,8 @@ running centillion via the <code>CENTILLION_CONFIG</code> environment variable. 
 example, if the program <code>examples/run_centillion.py</code> contains a script that
 imports centillion and runs the webapp, you can pass the config file using the
 <code>CENTILLION_CONFIG</code> environment variable like this:</p>
-<pre class="codehilite"><code>CENTILLION_CONFIG=&quot;config/config_flask.py&quot; python examples/run_centillion.py</code></pre>
+<div class="codehilite"><pre><span></span>CENTILLION_CONFIG=&quot;config/config_flask.py&quot; python examples/run_centillion.py
+</pre></div>
 
 
 <h2 id="configuring-api-access">Configuring API access<a class="headerlink" href="#configuring-api-access" title="Permanent link">&para;</a></h2>

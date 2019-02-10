@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-     <loc>http://charlesreid1.github.io/centillion/</loc>
-     <lastmod>2019-02-09</lastmod>
+     <loc>http://dcppc.github.io/centillion/</loc>
+     <lastmod>2019-02-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://charlesreid1.github.io/centillion/config/</loc>
-     <lastmod>2019-02-09</lastmod>
+     <loc>http://dcppc.github.io/centillion/config/</loc>
+     <lastmod>2019-02-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://charlesreid1.github.io/centillion/submodules/</loc>
-     <lastmod>2019-02-09</lastmod>
+     <loc>http://dcppc.github.io/centillion/submodules/</loc>
+     <lastmod>2019-02-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://charlesreid1.github.io/centillion/backend/</loc>
-     <lastmod>2019-02-09</lastmod>
+     <loc>http://dcppc.github.io/centillion/backend/</loc>
+     <lastmod>2019-02-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://charlesreid1.github.io/centillion/frontend/</loc>
-     <lastmod>2019-02-09</lastmod>
+     <loc>http://dcppc.github.io/centillion/frontend/</loc>
+     <lastmod>2019-02-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://charlesreid1.github.io/centillion/auth/</loc>
-     <lastmod>2019-02-09</lastmod>
+     <loc>http://dcppc.github.io/centillion/auth/</loc>
+     <lastmod>2019-02-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>http://charlesreid1.github.io/centillion/apis_all/</loc>
-     <lastmod>2019-02-09</lastmod>
+     <loc>http://dcppc.github.io/centillion/apis_all/</loc>
+     <lastmod>2019-02-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
