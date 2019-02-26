@@ -58,7 +58,9 @@ cd ~/centillion/
 
 **Virtual Environment:**
 
-(This step is optional.)
+_(This step is optional but recommended. 
+If you do not have a virtualenv installed, 
+follow [these installation instructions](https://virtualenv.pypa.io/en/latest/installation/).)_
 
 Start by setting up a virtual environment, where centillion
 will be installed:
