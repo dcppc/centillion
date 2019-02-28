@@ -34,10 +34,11 @@ and interfacing with the search index. ([More information](frontend.md))
 
 ## How to configure centillion
 
-To get started with centillion, you will need to create
-a centillion configuration file. Start with the example
-configuration file in the `examples/` directory.
-
+To configure centillion read the full documentation 
+at <http://nih-data-commons.us/centillion/>.  Some example
+configuration files are in the `examples/` directory.
+Before configuring centillion to search your organization's file systems, 
+we recommend following the Quickstart. 
 
 ## Quickstart
 
