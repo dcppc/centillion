@@ -142,9 +142,18 @@ python run_centillion.py
 This will run the webapp on port 5000, so navigate to
 <http://localhost:5000> in the browser.
 
+centillion does not populate the search index by default,
+so the first time you run centillion you will not see
+any documents in the search index.
+
+![Screenshot: centillion no docs indexed](docs/images/beforeindexing.png)
+
+Before you can use centillion, you must manually
+populate the search index.
+
 **Populate the Search Index:**
 
-To populate the search index, visit the control panel route:
+To populate the search index, visit the control panel:
 
 <http://localhost:5000/control_panel>
 
@@ -157,7 +166,7 @@ banner.
 **Visit the Master List:**
 
 The master list shows a list of every document indexed by
-centillion. Visit the master list route:
+centillion. Visit the master list:
 
 <http://localhost:5000/master_list>
 
