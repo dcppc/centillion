@@ -2,10 +2,14 @@ language: python
 dist: xenial
 python:
 - '3.6'
+env:
+  global:
+    secure: 3F1+arMaw83b5zkPgCLTGD6XNd265wEchYvfALh5cewpN0COfctIer0Pvu6ELSH9vMAEaq6nGraLjKhNA1crJ9dVOgAN/wfs/ijI4ovkb0z4AaPxfeQYtvKpAyLDWOA6yrH2muXzH9Re0CvRK+ZsV5pPe/E80LLBKlUdq8ByT3f/Hh/vCxkOEw9limhs9Mtu8Sem8PyMd915wPgwdAhXEOEwlPU2iUCiE0xAWm3R8/1eUwO6C7glgstnO3UnFv9C57yWpjBkrsPt8Bo4Q3khhi4EFO+zYljhHolE8OeNrsff92r2ovn4ZothJWxppsgU0rYpGatPRFzcgCnBllT56gQBmSYmgB9hRULbcgUuLbvbDGpi3KYWvDf4hTUNobjy8dBOyiOsUfQdpVMAvdTY2YiE8cXD4YY+IHe2mKyO5mQjejOVGm5OboejJoHfn+YSa7YI5JrpJStblcZOn5iBmjfuarKy8X9wbce7ZBpvqTO0oGhuoxf1YnOuEPgJeEPFbr0w1h8OV6luBsqn4EPnYOqRFa39Opu/BHOAZ4JM23lSQz/+D/6RGzNGy8mqGGgjQ7nIwAI7U7VcsZw4vZk717iwVe5XyZQSCe5i92zaF73i1DQFqpW7EwNKXpqNTTl+dUTO543rs5HlDdqe6dwS/UzbQ4pX+DmIrwPRMVKU93c=
 before_install:
 - sudo apt-get install pandoc
 - cd tests/
 - openssl aes-256-cbc -k "$credentials_password" -in secrets.tar.gz.enc -out secrets.tar.gz -d
+  -d
 - tar xvf secrets.tar.gz
 - cd ../
 install:
@@ -14,6 +18,3 @@ install:
 script:
 - cd tests/
 - pytest
-env:
-  global:
-    secure: tKo2FY2hPqeRDq6zUw897uY9VSn+dwDi+KABacJeQyPNFbzUDKKbp7Bkfp/1MQ/xovHeAhfyydZ1VP2Vg/c/TCWtlQQ/49KuRXvj4YnyXpI/du08c6o/sBIkwj5SRPjfDWECIoVFlgRW/sCxoCC0m5tRH2tvjyCq03BDo8LkVuDRp/UqEkHsE3U6/dy5FJu/3wsg5SIv+rv6G9J33sfO+psmnxSsKqMF3t43c1Ll8hcl2VNrb+Rh2CmRm6hNI9qMfaKC5rWZ1bLmVLV1DUFSQpePxISjVDdI612yiTAB+WgxpVoWPF0EIx7mr0J1OjoBNB5rjT/YvjS6IwxmcqvYY+70uUYZvcDl30Zs2g65tum4qDVVeCdBOrnzAj8YhIHG/o/qrtvr+C6KtCvMYLqqu/3CPgOZDQxM/JywhaPZOY/XH/OLgiUaUBsw9QCs1qomTQNlpGMWlEWb+YV+AfX2q8J8eMgfPdIBoSIp1rj/Q+bJThWJgPEl9wsGhaM1ck3PM1SxJU/RVpuszFo/YoqYF0R9HyX8qIUcMJTX9vrTRNAHaMjcMTjDw618xi54XbZtJHCpeZgy1fb8Q8zHMHNv3vojIrqpbL8rLWwN82uzOlPs6wHdHhyes38UW4gMKos3wjo03dDCk/c+9JwhRMquuKOPYSa2WctQ9hEvJd6ktZI=
