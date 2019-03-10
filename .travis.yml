@@ -5,7 +5,7 @@ python:
 before_install:
 - sudo apt-get install pandoc
 - cd tests/
-- openssl aes-256-cbc -K $encrypted_d2ff316999ca_key -iv $encrypted_d2ff316999ca_iv -in secrets.tar.gz.enc -out secrets.tar.gz -d
+- openssl aes-256-cbc -k "$credentials_password" -in secrets.tar.gz.enc -out secrets.tar.gz -d
 - tar xvf secrets.tar.gz
 - cd ../
 install:
@@ -14,3 +14,6 @@ install:
 script:
 - cd tests/
 - pytest
+env:
+  global:
+    secure: tKo2FY2hPqeRDq6zUw897uY9VSn+dwDi+KABacJeQyPNFbzUDKKbp7Bkfp/1MQ/xovHeAhfyydZ1VP2Vg/c/TCWtlQQ/49KuRXvj4YnyXpI/du08c6o/sBIkwj5SRPjfDWECIoVFlgRW/sCxoCC0m5tRH2tvjyCq03BDo8LkVuDRp/UqEkHsE3U6/dy5FJu/3wsg5SIv+rv6G9J33sfO+psmnxSsKqMF3t43c1Ll8hcl2VNrb+Rh2CmRm6hNI9qMfaKC5rWZ1bLmVLV1DUFSQpePxISjVDdI612yiTAB+WgxpVoWPF0EIx7mr0J1OjoBNB5rjT/YvjS6IwxmcqvYY+70uUYZvcDl30Zs2g65tum4qDVVeCdBOrnzAj8YhIHG/o/qrtvr+C6KtCvMYLqqu/3CPgOZDQxM/JywhaPZOY/XH/OLgiUaUBsw9QCs1qomTQNlpGMWlEWb+YV+AfX2q8J8eMgfPdIBoSIp1rj/Q+bJThWJgPEl9wsGhaM1ck3PM1SxJU/RVpuszFo/YoqYF0R9HyX8qIUcMJTX9vrTRNAHaMjcMTjDw618xi54XbZtJHCpeZgy1fb8Q8zHMHNv3vojIrqpbL8rLWwN82uzOlPs6wHdHhyes38UW4gMKos3wjo03dDCk/c+9JwhRMquuKOPYSa2WctQ9hEvJd6ktZI=
