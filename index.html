@@ -518,7 +518,7 @@
                 
                 <h1 id="centillion">centillion<a class="headerlink" href="#centillion" title="Permanent link">&para;</a></h1>
 <p><img alt="version number" src="https://img.shields.io/badge/version-1.8.0-blue.svg" />
-<a href="https://travis-ci.org/charlesreid1/centillion"><img alt="travis" src="https://img.shields.io/travis/charlesreid1/centillion.svg" /></a></p>
+<a href="https://travis-ci.org/dcppc/centillion"><img alt="travis" src="https://img.shields.io/travis/dcppc/centillion.svg" /></a></p>
 <p><strong>centillion</strong>: a document search engine that searches
 across Github issues, Github pull requests, Github files,
 Google Drive documents, and Disqus comment threads.</p>
@@ -623,8 +623,14 @@ configuration file in the repository:</p>
 
 <p>This will run the webapp on port 5000, so navigate to
 <a href="http://localhost:5000">http://localhost:5000</a> in the browser.</p>
+<p>centillion does not populate the search index by default,
+so the first time you run centillion you will not see
+any documents in the search index.</p>
+<p><img alt="Screenshot: centillion no docs indexed" src="images/beforeindexing.png" /></p>
+<p>Before you can use centillion, you must manually
+populate the search index.</p>
 <p><strong>Populate the Search Index:</strong></p>
-<p>To populate the search index, visit the control panel route:</p>
+<p>To populate the search index, visit the control panel:</p>
 <p><a href="http://localhost:5000/control_panel">http://localhost:5000/control_panel</a></p>
 <p>From here you can re-index the search engine. The example
 configuration file uses fake documents instead of real API
@@ -633,7 +639,7 @@ connection. To return to the index, click the centillion
 banner.</p>
 <p><strong>Visit the Master List:</strong></p>
 <p>The master list shows a list of every document indexed by
-centillion. Visit the master list route:</p>
+centillion. Visit the master list:</p>
 <p><a href="http://localhost:5000/master_list">http://localhost:5000/master_list</a></p>
 <p><strong>Try Searching:</strong></p>
 <p>Visit the help page for more information about running searches:</p>
