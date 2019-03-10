@@ -146,7 +146,7 @@ centillion does not populate the search index by default,
 so the first time you run centillion you will not see
 any documents in the search index.
 
-![Screenshot: centillion no docs indexed](docs/images/beforeindexing.png)
+![Screenshot: centillion no docs indexed](images/beforeindexing.png)
 
 Before you can use centillion, you must manually
 populate the search index.
