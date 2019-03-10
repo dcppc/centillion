@@ -2,14 +2,21 @@ language: python
 dist: xenial
 python:
 - '3.6'
-env:
-  global:
-    secure: 3F1+arMaw83b5zkPgCLTGD6XNd265wEchYvfALh5cewpN0COfctIer0Pvu6ELSH9vMAEaq6nGraLjKhNA1crJ9dVOgAN/wfs/ijI4ovkb0z4AaPxfeQYtvKpAyLDWOA6yrH2muXzH9Re0CvRK+ZsV5pPe/E80LLBKlUdq8ByT3f/Hh/vCxkOEw9limhs9Mtu8Sem8PyMd915wPgwdAhXEOEwlPU2iUCiE0xAWm3R8/1eUwO6C7glgstnO3UnFv9C57yWpjBkrsPt8Bo4Q3khhi4EFO+zYljhHolE8OeNrsff92r2ovn4ZothJWxppsgU0rYpGatPRFzcgCnBllT56gQBmSYmgB9hRULbcgUuLbvbDGpi3KYWvDf4hTUNobjy8dBOyiOsUfQdpVMAvdTY2YiE8cXD4YY+IHe2mKyO5mQjejOVGm5OboejJoHfn+YSa7YI5JrpJStblcZOn5iBmjfuarKy8X9wbce7ZBpvqTO0oGhuoxf1YnOuEPgJeEPFbr0w1h8OV6luBsqn4EPnYOqRFa39Opu/BHOAZ4JM23lSQz/+D/6RGzNGy8mqGGgjQ7nIwAI7U7VcsZw4vZk717iwVe5XyZQSCe5i92zaF73i1DQFqpW7EwNKXpqNTTl+dUTO543rs5HlDdqe6dwS/UzbQ4pX+DmIrwPRMVKU93c=
 before_install:
 - sudo apt-get install pandoc
 - cd tests/
+#
+# instructions: 
+# https://docs.travis-ci.com/user/encrypting-files/#manual-encryption
+#
+# encrypt file with command:
+# openssl aes-256-cbc -k "<your password>" -in super_secret.txt -out super_secret.txt.enc
+#
+# then add password to repository's travis settings as an environment var
+# env var credentials_password should have value <your password>
+# 
+# decrypt files with command:
 - openssl aes-256-cbc -k "$credentials_password" -in secrets.tar.gz.enc -out secrets.tar.gz -d
-  -d
 - tar xvf secrets.tar.gz
 - cd ../
 install:
